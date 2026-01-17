@@ -1,0 +1,136 @@
+@startuml 数据架构图
+!define DATA_COMPONENT #E3F2FD
+!define DATA_FLOW #FFF9C4
+
+skinparam linetype ortho
+
+skinparam component {
+    BackgroundColor<<DataEntity>> DATA_COMPONENT
+    BackgroundColor<<DataFlow>> DATA_FLOW
+    BorderColor #333333
+    ArrowColor #333333
+}
+
+title TOGAF 数据架构 - FinPulse 金融科技平台
+
+package "核心数据组件" {
+    component "投资组合数据" as PortfolioData <<DataEntity>>
+    component "资产数据" as AssetData <<DataEntity>>
+    component "交易记录数据" as TransactionData <<DataEntity>>
+    component "市场数据" as MarketData <<DataEntity>>
+    component "观察列表数据" as WatchListData <<DataEntity>>
+    component "风险指标数据" as RiskMetricsData <<DataEntity>>
+    component "用户偏好数据" as UserPreferenceData <<DataEntity>>
+    component "用户数据" as UserData <<DataEntity>>
+
+    note right of PortfolioData
+        <b>数据属性</b>
+        - 组合ID (UUID)
+        - 用户ID (UUID)
+        - 总资产净值 (Decimal)
+        - 今日收益 (Decimal)
+        - 累计收益率 (Decimal)
+        - 活跃交易数 (Integer)
+    end note
+
+    note right of AssetData
+        <b>数据属性</b>
+        - 资产ID (UUID)
+        - 组合ID (UUID)
+        - 资产代码 (String)
+        - 持有数量 (Decimal)
+        - 当前价格 (Decimal)
+        - 市值 (Decimal)
+    end note
+
+    note right of TransactionData
+        <b>数据属性</b>
+        - 交易ID (UUID)
+        - 用户ID (UUID)
+        - 组合ID (UUID)
+        - 资产代码 (String)
+        - 交易类型 (Enum)
+        - 交易金额 (Decimal)
+        - 交易时间 (DateTime)
+    end note
+
+    note right of MarketData
+        <b>数据属性</b>
+        - 数据ID (UUID)
+        - 资产代码 (String)
+        - 时间戳 (DateTime)
+        - 开盘价/收盘价 (Decimal)
+        - 成交量 (Decimal)
+        - 涨跌幅 (Decimal)
+    end note
+
+    note right of RiskMetricsData
+        <b>数据属性</b>
+        - 指标ID (UUID)
+        - 组合ID (UUID)
+        - 风险等级 (Enum)
+        - 波动率 (Decimal)
+        - 夏普比率 (Decimal)
+        - VaR值 (Decimal)
+    end note
+}
+
+package "数据关系" {
+    ' 投资组合关系
+    UserData "1" --> "N" PortfolioData : 拥有
+    PortfolioData "1" --> "N" AssetData : 包含
+    PortfolioData "1" --> "1" RiskMetricsData : 评估
+
+    ' 交易关系
+    UserData "1" --> "N" TransactionData : 执行
+    PortfolioData "1" --> "N" TransactionData : 关联
+    AssetData "1" --> "N" TransactionData : 涉及
+
+    ' 市场数据关系
+    AssetData "1" --> "N" MarketData : 关联
+
+    ' 观察列表关系
+    UserData "1" --> "N" WatchListData : 创建
+    AssetData "1" --> "0..1" WatchListData : 被关注
+
+    ' 用户偏好关系
+    UserData "1" --> "1" UserPreferenceData : 拥有
+}
+
+package "数据流向" {
+    note right of MarketData
+        <b>数据源：</b>
+        - 实时市场API
+        - 历史数据存储
+        - 第三方数据服务
+    end note
+
+    note right of TransactionData
+        <b>数据流：</b>
+        交易记录 --> 更新投资组合
+        交易记录 --> 更新资产持仓
+        交易记录 --> 触发风险重算
+    end note
+
+    note right of RiskMetricsData
+        <b>计算依赖：</b>
+        投资组合数据 + 市场数据
+        --> 风险指标计算
+    end note
+}
+
+legend right
+    |<#E3F2FD> 数据组件 | 核心业务数据对象
+    |
+    <b>关系说明：</b>
+    --> 数据依赖关系
+    1..N 一对多
+    0..1 零或一
+    |
+    <b>数据类型：</b>
+    UUID: 唯一标识符
+    Decimal: 精确小数
+    DateTime: 日期时间
+endlegend
+
+@enduml

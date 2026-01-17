@@ -1,0 +1,179 @@
+@startuml 技术架构图
+!define FRONTEND #E3F2FD
+!define BUILD #F3E5F5
+!define DEPLOY #E8F5E9
+!define INFRA #FFF3E0
+
+skinparam linetype ortho
+
+skinparam component {
+    BackgroundColor<<Frontend>> FRONTEND
+    BackgroundColor<<Build>> BUILD
+    BackgroundColor<<Deploy>> DEPLOY
+    BackgroundColor<<Infra>> INFRA
+    BorderColor #333333
+    ArrowColor #333333
+}
+
+title TOGAF 技术架构 - FinPulse 金融科技平台
+
+package "前端技术栈" <<Frontend>> {
+    component "Next.js16" as NextJS
+    component "React19" as React
+    component "TypeScript5" as TypeScript
+    component "TailwindCSS4.1" as Tailwind
+    
+    note right of NextJS
+        <b>全栈React框架</b>
+        - App Router
+        - Server Components
+        - API Routes
+        - SSG/SSR
+    end note
+    
+    note right of React: UI库\n函数组件、Hooks、Context API
+    note right of TypeScript: 类型安全\n静态类型检查、接口定义
+    note right of Tailwind: 样式框架\n实用优先CSS、响应式设计
+}
+
+package "UI框架与组件" <<Frontend>> {
+    component "RadixUI" as RadixUI
+    component "LucideReact" as Lucide
+    
+    note right of RadixUI: 无样式组件原语\n可访问性优先、键盘导航
+    note right of Lucide: 图标库\nSVG优化、树摇优化
+}
+
+package "数据可视化" <<Frontend>> {
+    component "Recharts" as Recharts
+    component "ReactSparklines" as Sparklines
+    
+    note right of Recharts: 图表库\n性能图表、趋势图表
+}
+
+package "工具库" <<Frontend>> {
+    component "ReactHookForm" as HookForm
+    component "Zod" as Zod
+    component "date-fns" as DateFns
+    component "next-themes" as Themes
+    
+    note right of HookForm: 表单管理\n性能优化、验证集成
+    note right of Zod: 数据验证\nSchema定义、运行时验证
+}
+
+package "构建工具链" <<Build>> {
+    component "Next.js构建系统" as BuildSystem
+    component "TypeScript编译器" as TSCompiler
+    component "PostCSS" as PostCSS
+    component "ESLint" as ESLint
+    
+    note right of BuildSystem: 内置构建工具\n代码分割、优化打包
+    note right of TSCompiler: TS编译\n类型检查、代码转换
+}
+
+package "部署平台" <<Deploy>> {
+    component "Vercel平台" as Vercel
+    component "VercelAnalytics" as Analytics
+    component "Git集成" as GitIntegration
+    
+    note right of Vercel: 托管平台\n自动部署、CDN分发
+    note right of Analytics: 分析工具\n页面访问、性能监控
+}
+
+package "基础设施层" <<Infra>> {
+    component "CDN" as CDNNode
+    component "边缘计算" as EdgeNode
+    component "对象存储" as StorageNode
+    component "域名与SSL" as DomainSSL
+}
+
+' 前端技术栈内部关系
+NextJS --> React
+NextJS --> TypeScript
+NextJS --> Tailwind
+React --> TypeScript
+
+' UI框架关系
+NextJS --> RadixUI
+NextJS --> Lucide
+RadixUI --> Tailwind
+
+' 数据可视化关系
+NextJS --> Recharts
+NextJS --> Sparklines
+React --> Recharts
+
+' 工具库关系
+NextJS --> HookForm
+HookForm --> Zod
+NextJS --> DateFns
+NextJS --> Themes
+
+' 构建工具关系
+BuildSystem --> TSCompiler
+BuildSystem --> PostCSS
+BuildSystem --> ESLint
+PostCSS --> Tailwind
+
+' 部署关系
+BuildSystem --> Vercel
+Vercel --> Analytics
+Vercel --> GitIntegration
+Vercel --> DomainSSL
+
+' 基础设施关系
+Vercel --> CDNNode
+Vercel --> EdgeNode
+Vercel --> StorageNode
+
+' 技术标准说明
+package "技术标准与规范" {
+    component "开发规范" as DevStandard
+    component "性能标准" as PerfStandard
+    component "安全标准" as SecStandard
+    component "可访问性标准" as A11yStandard
+    
+    note right of DevStandard
+        - TypeScript严格模式
+        - ESLint代码规范
+        - 组件化开发
+        - 响应式设计
+    end note
+    
+    note right of PerfStandard
+        - 首屏加载 < 3s
+        - 代码分割优化
+        - 图片懒加载
+        - 缓存策略
+    end note
+    
+    note right of SecStandard
+        - HTTPS强制
+        - 内容安全策略 (CSP)
+        - XSS防护
+        - 数据验证
+    end note
+    
+    note right of A11yStandard
+        - WCAG 2.1 AA级
+        - 键盘导航
+        - 屏幕阅读器支持
+        - ARIA标签
+    end note
+}
+
+legend right
+    |<#E3F2FD> 前端技术 | 用户界面技术栈
+    |<#F3E5F5> 构建工具 | 编译和打包工具
+    |<#E8F5E9> 部署平台 | 发布和托管平台
+    |<#FFF3E0> 基础设施 | 底层基础设施
+    |
+    <b>技术特点：</b>
+    • 全栈React框架
+    • 类型安全开发
+    • 现代化UI组件
+    • 自动化部署流程
+    • 全球CDN加速
+endlegend
+
+@enduml

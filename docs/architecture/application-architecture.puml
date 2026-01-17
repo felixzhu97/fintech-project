@@ -1,0 +1,148 @@
+@startuml 应用架构图
+!define PRESENTATION_LAYER #E3F2FD
+!define BUSINESS_LAYER #F3E5F5
+!define DATA_LAYER #E8F5E9
+!define EXTERNAL #FFF3E0
+
+skinparam linetype ortho
+
+skinparam component {
+    BackgroundColor<<Presentation>> PRESENTATION_LAYER
+    BackgroundColor<<Business>> BUSINESS_LAYER
+    BackgroundColor<<Data>> DATA_LAYER
+    BackgroundColor<<External>> EXTERNAL
+    BorderColor #333333
+    ArrowColor #333333
+}
+
+title TOGAF 应用架构 - FinPulse 金融科技平台
+
+package "展示层 (Presentation Layer)" <<Presentation>> {
+    component "Next.js应用" as NextApp {
+        component "页面路由" as PageRouter
+        component "布局组件" as Layout
+        component "主题提供者" as ThemeProvider
+    }
+
+    component "UI组件库" as UIComponent {
+        component "基础组件" as BaseUI
+        component "业务组件" as BusinessUI
+    }
+
+    component "数据可视化" as DataVisualization {
+        component "Recharts图表库" as Charts
+        component "性能图表" as PerformanceChart
+        component "趋势图表" as TrendChart
+    }
+
+    component "表单管理" as FormMgmt {
+        component "ReactHookForm" as FormLibrary
+        component "Zod验证器" as Validator
+    }
+}
+
+package "业务逻辑层 (Business Layer)" <<Business>> {
+    component "投资组合模块" as PortfolioModule {
+        component "投资组合控制器" as PortfolioController
+        component "资产配置服务" as AssetService
+    }
+
+    component "市场数据模块" as MarketModule {
+        component "市场数据控制器" as MarketController
+        component "趋势分析服务" as TrendService
+    }
+
+    component "交易模块" as TransactionModule {
+        component "交易控制器" as TransactionController
+        component "交易记录服务" as TransactionService
+    }
+
+    component "风险管理模块" as RiskModule {
+        component "风险控制器" as RiskController
+        component "风险分析服务" as RiskService
+    }
+
+    component "用户模块" as UserModule {
+        component "用户控制器" as UserController
+        component "偏好管理服务" as PreferenceService
+    }
+}
+
+package "数据访问层 (Data Access Layer)" <<Data>> {
+    component "数据服务" as DataService {
+        component "数据访问对象" as DAO
+        component "数据缓存" as Cache
+    }
+
+    component "状态管理" as StateMgmt {
+        component "React状态" as ReactState
+        component "上下文管理" as Context
+    }
+}
+
+package "外部服务层 (External Services)" <<External>> {
+    component "VercelAnalytics" as Analytics
+    component "市场数据API" as MarketAPI
+    component "存储服务" as Storage
+}
+
+' API 接口定义
+interface "投资组合API" as PortfolioAPI
+interface "市场数据API" as MarketDataAPI
+interface "交易API" as TransactionAPI
+interface "风险分析API" as RiskAPI
+
+' 展示层内部关系
+NextApp --> UIComponent
+NextApp --> DataVisualization
+NextApp --> FormMgmt
+PageRouter --> Layout
+Layout --> ThemeProvider
+BaseUI --> BusinessUI
+FormLibrary --> Validator
+
+' 业务组件到业务逻辑层的关联
+BusinessUI --> PortfolioModule
+BusinessUI --> MarketModule
+BusinessUI --> TransactionModule
+BusinessUI --> RiskModule
+PerformanceChart --> PortfolioModule
+TrendChart --> MarketModule
+
+' 业务逻辑层内部关系
+PortfolioController --> AssetService
+MarketController --> TrendService
+TransactionController --> TransactionService
+RiskController --> RiskService
+UserController --> PreferenceService
+
+' 业务逻辑层到数据访问层
+PortfolioModule --> DataService
+MarketModule --> DataService
+TransactionModule --> DataService
+RiskModule --> DataService
+UserModule --> DataService
+
+PortfolioModule --> StateMgmt
+MarketModule --> StateMgmt
+
+' 数据访问层到外部服务
+DataService --> MarketAPI
+DataService --> Storage
+DataService --> Cache
+NextApp --> Analytics
+
+' 业务逻辑层实现接口
+PortfolioModule ..> PortfolioAPI : implements
+MarketModule ..> MarketDataAPI : implements
+TransactionModule ..> TransactionAPI : implements
+RiskModule ..> RiskAPI : implements
+
+legend right
+    |<#E3F2FD> 展示层 | 用户界面和交互
+    |<#F3E5F5> 业务逻辑层 | 核心业务功能
+    |<#E8F5E9> 数据访问层 | 数据管理和访问
+    |<#FFF3E0> 外部服务 | 第三方服务和API
+endlegend
+
+@enduml

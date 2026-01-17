@@ -2,22 +2,43 @@
 
 # dependencies
 /node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+*.lcov
 
 # next.js
 /.next/
 /out/
+.next
+out
 
 # production
 /build
+/dist
+
+# misc
+.DS_Store
+*.pem
+*.log
+*.tsbuildinfo
 
 # debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
+lerna-debug.log*
 
-# env files
-.env*
+# local env files
+.env
+.env*.local
+.env.development.local
+.env.test.local
+.env.production.local
 
 # vercel
 .vercel
@@ -25,3 +46,49 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# IDE and editors
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.idea
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+
+# Temporary files
+*.tmp
+*.temp
+*.cache
+.cache/
+
+# Package manager lock files (optional - uncomment if you don't want to commit them)
+# pnpm-lock.yaml
+# package-lock.json
+# yarn.lock
+
+# Storybook build outputs
+storybook-static
+
+# Turbo
+.turbo
+
+# Sentry
+.sentryclirc

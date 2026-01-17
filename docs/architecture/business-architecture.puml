@@ -1,0 +1,128 @@
+@startuml 业务架构图
+!define BUSINESS_ACTOR #E8F4F8
+!define BUSINESS_PROCESS #FFF4E6
+!define BUSINESS_SERVICE #E8F5E9
+
+skinparam linetype ortho
+
+skinparam component {
+    BackgroundColor<<Actor>> BUSINESS_ACTOR
+    BackgroundColor<<Process>> BUSINESS_PROCESS
+    BackgroundColor<<Service>> BUSINESS_SERVICE
+    BorderColor #333333
+    ArrowColor #333333
+}
+
+title TOGAF 业务架构 - FinPulse 金融科技平台
+
+package "业务参与者层" {
+    component "投资者" as Investor <<Actor>>
+    component "平台管理员" as Admin <<Actor>>
+
+    note right of Investor
+        <b>主要业务参与者</b>
+        - 个人投资者
+        - 机构投资者
+        - 投资顾问
+    end note
+
+    note right of Admin
+        <b>平台管理角色</b>
+        - 系统维护
+        - 内容管理
+        - 用户支持
+    end note
+}
+
+package "核心业务功能域" {
+    component "投资组合管理" as PortfolioMgmt <<Process>>
+    component "市场分析" as MarketAnalysis <<Process>>
+    component "风险管理" as RiskMgmt <<Process>>
+    component "交易管理" as TransactionMgmt <<Process>>
+    component "资产管理" as AssetMgmt <<Process>>
+    component "观察列表管理" as WatchListMgmt <<Process>>
+
+    note right of PortfolioMgmt
+        <b>业务功能</b>
+        - 资产净值监控
+        - 收益统计
+        - 持仓管理
+        - 资产配置优化
+    end note
+
+    note right of MarketAnalysis
+        <b>业务功能</b>
+        - 市场趋势分析
+        - 实时行情展示
+        - 市场动态跟踪
+        - 行情预警
+    end note
+
+    note right of RiskMgmt
+        <b>业务功能</b>
+        - 风险指标评估
+        - 风险分布分析
+        - 风险预警机制
+        - 风险报告生成
+    end note
+}
+
+package "业务服务层" {
+    component "投资组合服务" as PortfolioService <<Service>>
+    component "市场数据服务" as MarketService <<Service>>
+    component "风险分析服务" as RiskService <<Service>>
+    component "交易服务" as TransactionService <<Service>>
+
+    note right of PortfolioService
+        提供投资组合相关的
+        业务服务能力
+    end note
+
+    note right of MarketService
+        提供市场数据相关的
+        业务服务能力
+    end note
+}
+
+' 业务参与者到业务功能的关联
+Investor --> PortfolioMgmt
+Investor --> MarketAnalysis
+Investor --> RiskMgmt
+Investor --> TransactionMgmt
+Investor --> AssetMgmt
+Investor --> WatchListMgmt
+
+Admin --> PortfolioMgmt
+Admin --> MarketAnalysis
+Admin --> RiskMgmt
+
+' 业务功能到业务服务的关联
+PortfolioMgmt --> PortfolioService
+AssetMgmt --> PortfolioService
+WatchListMgmt --> PortfolioService
+
+MarketAnalysis --> MarketService
+WatchListMgmt --> MarketService
+
+RiskMgmt --> RiskService
+PortfolioMgmt --> RiskService
+
+TransactionMgmt --> TransactionService
+
+' 业务功能间的价值流
+PortfolioMgmt ..> RiskMgmt : 风险评估
+MarketAnalysis ..> PortfolioMgmt : 投资建议
+AssetMgmt ..> PortfolioMgmt : 配置优化
+TransactionMgmt ..> PortfolioMgmt : 交易更新
+
+legend right
+    |<#E8F4F8> 业务参与者 |
+    |<#FFF4E6> 业务功能 |
+    |<#E8F5E9> 业务服务 |
+    |
+    <b>关系说明：</b>
+    --> 直接关联
+    ..> 业务流程依赖
+endlegend
+
+@enduml
