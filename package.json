@@ -2,10 +2,7 @@
   "name": "fintech-project",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@9.15.0",
-  "engines": {
-    "node": ">=20.0.0"
-  },
+  "packageManager": "pnpm@10.6.0",
   "scripts": {
     "build": "next build",
     "dev": "next dev",
