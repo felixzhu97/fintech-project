@@ -10,6 +10,9 @@
   },
   "scripts": {
     "type-check": "tsc --noEmit",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:coverage": "vitest --coverage",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -35,7 +38,8 @@
     "@types/react": "^19",
     "storybook": "^8.3.6",
     "typescript": "^5",
-    "vite": "^5.4.11"
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8"
   },
   "peerDependencies": {
     "react": "^19.2.0",
