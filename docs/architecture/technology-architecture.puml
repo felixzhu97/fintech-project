@@ -104,11 +104,17 @@ package "构建工具链" <<Build>> {
     component "ESLint" as ESLint
     component "Vite 5.4.11" as Vite
     component "tw-animate-css 1.3.3" as TwAnimate
+    component "Maven构建系统" as MavenBuild
+    component "Java编译器" as JavaCompiler
+    component "Spring Boot打包工具" as SpringBootPackager
     
     note right of BuildSystem: 内置构建工具\n代码分割、优化打包\nSWC编译器
     note right of TSCompiler: TS编译\n类型检查、代码转换\n项目引用支持
     note right of PostCSS: CSS后处理器\nTailwind集成\nAutoprefixer
     note right of Vite: 快速构建工具\nStorybook使用\nHMR支持
+    note right of MavenBuild: Maven构建\n依赖管理\n生命周期执行
+    note right of JavaCompiler: Java编译\n字节码生成\n注解处理
+    note right of SpringBootPackager: Spring Boot打包\n可执行JAR\n内嵌Tomcat
 }
 
 package "部署平台" <<Deploy>> {
@@ -116,10 +122,14 @@ package "部署平台" <<Deploy>> {
     component "Vercel Analytics 1.3.1" as Analytics
     component "Git集成" as GitIntegration
     component "pnpm 10.6.0" as PNPM
+    component "Java服务部署" as JavaDeploy
+    component "REST API服务端点" as RESTEndpoint
     
     note right of Vercel: 托管平台\n自动部署、CDN分发\n边缘计算
     note right of Analytics: 分析工具\n页面访问、性能监控\nWeb Vitals
     note right of PNPM: Monorepo管理\n工作空间(workspace)\n高效依赖管理
+    note right of JavaDeploy: Java服务部署\n独立JAR文件\n容器化部署(Docker)\n服务端口8080
+    note right of RESTEndpoint: REST API端点\nHTTP/HTTPS协议\nJSON数据格式\n标准RESTful接口
 }
 
 package "AWS SDK" <<Infra>> {
@@ -138,6 +148,22 @@ package "AWS SDK" <<Infra>> {
     note right of AWSSQS: 消息队列\n异步处理\n解耦系统
     note right of AWSSNS: 通知服务\n发布订阅\n多协议支持
     note right of AWSAPIGatewayV2: API网关\nHTTP/WebSocket API\n路由管理
+}
+
+package "大数据技术栈 (Big Data Technology Stack)" <<Infra>> {
+    component "Java 17+" as Java
+    component "Spring Boot 3.2.0" as SpringBoot
+    component "Maven 3.6+" as Maven
+    component "Apache Spark 3.5.0" as Spark
+    component "Apache Flink 1.19.0" as Flink
+    component "Apache Hadoop 3.3.6" as Hadoop
+    
+    note right of Java: JVM运行时\nJava 17+ LTS\n跨平台支持
+    note right of SpringBoot: 应用框架\nREST API服务\n依赖注入\n自动配置
+    note right of Maven: 构建工具\n依赖管理\n项目构建\n生命周期管理
+    note right of Spark: 批处理引擎\nSpark SQL\nDataFrame API\nMLlib机器学习
+    note right of Flink: 流处理引擎\nDataStream API\nTable API\nCEP复杂事件处理
+    note right of Hadoop: 分布式存储与计算\nHDFS文件系统\nYARN资源管理\nMapReduce计算框架
 }
 
 package "测试工具" <<Build>> {
@@ -247,12 +273,27 @@ Storybook --> StorybookReactVite
 StorybookReactVite --> Vite
 Storybook --> StorybookAddons
 
+' 大数据技术栈关系
+SpringBoot --> Java
+MavenBuild --> JavaCompiler
+SpringBootPackager --> SpringBoot
+SpringBoot --> Spark
+SpringBoot --> Flink
+SpringBoot --> Hadoop
+MavenBuild --> SpringBoot
+JavaCompiler --> Java
+NextJS --> RESTEndpoint
+RESTEndpoint --> SpringBoot
+
 ' 部署关系
 BuildSystem --> Vercel
 Vercel --> Analytics
 Vercel --> GitIntegration
 Vercel --> DomainSSL
 PNPM --> Vercel
+MavenBuild --> JavaDeploy
+SpringBootPackager --> JavaDeploy
+JavaDeploy --> RESTEndpoint
 
 ' 基础设施关系
 Vercel --> CDNNode
@@ -276,6 +317,9 @@ package "技术标准与规范" {
         - ESLint代码规范
         - 组件化开发
         - 响应式设计
+        - Java编码规范
+        - REST API设计标准
+        - 大数据处理标准
     end note
     
     note right of PerfStandard
@@ -290,6 +334,8 @@ package "技术标准与规范" {
         - 内容安全策略 (CSP)
         - XSS防护
         - 数据验证
+        - REST API认证授权
+        - 大数据访问控制
     end note
     
     note right of A11yStandard
@@ -317,6 +363,9 @@ legend right
     • 全球CDN加速
     • 单元测试 (Vitest)
     • 组件开发工具 (Storybook)
+    • 大数据技术栈 (Java/Spring Boot/Spark/Flink/Hadoop)
+    • 混合架构 (TypeScript + Java)
+    • REST API服务 (Spring Boot)
 endlegend
 
 @enduml

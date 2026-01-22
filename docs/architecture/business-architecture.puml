@@ -48,6 +48,7 @@ package "核心业务功能域" {
     component "技术指标分析" as TechnicalIndicators <<Process>>
     component "估值分析" as ValuationAnalysis <<Process>>
     component "数据可视化" as DataVisualization <<Process>>
+    component "大数据分析" as BigDataAnalytics <<Process>>
 
     note right of PortfolioMgmt
         <b>业务功能</b>
@@ -129,6 +130,15 @@ package "核心业务功能域" {
         - 雷达图对比
         - 仪表盘展示
     end note
+
+    note right of BigDataAnalytics
+        <b>业务功能</b>
+        - Spark批处理分析
+        - Flink流处理分析
+        - Hadoop数据存储与管理
+        - 大规模数据处理
+        - 实时数据流分析
+    end note
 }
 
 package "业务服务层" {
@@ -139,6 +149,7 @@ package "业务服务层" {
     component "金融计算服务" as CalculationService <<Service>>
     component "数据可视化服务" as VisualizationService <<Service>>
     component "云基础设施服务" as CloudService <<Service>>
+    component "大数据服务" as BigDataService <<Service>>
 
     note right of PortfolioService
         提供投资组合相关的
@@ -173,6 +184,14 @@ package "业务服务层" {
         - SNS通知服务
         - API Gateway网关
     end note
+
+    note right of BigDataService
+        提供大数据服务
+        - Spark会话管理服务
+        - Flink作业管理服务
+        - HDFS文件系统服务
+        - YARN资源管理服务
+    end note
 }
 
 ' 业务参与者到业务功能的关联
@@ -189,11 +208,13 @@ Investor --> StatisticalAnalysis
 Investor --> TechnicalIndicators
 Investor --> ValuationAnalysis
 Investor --> DataVisualization
+Investor --> BigDataAnalytics
 
 Admin --> PortfolioMgmt
 Admin --> MarketAnalysis
 Admin --> RiskMgmt
 Admin --> CloudService
+Admin --> BigDataAnalytics
 
 ' 业务功能到业务服务的关联
 PortfolioMgmt --> PortfolioService
@@ -220,11 +241,14 @@ DataVisualization --> VisualizationService
 MarketAnalysis --> VisualizationService
 PortfolioMgmt --> VisualizationService
 
+BigDataAnalytics --> BigDataService
+
 PortfolioService --> CloudService
 MarketService --> CloudService
 RiskService --> CloudService
 TransactionService --> CloudService
 CalculationService --> CloudService
+BigDataService --> CloudService
 
 ' 业务功能间的价值流
 PortfolioMgmt ..> RiskMgmt : 风险评估
@@ -238,6 +262,11 @@ StatisticalAnalysis ..> PortfolioMgmt : 统计特征分析
 TechnicalIndicators ..> MarketAnalysis : 技术信号
 ValuationAnalysis ..> PortfolioMgmt : 估值结果
 DataVisualization ..> PortfolioMgmt : 可视化展示
+MarketAnalysis ..> BigDataAnalytics : 数据洞察
+TransactionMgmt ..> BigDataAnalytics : 模式识别
+BigDataAnalytics ..> PortfolioMgmt : 数据洞察
+BigDataAnalytics ..> RiskMgmt : 模式识别
+BigDataAnalytics ..> StatisticalAnalysis : 增强分析能力
 
 legend right
     |<#E8F4F8> 业务参与者 |

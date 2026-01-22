@@ -162,6 +162,47 @@ package "金融计算数据实体" {
     end note
 }
 
+package "大数据存储实体 (Big Data Storage Entities)" {
+    component "Spark数据实体" as SparkDataEntity <<DataEntity>>
+    component "Flink数据实体" as FlinkDataEntity <<DataEntity>>
+    component "Hadoop数据实体" as HadoopDataEntity <<DataEntity>>
+
+    note right of SparkDataEntity
+        <b>数据属性</b>
+        - SparkSession ID (String)
+        - Application ID (String)
+        - DataFrame/Dataset数据
+        - SQL查询结果 (QueryResult)
+        - 批处理作业ID (String)
+        - 作业状态 (Enum)
+        - 执行计划 (String)
+    end note
+
+    note right of FlinkDataEntity
+        <b>数据属性</b>
+        - Environment ID (String)
+        - Job ID (String)
+        - DataStream数据
+        - Table数据
+        - 流处理作业状态 (Enum)
+        - 检查点数据 (Checkpoint)
+        - 集群指标 (ClusterMetrics)
+    end note
+
+    note right of HadoopDataEntity
+        <b>数据属性</b>
+        - HDFS文件路径 (String)
+        - 文件大小 (Long)
+        - 块大小 (Long)
+        - 副本数 (Integer)
+        - YARN应用ID (String)
+        - 应用状态 (Enum)
+        - MapReduce作业ID (String)
+        - 集群节点数 (Integer)
+        - 集群指标 (ClusterMetrics)
+    end note
+}
+
 package "AWS存储数据实体" {
     component "S3对象数据" as S3ObjectData <<DataEntity>>
     component "DynamoDB表数据" as DynamoDBTableData <<DataEntity>>
@@ -234,6 +275,14 @@ package "数据关系" {
     TransactionData "1" --> "0..N" S3ObjectData : 交易凭证
     UserData "1" --> "0..N" DynamoDBTableData : 数据存储
     PortfolioData "1" --> "0..1" DynamoDBTableData : 持久化
+
+    ' 大数据存储关系
+    MarketData "1" --> "0..N" SparkDataEntity : 批处理分析
+    TransactionData "1" --> "0..N" FlinkDataEntity : 流处理分析
+    PortfolioData "1" --> "0..N" HadoopDataEntity : 数据存储
+    SparkDataEntity "1" --> "0..1" RiskMetricsData : 分析结果
+    FlinkDataEntity "1" --> "0..1" MarketAnalysis : 实时洞察
+    HadoopDataEntity "1" --> "0..N" S3ObjectData : 文件存储
 }
 
 package "数据流向" {
@@ -298,6 +347,33 @@ package "数据流向" {
         --> 自动备份
         --> 全局二级索引
         --> Lambda触发器
+    end note
+
+    note right of SparkDataEntity
+        <b>批处理流程：</b>
+        市场数据 --> Spark批处理
+        --> DataFrame转换
+        --> SQL查询执行
+        --> 风险指标计算
+        --> 存储分析结果
+    end note
+
+    note right of FlinkDataEntity
+        <b>流处理流程：</b>
+        交易数据 --> Flink流处理
+        --> DataStream转换
+        --> 实时计算
+        --> 实时告警
+        --> 检查点保存
+    end note
+
+    note right of HadoopDataEntity
+        <b>存储流程：</b>
+        投资组合数据 --> HDFS存储
+        --> 文件分块
+        --> 副本管理
+        --> 历史数据分析
+        --> YARN资源调度
     end note
 }
 
