@@ -37,13 +37,18 @@
   - 交易管理
   - 资产管理
   - 观察列表管理
+  - 大数据分析（Spark 批处理、Flink 流处理、Hadoop 数据存储）
 - **业务服务层**: 提供各业务功能的服务能力
+  - 大数据服务（Spark 会话管理、Flink 作业管理、HDFS 文件系统、YARN 资源管理）
 
 **业务价值流**:
 - 投资组合管理 → 风险管理（风险评估）
 - 市场分析 → 投资组合管理（投资建议）
 - 资产管理 → 投资组合管理（配置优化）
 - 交易管理 → 投资组合管理（交易更新）
+- 市场数据 → 大数据分析 → 投资组合管理（数据洞察）
+- 交易记录 → 大数据分析 → 风险管理（模式识别）
+- 大数据分析 → 统计分析（增强分析能力）
 
 ### 应用架构图 (Application Architecture)
 
@@ -64,6 +69,11 @@
    - 交易模块
    - 风险管理模块
    - 用户模块
+   - 大数据集成层 (`@fintech/bigdata`)
+     - SparkClient（Spark 会话、SQL 查询、批处理作业）
+     - FlinkClient（流处理作业、集群管理）
+     - HDFSClient（文件读写、目录管理）
+     - YARNClient（应用管理、集群指标）
 
 3. **数据访问层 (Data Access Layer)**
    - 数据服务（DAO、缓存）
@@ -73,12 +83,19 @@
    - Vercel Analytics
    - 市场数据 API
    - 存储服务
+   - 大数据服务层（Java Spring Boot 服务）
+     - SparkService（SparkSession 管理、SQL 执行、DataFrame 操作）
+     - FlinkService（StreamExecutionEnvironment、Table API、作业提交）
+     - HadoopService（HDFS 操作、YARN 管理、MapReduce）
 
 **API 接口**:
 - 投资组合 API
 - 市场数据 API
 - 交易 API
 - 风险分析 API
+- Spark API
+- Flink API
+- Hadoop API
 
 ### 数据架构图 (Data Architecture)
 
@@ -119,6 +136,24 @@
    - 平台用户信息
    - 关联多个业务实体
 
+9. **Spark 数据实体 (Spark Data Entity)**
+   - SparkSession 数据
+   - DataFrame/Dataset 数据
+   - SQL 查询结果
+   - 批处理作业数据
+
+10. **Flink 数据实体 (Flink Data Entity)**
+    - DataStream 数据
+    - Table 数据
+    - 流处理作业状态
+    - 检查点数据
+
+11. **Hadoop 数据实体 (Hadoop Data Entity)**
+    - HDFS 文件数据
+    - YARN 应用数据
+    - MapReduce 作业数据
+    - 集群指标数据
+
 **数据关系**:
 - 用户 → 投资组合（一对多）
 - 投资组合 → 资产（一对多）
@@ -130,6 +165,9 @@
 - 市场数据 → 资产价格更新
 - 交易记录 → 投资组合更新
 - 投资组合 + 市场数据 → 风险指标计算
+- 市场数据 → Spark 批处理 → 风险指标计算
+- 交易数据 → Flink 流处理 → 实时告警
+- 投资组合数据 → HDFS 存储 → 历史数据分析
 
 ### 技术架构图 (Technology Architecture)
 
@@ -163,16 +201,29 @@
    - TypeScript 编译器
    - PostCSS
    - ESLint
+   - Maven 构建系统
+   - Java 编译器
+   - Spring Boot 打包工具
 
 6. **部署平台**
    - Vercel 平台（托管和部署）
    - Vercel Analytics（分析工具）
    - Git 集成（版本控制）
+   - Java 服务部署（独立 JAR 或容器化）
+   - REST API 服务端点
 
 7. **基础设施层**
    - CDN（内容分发网络）
    - 边缘计算
    - 对象存储
+
+8. **大数据技术栈**
+   - Java 17+（JVM 运行时）
+   - Spring Boot 3.2.0（应用框架）
+   - Maven 3.6+（构建工具）
+   - Apache Spark 3.5.0（批处理引擎）
+   - Apache Flink 1.19.0（流处理引擎）
+   - Apache Hadoop 3.3.6（分布式存储与计算）
 
 **技术标准**:
 - **开发规范**: TypeScript 严格模式、ESLint 代码规范、组件化开发
@@ -296,8 +347,26 @@
 
 **影响**: 所有架构文档使用 `.puml` 格式
 
+### ADR-003: Hybrid Architecture for Big Data Integration
+
+**决策**: 使用 Java Spring Boot 进行原生大数据库集成
+
+**理由**:
+- 直接访问 Spark/Flink/Hadoop API，无需通过第三方服务
+- REST API 为 TypeScript 客户端提供统一接口
+- 语言适配：Java 适合大数据生态，TypeScript 适合前端开发
+- 关注点分离：大数据处理逻辑与前端业务逻辑解耦
+- 技术栈选择：使用各语言生态中最成熟的工具
+
+**影响**:
+- 采用混合架构：TypeScript 前端 + Java 后端服务
+- 新增 `packages/bigdata-java/` Java Spring Boot 服务
+- 新增 `packages/bigdata/` TypeScript 客户端包
+- 通过 REST API 进行跨语言通信
+- 所有大数据操作通过 Java 服务执行
+
 ---
 
-**文档版本**: 1.0.0  
+**文档版本**: 1.1.0  
 **最后更新**: 2024  
 **维护者**: FinPulse 开发团队

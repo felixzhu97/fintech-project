@@ -136,6 +136,14 @@ package "业务逻辑层 (Business Layer)" <<Business>> {
         component "@fintech/utils" as UtilsPkg {
             component "工具函数" as Utils
         }
+
+        component "@fintech/bigdata" as BigDataPkg {
+            component "SparkClient" as SparkClient
+            component "FlinkClient" as FlinkClient
+            component "HDFSClient" as HDFSClient
+            component "YARNClient" as YARNClient
+            component "HTTP客户端" as HttpClient
+        }
     }
 
     package "应用业务模块" {
@@ -203,6 +211,20 @@ package "外部服务层 (External Services)" <<External>> {
         component "市场数据API" as MarketAPI
         component "金融数据API" as FinanceAPI
     }
+
+    component "大数据服务层 (Big Data Service Layer)" as BigDataServiceLayer {
+        component "Java Spring Boot服务" as SpringBootService {
+            component "SparkService" as SparkService
+            component "FlinkService" as FlinkService
+            component "HadoopService" as HadoopService
+            component "SparkController" as SparkController
+            component "FlinkController" as FlinkController
+            component "HadoopController" as HadoopController
+        }
+        component "Spark库" as SparkLib
+        component "Flink库" as FlinkLib
+        component "Hadoop库" as HadoopLib
+    }
 }
 
 ' API 接口定义
@@ -210,6 +232,9 @@ interface "投资组合API" as PortfolioAPI
 interface "市场数据API" as MarketDataAPI
 interface "交易API" as TransactionAPI
 interface "风险分析API" as RiskAPI
+interface "Spark API" as SparkAPI
+interface "Flink API" as FlinkAPI
+interface "Hadoop API" as HadoopAPI
 
 ' 展示层内部关系
 NextApp --> AppRouter
@@ -263,6 +288,16 @@ MarketModule --> AWSPkg
 TransactionModule --> AWSPkg
 RiskModule --> AWSPkg
 UserModule --> AWSPkg
+PortfolioModule --> BigDataPkg
+MarketModule --> BigDataPkg
+RiskModule --> BigDataPkg
+
+' 大数据客户端到服务层
+BigDataPkg --> SpringBootService
+SparkClient --> HttpClient
+FlinkClient --> HttpClient
+HDFSClient --> HttpClient
+YARNClient --> HttpClient
 
 ' 业务逻辑层到数据访问层
 PortfolioModule --> AWSDataService
@@ -292,6 +327,17 @@ AWSDataService --> MarketAPI
 NextApp --> Analytics
 NextApp --> VercelPlatform
 
+' 大数据服务层内部关系
+SpringBootService --> SparkService
+SpringBootService --> FlinkService
+SpringBootService --> HadoopService
+SparkController --> SparkService
+FlinkController --> FlinkService
+HadoopController --> HadoopService
+SparkService --> SparkLib
+FlinkService --> FlinkLib
+HadoopService --> HadoopLib
+
 ' 展示层使用图表
 NextApp --> FinanceCharts
 FinanceCharts --> CalculationsPkg
@@ -302,6 +348,9 @@ PortfolioModule ..> PortfolioAPI : implements
 MarketModule ..> MarketDataAPI : implements
 TransactionModule ..> TransactionAPI : implements
 RiskModule ..> RiskAPI : implements
+SpringBootService ..> SparkAPI : implements
+SpringBootService ..> FlinkAPI : implements
+SpringBootService ..> HadoopAPI : implements
 
 legend right
     |<#E3F2FD> 展示层 | 用户界面和交互
