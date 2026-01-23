@@ -1,196 +1,196 @@
-# FinPulse | 金融科技分析平台
+# FinPulse | Fintech Analytics Platform
 
-> 专业级金融数据分析与投资组合管理平台
+> Professional-grade financial data analysis and portfolio management platform
 
 [![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/felixzhu97s-projects/fintech-project)
 [![Next.js](https://img.shields.io/badge/Next.js-16.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.2-61DAFB?style=for-the-badge&logo=react)](https://react.dev/)
 
-## 📋 项目简介
+## 📋 Project Overview
 
-FinPulse 是一个现代化的金融科技分析平台，为投资者提供全面的投资组合管理、市场分析和风险管理功能。平台采用 Next.js 构建，提供流畅的用户体验和实时数据可视化。
+FinPulse is a modern fintech analytics platform that provides investors with comprehensive portfolio management, market analysis, and risk management capabilities. Built with Next.js, the platform delivers a smooth user experience and real-time data visualization.
 
-## ✨ 核心功能
+## ✨ Core Features
 
-### 📊 投资组合概览
+### 📊 Portfolio Overview
 
-- 总资产净值实时展示
-- 今日收益统计
-- 累计收益率追踪
-- 活跃交易监控
+- Real-time total net asset value display
+- Today's profit/loss statistics
+- Cumulative return rate tracking
+- Active trading monitoring
 
-### 📈 市场趋势分析
+### 📈 Market Trends Analysis
 
-- 实时市场数据可视化
-- 多维度趋势图表
-- 市场动态更新
+- Real-time market data visualization
+- Multi-dimensional trend charts
+- Market dynamics updates
 
-### 💼 资产配置
+### 💼 Asset Allocation
 
-- 资产分布可视化
-- 投资组合平衡分析
-- 多样化资产类别支持
+- Asset distribution visualization
+- Portfolio balance analysis
+- Support for diverse asset classes
 
-### 📝 交易记录
+### 📝 Transaction Records
 
-- 最近交易历史
-- 交易详情查看
-- 交易分类筛选
+- Recent transaction history
+- Transaction details view
+- Transaction category filtering
 
-### 📉 性能图表
+### 📉 Performance Charts
 
-- 投资组合表现可视化
-- 历史数据回放
-- 多时间维度分析
+- Portfolio performance visualization
+- Historical data playback
+- Multi-timeframe analysis
 
-### ⭐ 观察列表
+### ⭐ Watch List
 
-- 自选股票/资产管理
-- 价格变动提醒
-- 快速添加/删除
+- Watchlist asset management
+- Price change alerts
+- Quick add/remove functionality
 
-### 🛡️ 风险分析
+### 🛡️ Risk Analysis
 
-- 风险指标评估
-- 风险分布可视化
-- 风险预警机制
+- Risk indicator assessment
+- Risk distribution visualization
+- Risk warning mechanism
 
-### ⚡ 快速操作
+### ⚡ Quick Actions
 
-- 常用功能快速入口
-- 一键操作便捷体验
+- Quick access to common functions
+- One-click operation convenience
 
-## 🛠️ 技术栈
+## 🛠️ Tech Stack
 
-### 前端框架
+### Frontend Framework
 
-- **Next.js 16.0** - React 全栈框架
-- **React 19.2** - UI 库
-- **TypeScript 5.0** - 类型安全
+- **Next.js 16.0** - React full-stack framework
+- **React 19.2** - UI library
+- **TypeScript 5.0** - Type safety
 
-### Monorepo 工具
+### Monorepo Tools
 
-- **pnpm Workspaces** - 包管理和工作区管理
-- **TypeScript Project References** - 跨包类型检查
+- **pnpm Workspaces** - Package and workspace management
+- **TypeScript Project References** - Cross-package type checking
 
-### UI 组件库
+### UI Component Library
 
-- **Radix UI** - 无样式、可访问的组件原语
-- **Tailwind CSS 4.1** - 实用优先的 CSS 框架
-- **Lucide React** - 图标库
-- **Recharts** - 图表库
+- **Radix UI** - Unstyled, accessible component primitives
+- **Tailwind CSS 4.1** - Utility-first CSS framework
+- **Lucide React** - Icon library
+- **Recharts** - Charting library
 
-### 工具库
+### Utility Libraries
 
-- **React Hook Form** - 表单管理
-- **Zod** - 数据验证
-- **date-fns** - 日期处理
-- **next-themes** - 主题切换
-- **clsx** & **tailwind-merge** - 样式工具（在 `@fintech/utils` 包中）
+- **React Hook Form** - Form management
+- **Zod** - Data validation
+- **date-fns** - Date handling
+- **next-themes** - Theme switching
+- **clsx** & **tailwind-merge** - Style utilities (in `@fintech/utils` package)
 
-### 部署与分析
+### Deployment & Analytics
 
-- **Vercel** - 部署平台
-- **Vercel Analytics** - 网站分析
+- **Vercel** - Deployment platform
+- **Vercel Analytics** - Website analytics
 
-## 🏗️ 项目架构
+## 🏗️ Project Architecture
 
-本项目采用 **monorepo** 架构，使用 pnpm workspaces 管理多个包：
+This project uses a **monorepo** architecture managed with pnpm workspaces:
 
-- **apps/web** - Next.js 主应用（前端应用）
-- **packages/ui** - 共享 UI 组件库
-- **packages/utils** - 共享工具函数库
+- **apps/web** - Next.js main application (frontend app)
+- **packages/ui** - Shared UI component library
+- **packages/utils** - Shared utility function library
 
-这种架构的优势：
-- 代码复用：共享组件和工具函数可以在多个应用中使用
-- 独立开发：每个包可以独立开发、测试和版本控制
-- 类型安全：通过 TypeScript 项目引用实现跨包类型检查
-- 高效构建：只构建变更的包，提高开发效率
+Benefits of this architecture:
+- Code reuse: Shared components and utilities can be used across multiple applications
+- Independent development: Each package can be developed, tested, and versioned independently
+- Type safety: Cross-package type checking through TypeScript project references
+- Efficient builds: Only build changed packages, improving development efficiency
 
-## 🚀 快速开始
+## 🚀 Quick Start
 
-### 环境要求
+### Requirements
 
 - Node.js 18+
-- pnpm 10.6.0+ (必需，项目使用 pnpm workspaces)
+- pnpm 10.6.0+ (required, project uses pnpm workspaces)
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
-# 在项目根目录安装所有依赖（包括所有包）
+# Install all dependencies in the project root (including all packages)
 pnpm install
 ```
 
-pnpm 会自动识别 `pnpm-workspace.yaml` 配置，并安装所有工作区的依赖。
+pnpm will automatically recognize the `pnpm-workspace.yaml` configuration and install dependencies for all workspaces.
 
-### 开发模式
+### Development Mode
 
 ```bash
-# 启动 web 应用开发服务器
+# Start web application development server
 pnpm dev
 
-# 或直接在 apps/web 目录下运行
+# Or run directly in the apps/web directory
 pnpm --filter web dev
 ```
 
-访问 [http://localhost:3000](http://localhost:3000) 查看应用。
+Visit [http://localhost:3000](http://localhost:3000) to view the application.
 
-### 构建生产版本
+### Build Production Version
 
 ```bash
-# 构建 web 应用
+# Build web application
 pnpm build
 
-# 或构建所有包
+# Or build all packages
 pnpm --filter "./apps/*" build
 
-# 启动生产服务器
+# Start production server
 pnpm start
 ```
 
-### 代码检查
+### Code Linting
 
 ```bash
-# 运行 ESLint（在 web 应用）
+# Run ESLint (in web application)
 pnpm lint
 
-# 或运行所有包的 lint
+# Or run lint for all packages
 pnpm --filter "./apps/*" lint
 ```
 
-### 工作区脚本
+### Workspace Scripts
 
 ```bash
-# 在特定包中运行脚本
+# Run scripts in specific packages
 pnpm --filter web <script>
 pnpm --filter @fintech/ui <script>
 pnpm --filter @fintech/utils <script>
 
-# 在所有包中运行脚本
+# Run scripts in all packages
 pnpm -r <script>
 
-# 查看工作区信息
+# View workspace information
 pnpm list -r
 ```
 
-### 开发指南
+### Development Guide
 
-#### 添加新依赖
+#### Adding New Dependencies
 
 ```bash
-# 在特定包中添加依赖
+# Add dependencies to specific packages
 pnpm --filter web add <package>
 pnpm --filter @fintech/ui add <package>
 pnpm --filter @fintech/utils add <package>
 
-# 添加开发依赖
+# Add dev dependencies
 pnpm --filter web add -D <package>
 ```
 
-#### 在包之间添加依赖
+#### Adding Dependencies Between Packages
 
-如果 `apps/web` 需要使用 `@fintech/ui`，只需在 `apps/web/package.json` 中添加：
+If `apps/web` needs to use `@fintech/ui`, simply add to `apps/web/package.json`:
 
 ```json
 {
@@ -200,50 +200,50 @@ pnpm --filter web add -D <package>
 }
 ```
 
-然后运行 `pnpm install` 即可。
+Then run `pnpm install`.
 
-#### 类型检查
+#### Type Checking
 
 ```bash
-# 检查所有包的类型
+# Check types for all packages
 pnpm -r type-check
 
-# 检查特定包的类型
+# Check types for specific packages
 pnpm --filter @fintech/ui type-check
 pnpm --filter @fintech/utils type-check
 ```
 
-## 📁 项目结构
+## 📁 Project Structure
 
 ```
 fintech-project/
 ├── apps/
-│   └── web/                      # Next.js 主应用
-│       ├── app/                  # Next.js App Router 目录
-│       │   ├── layout.tsx       # 根布局
-│       │   ├── page.tsx         # 主页面（仪表盘）
-│       │   └── globals.css      # 全局样式
-│       ├── components/           # 业务组件
-│       │   ├── header.tsx       # 顶部导航栏
-│       │   ├── sidebar.tsx      # 侧边栏
-│       │   ├── portfolio-overview.tsx   # 投资组合概览
-│       │   ├── market-trends.tsx        # 市场趋势
-│       │   ├── asset-allocation.tsx     # 资产配置
-│       │   ├── performance-chart.tsx    # 性能图表
-│       │   ├── recent-transactions.tsx  # 交易记录
-│       │   ├── watch-list.tsx           # 观察列表
-│       │   ├── risk-analysis.tsx        # 风险分析
-│       │   └── quick-actions.tsx        # 快速操作
-│       ├── public/               # 静态资源
-│       ├── styles/               # 样式文件
-│       ├── next.config.mjs       # Next.js 配置
-│       ├── components.json       # shadcn/ui 配置
-│       ├── package.json          # 应用依赖
-│       └── tsconfig.json         # TypeScript 配置
+│   └── web/                      # Next.js main application
+│       ├── app/                  # Next.js App Router directory
+│       │   ├── layout.tsx       # Root layout
+│       │   ├── page.tsx         # Main page (dashboard)
+│       │   └── globals.css      # Global styles
+│       ├── components/           # Business components
+│       │   ├── header.tsx       # Top navigation bar
+│       │   ├── sidebar.tsx      # Sidebar
+│       │   ├── portfolio-overview.tsx   # Portfolio overview
+│       │   ├── market-trends.tsx        # Market trends
+│       │   ├── asset-allocation.tsx     # Asset allocation
+│       │   ├── performance-chart.tsx    # Performance chart
+│       │   ├── recent-transactions.tsx  # Transaction records
+│       │   ├── watch-list.tsx           # Watch list
+│       │   ├── risk-analysis.tsx        # Risk analysis
+│       │   └── quick-actions.tsx        # Quick actions
+│       ├── public/               # Static assets
+│       ├── styles/               # Style files
+│       ├── next.config.mjs       # Next.js configuration
+│       ├── components.json       # shadcn/ui configuration
+│       ├── package.json          # Application dependencies
+│       └── tsconfig.json         # TypeScript configuration
 ├── packages/
-│   ├── ui/                       # UI 组件库 (@fintech/ui)
+│   ├── ui/                       # UI component library (@fintech/ui)
 │   │   ├── src/
-│   │   │   ├── components/       # UI 组件
+│   │   │   ├── components/       # UI components
 │   │   │   │   ├── avatar.tsx
 │   │   │   │   ├── badge.tsx
 │   │   │   │   ├── button.tsx
@@ -251,112 +251,112 @@ fintech-project/
 │   │   │   │   ├── dropdown-menu.tsx
 │   │   │   │   ├── input.tsx
 │   │   │   │   └── progress.tsx
-│   │   │   └── index.ts          # 导出入口
-│   │   ├── package.json          # 包配置
-│   │   └── tsconfig.json         # TypeScript 配置
-│   └── utils/                    # 工具函数库 (@fintech/utils)
+│   │   │   └── index.ts          # Export entry
+│   │   ├── package.json          # Package configuration
+│   │   └── tsconfig.json         # TypeScript configuration
+│   └── utils/                    # Utility function library (@fintech/utils)
 │       ├── src/
-│       │   └── index.ts          # 工具函数导出
-│       ├── package.json          # 包配置
-│       └── tsconfig.json         # TypeScript 配置
-├── package.json                  # 根 package.json (workspaces 配置)
-├── pnpm-workspace.yaml           # pnpm workspaces 配置
-├── pnpm-lock.yaml                # 依赖锁定文件
-└── tsconfig.json                 # 根 TypeScript 配置
+│       │   └── index.ts          # Utility function exports
+│       ├── package.json          # Package configuration
+│       └── tsconfig.json         # TypeScript configuration
+├── package.json                  # Root package.json (workspaces configuration)
+├── pnpm-workspace.yaml           # pnpm workspaces configuration
+├── pnpm-lock.yaml                # Dependency lock file
+└── tsconfig.json                 # Root TypeScript configuration
 ```
 
-### 包说明
+### Package Descriptions
 
 #### `apps/web`
-Next.js 主应用，包含所有业务逻辑和页面。依赖于 `@fintech/ui` 和 `@fintech/utils`。
+Next.js main application containing all business logic and pages. Depends on `@fintech/ui` and `@fintech/utils`.
 
 #### `packages/ui`
-共享 UI 组件库，基于 Radix UI 和 Tailwind CSS 构建的组件集合。可在多个应用中复用。
+Shared UI component library, a collection of components built on Radix UI and Tailwind CSS. Can be reused across multiple applications.
 
 #### `packages/utils`
-共享工具函数库，包含通用的工具函数（如 `cn` 用于样式合并）。
+Shared utility function library containing common utility functions (such as `cn` for style merging).
 
-## 🎨 设计特性
+## 🎨 Design Features
 
-- **现代化 UI** - 采用玻璃态设计和流畅的动画效果
-- **响应式布局** - 完美适配各种屏幕尺寸
-- **深色主题** - 默认深色模式，减少视觉疲劳
-- **无障碍设计** - 遵循 WCAG 标准，提供良好的可访问性
-- **性能优化** - Next.js SSR/SSG 优化，快速加载
+- **Modern UI** - Glassmorphism design with smooth animations
+- **Responsive Layout** - Perfect adaptation to various screen sizes
+- **Dark Theme** - Default dark mode to reduce eye strain
+- **Accessibility** - Follows WCAG standards for good accessibility
+- **Performance Optimization** - Next.js SSR/SSG optimization for fast loading
 
-## 📦 主要组件说明
+## 📦 Main Component Descriptions
 
 ### PortfolioOverview
 
-显示总资产净值、今日收益、累计收益率和活跃交易等关键指标。
+Displays key metrics such as total net asset value, today's profit/loss, cumulative return rate, and active trading.
 
 ### MarketTrends
 
-提供市场趋势的可视化分析，帮助用户了解市场动态。
+Provides visual analysis of market trends to help users understand market dynamics.
 
 ### AssetAllocation
 
-以图表形式展示资产配置情况，支持饼图和条形图等多种展示方式。
+Displays asset allocation in chart form, supporting multiple visualization methods such as pie charts and bar charts.
 
 ### PerformanceChart
 
-使用 Recharts 绘制投资组合的历史表现曲线。
+Uses Recharts to draw historical performance curves of the portfolio.
 
 ### RiskAnalysis
 
-展示风险指标和风险分布，帮助用户进行风险管理。
+Displays risk indicators and risk distribution to help users with risk management.
 
 ### RecentTransactions
 
-显示最近的交易记录，支持筛选和详情查看。
+Shows recent transaction records with support for filtering and detail viewing.
 
 ### WatchList
 
-管理用户的自选资产列表，实时显示价格变动。
+Manages user's watchlist assets, displaying real-time price changes.
 
-## 🌐 部署
+## 🌐 Deployment
 
-项目已配置为自动部署到 Vercel。每次推送到主分支都会自动触发部署。
+The project is configured for automatic deployment to Vercel. Each push to the main branch automatically triggers deployment.
 
-### Vercel 配置
+### Vercel Configuration
 
-由于项目采用 monorepo 结构，需要在 Vercel 中配置：
+Since the project uses a monorepo structure, configuration is required in Vercel:
 
-1. **根目录**: `/`
-2. **构建命令**: `pnpm --filter web build`
-3. **输出目录**: `apps/web/.next`
-4. **安装命令**: `pnpm install`
+1. **Root Directory**: `/`
+2. **Build Command**: `pnpm --filter web build`
+3. **Output Directory**: `apps/web/.next`
+4. **Install Command**: `pnpm install`
 
-### 手动部署
+### Manual Deployment
 
-1. 将代码推送到 GitHub
-2. 在 Vercel 中导入项目
-3. 配置构建设置（根目录、构建命令等）
-4. 配置环境变量（如需要）
-5. 部署完成
+1. Push code to GitHub
+2. Import project in Vercel
+3. Configure build settings (root directory, build command, etc.)
+4. Configure environment variables (if needed)
+5. Deployment complete
 
-### 本地预览生产版本
+### Local Production Preview
 
 ```bash
-# 构建生产版本
+# Build production version
 pnpm build
 
-# 启动生产服务器
+# Start production server
 pnpm start
 ```
 
-## 📄 许可证
+## 📄 License
 
-本项目为私有项目。
+This project is private.
 
-## 👥 贡献
+## 👥 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Issues and Pull Requests are welcome!
 
-## 📞 联系方式
+## 📞 Contact
 
-如有问题或建议，请通过 GitHub Issues 联系我们。
+For questions or suggestions, please contact us through GitHub Issues.
 
 ---
 
-**注意**: 本项目使用 [v0.app](https://v0.app) 进行部分开发和部署管理。
+**Note**: This project uses [v0.app](https://v0.app) for some development and deployment management.
