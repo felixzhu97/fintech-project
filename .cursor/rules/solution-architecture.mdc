@@ -1,0 +1,537 @@
+# FinPulse 业务挑战解决方案架构
+
+## 概述
+
+本文档描述 FinPulse 金融科技平台针对核心业务挑战的技术解决方案和实施策略。基于 TOGAF 企业架构框架，从业务、应用、数据和技术四个维度提供全面的解决方案。
+
+## 核心业务挑战与解决方案映射
+
+### 1. 数据整合与实时性挑战
+
+**业务挑战**：
+- 多源数据整合（市场数据、交易数据、历史数据）
+- 实时数据展示需求（资产净值、市场趋势、交易动态）
+- 数据一致性和时效性保证
+
+**解决方案**：
+
+#### 1.1 数据集成架构
+
+```
+市场数据源 → 数据采集层 → 数据标准化 → 实时数据流 → 前端展示
+    ↓              ↓            ↓            ↓
+  API Gateway   Flink流处理   数据验证     WebSocket推送
+```
+
+**技术实现**：
+- **数据采集层**：使用 Apache Flink 进行实时流处理
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/flink/`
+  - 功能：多源数据接入、数据清洗、格式转换
+- **数据标准化**：统一数据模型和接口规范
+  - 位置：`packages/bigdata/src/models/`
+  - 功能：数据格式转换、数据验证、异常处理
+- **实时推送**：WebSocket 连接实现实时数据更新
+  - 位置：`apps/web/app/api/websocket/`
+  - 功能：市场数据推送、资产净值更新、交易通知
+
+#### 1.2 缓存策略
+
+- **Redis 缓存**：热点数据缓存（市场行情、资产价格）
+- **CDN 加速**：静态资源和历史数据分发
+- **本地缓存**：前端 React Query 缓存，减少 API 调用
+
+**实施位置**：
+- `apps/web/src/infrastructure/cache/` - 缓存服务实现
+- `apps/web/src/hooks/useMarketData.ts` - 数据获取 Hook
+
+#### 1.3 数据一致性保证
+
+- **事务管理**：关键操作使用分布式事务
+- **数据版本控制**：使用时间戳和版本号保证数据一致性
+- **最终一致性**：非关键数据采用最终一致性模型
+
+### 2. 复杂金融计算挑战
+
+**业务挑战**：
+- 债券分析（YTM、久期、凸度）
+- 期权定价（Black-Scholes、二叉树、Greeks）
+- 组合优化（马科维茨优化、有效前沿）
+- 统计分析（CAPM、Fama-French、回归分析）
+- 技术指标计算（MA/EMA、RSI/MACD）
+- 估值分析（DCF、相对估值、DDM）
+
+**解决方案**：
+
+#### 2.1 金融计算服务架构
+
+```
+前端请求 → API Gateway → 金融计算服务 → 计算结果缓存 → 返回结果
+              ↓
+        计算任务队列
+              ↓
+        Spark批处理（复杂计算）
+```
+
+**技术实现**：
+- **计算服务层**：Java Spring Boot 服务
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/calculation/`
+  - 功能：金融计算引擎、公式库、算法实现
+- **计算客户端**：TypeScript 客户端封装
+  - 位置：`packages/bigdata/src/clients/calculation-client.ts`
+  - 功能：REST API 调用、结果缓存、错误处理
+
+#### 2.2 计算模块组织
+
+```
+calculation/
+├── bond/              # 债券分析
+│   ├── YTMCalculator.java
+│   ├── DurationCalculator.java
+│   └── ConvexityCalculator.java
+├── options/           # 期权定价
+│   ├── BlackScholesPricer.java
+│   ├── BinomialTreePricer.java
+│   └── GreeksCalculator.java
+├── portfolio/         # 组合优化
+│   ├── MarkowitzOptimizer.java
+│   ├── EfficientFrontier.java
+│   └── SharpeRatioOptimizer.java
+├── statistics/        # 统计分析
+│   ├── CAPMModel.java
+│   ├── FamaFrenchModel.java
+│   └── RegressionAnalyzer.java
+├── technical/         # 技术指标
+│   ├── MovingAverage.java
+│   ├── RSI.java
+│   └── MACD.java
+└── valuation/         # 估值分析
+    ├── DCFModel.java
+    ├── RelativeValuation.java
+    └── DDM.java
+```
+
+#### 2.3 计算性能优化
+
+- **异步计算**：耗时计算使用异步任务队列
+- **结果缓存**：计算结果缓存，避免重复计算
+- **批量处理**：支持批量计算请求，提高吞吐量
+- **Spark 加速**：大规模计算使用 Spark 分布式处理
+
+**实施位置**：
+- `packages/bigdata-java/src/main/java/com/fintech/calculation/` - 计算服务
+- `packages/bigdata/src/clients/calculation-client.ts` - 客户端封装
+- `apps/web/src/application/use-cases/calculation/` - 用例层
+
+### 3. 风险管理挑战
+
+**业务挑战**：
+- 风险指标评估（波动率、夏普比率、VaR）
+- 风险分布可视化
+- 风险预警机制
+- 风险报告生成
+
+**解决方案**：
+
+#### 3.1 风险计算引擎
+
+```
+投资组合数据 → 风险计算服务 → 风险指标 → 风险分析 → 预警系统
+     ↓              ↓            ↓          ↓          ↓
+  市场数据      Spark批处理    风险模型   可视化     通知服务
+```
+
+**技术实现**：
+- **风险计算服务**：Java Spring Boot 服务
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/risk/`
+  - 功能：风险指标计算、风险模型、VaR 计算
+- **风险分析客户端**：TypeScript 客户端
+  - 位置：`packages/bigdata/src/clients/risk-client.ts`
+  - 功能：风险数据获取、风险指标展示
+
+#### 3.2 风险指标计算
+
+```typescript
+// 风险指标类型定义
+interface RiskMetrics {
+  volatility: number;        // 波动率
+  sharpeRatio: number;       // 夏普比率
+  var: number;               // 风险价值 (VaR)
+  beta: number;              // Beta 系数
+  maxDrawdown: number;       // 最大回撤
+  correlation: number;       // 相关性
+}
+```
+
+**实施位置**：
+- `packages/bigdata-java/src/main/java/com/fintech/risk/` - 风险计算服务
+- `apps/web/src/domain/risk/` - 风险领域模型
+- `apps/web/components/risk-analysis.tsx` - 风险分析组件
+
+#### 3.3 实时风险监控
+
+- **流式风险计算**：使用 Flink 进行实时风险指标计算
+- **风险预警规则引擎**：可配置的风险阈值和预警规则
+- **风险报告生成**：自动生成风险分析报告
+
+### 4. 大数据处理挑战
+
+**业务挑战**：
+- 大规模历史数据分析
+- 实时数据流处理
+- 数据存储与管理
+- 模式识别与预测分析
+
+**解决方案**：
+
+#### 4.1 大数据技术栈
+
+```
+数据源 → Flink流处理 → HDFS存储 → Spark批处理 → 分析结果
+   ↓         ↓            ↓            ↓            ↓
+实时数据  实时计算    数据湖存储    历史分析    数据服务
+```
+
+**技术实现**：
+- **Spark 批处理**：历史数据分析、模式识别
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/spark/`
+  - 功能：SparkSession 管理、SQL 查询、DataFrame 操作
+- **Flink 流处理**：实时数据流分析
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/flink/`
+  - 功能：流处理作业、实时计算、状态管理
+- **Hadoop 存储**：分布式数据存储
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/hadoop/`
+  - 功能：HDFS 文件系统、YARN 资源管理
+
+#### 4.2 大数据客户端封装
+
+```typescript
+// Spark 客户端
+import { SparkClient } from '@fintech/bigdata';
+
+const spark = new SparkClient();
+const result = await spark.sql('SELECT * FROM portfolio_history WHERE date > ?', [date]);
+
+// Flink 客户端
+import { FlinkClient } from '@fintech/bigdata';
+
+const flink = new FlinkClient();
+await flink.submitJob(jobConfig);
+
+// HDFS 客户端
+import { HDFSClient } from '@fintech/bigdata';
+
+const hdfs = new HDFSClient();
+await hdfs.writeFile('/data/portfolio.csv', data);
+```
+
+**实施位置**：
+- `packages/bigdata/src/clients/spark-client.ts` - Spark 客户端
+- `packages/bigdata/src/clients/flink-client.ts` - Flink 客户端
+- `packages/bigdata/src/clients/hdfs-client.ts` - HDFS 客户端
+- `packages/bigdata/src/clients/yarn-client.ts` - YARN 客户端
+
+#### 4.3 数据管道设计
+
+- **ETL 流程**：数据提取、转换、加载
+- **数据质量保证**：数据验证、异常检测、数据清洗
+- **数据血缘追踪**：数据来源和转换过程追踪
+
+### 5. 投资决策支持挑战
+
+**业务挑战**：
+- 投资组合管理复杂性
+- 市场分析及时性
+- 交易决策支持
+- 资产配置优化
+
+**解决方案**：
+
+#### 5.1 投资组合管理服务
+
+```
+投资组合数据 → 组合管理服务 → 资产配置优化 → 投资建议 → 决策支持
+     ↓              ↓              ↓            ↓          ↓
+  实时更新      组合分析      优化算法      智能推荐    可视化展示
+```
+
+**技术实现**：
+- **组合管理服务**：应用层用例
+  - 位置：`apps/web/src/application/use-cases/portfolio/`
+  - 功能：组合创建、更新、查询、分析
+- **组合优化服务**：金融计算服务集成
+  - 位置：`packages/bigdata-java/src/main/java/com/fintech/calculation/portfolio/`
+  - 功能：马科维茨优化、有效前沿计算
+
+#### 5.2 市场分析服务
+
+- **实时市场数据**：WebSocket 实时推送
+- **技术指标分析**：技术指标计算和可视化
+- **趋势分析**：市场趋势识别和预测
+
+**实施位置**：
+- `apps/web/src/application/use-cases/market/` - 市场分析用例
+- `apps/web/components/market-trends.tsx` - 市场趋势组件
+- `apps/web/components/technical-indicators.tsx` - 技术指标组件
+
+#### 5.3 智能推荐系统
+
+- **投资建议引擎**：基于历史数据和市场分析
+- **个性化推荐**：根据用户风险偏好和投资目标
+- **决策支持工具**：可视化决策辅助
+
+### 6. 用户体验挑战
+
+**业务挑战**：
+- 数据可视化复杂性
+- 多时间维度分析
+- 响应式设计
+- 性能优化
+
+**解决方案**：
+
+#### 6.1 数据可视化架构
+
+```
+数据服务 → 数据格式化 → 图表组件 → 交互功能 → 用户界面
+    ↓           ↓           ↓          ↓          ↓
+  API调用    数据转换    Recharts   事件处理   响应式布局
+```
+
+**技术实现**：
+- **图表库**：Recharts 进行数据可视化
+  - 位置：`apps/web/components/performance-chart.tsx`
+  - 功能：K线图、趋势图、热力图、雷达图
+- **数据格式化**：统一的数据格式化工具
+  - 位置：`packages/utils/src/format/`
+  - 功能：数字格式化、日期格式化、百分比格式化
+
+#### 6.2 响应式设计
+
+- **移动端适配**：React Native 移动应用
+  - 位置：`apps/mobile/`
+  - 功能：移动端投资组合管理、市场数据查看
+- **桌面端优化**：大屏幕数据展示优化
+- **主题切换**：支持明暗主题切换
+
+**实施位置**：
+- `apps/web/components/` - Web 组件
+- `apps/mobile/src/components/` - 移动端组件
+- `apps/web/components/theme-provider.tsx` - 主题提供者
+
+#### 6.3 性能优化策略
+
+- **代码分割**：Next.js 自动代码分割
+- **图片优化**：Next.js Image 组件优化
+- **懒加载**：组件和路由懒加载
+- **缓存策略**：React Query 数据缓存
+
+### 7. 多资产类别支持挑战
+
+**业务挑战**：
+- 不同资产类别的数据模型差异
+- 统一的资产分配可视化
+- 跨资产类别的分析
+
+**解决方案**：
+
+#### 7.1 统一资产模型
+
+```typescript
+// 基础资产接口
+interface Asset {
+  id: string;
+  symbol: string;
+  name: string;
+  type: AssetType;  // Stock, Bond, Option, etc.
+  price: number;
+  quantity: number;
+  marketValue: number;
+}
+
+// 资产类型枚举
+enum AssetType {
+  STOCK = 'STOCK',
+  BOND = 'BOND',
+  OPTION = 'OPTION',
+  ETF = 'ETF',
+  // ...
+}
+```
+
+**实施位置**：
+- `apps/web/src/domain/asset/` - 资产领域模型
+- `apps/web/src/application/use-cases/asset/` - 资产用例
+
+#### 7.2 资产分配可视化
+
+- **统一图表组件**：支持多种资产类型的可视化
+- **资产分类展示**：按资产类型、行业、地区分类
+- **跨资产分析**：相关性分析、风险分散分析
+
+**实施位置**：
+- `apps/web/components/asset-allocation.tsx` - 资产分配组件
+- `apps/web/src/application/use-cases/portfolio/allocation.ts` - 分配分析用例
+
+## 技术架构实施
+
+### 分层架构
+
+遵循整洁架构原则，分为四层：
+
+1. **Domain Layer（领域层）**
+   - 位置：`apps/web/src/domain/`
+   - 内容：实体、值对象、领域服务接口
+
+2. **Application Layer（应用层）**
+   - 位置：`apps/web/src/application/`
+   - 内容：用例、应用服务、DTOs
+
+3. **Infrastructure Layer（基础设施层）**
+   - 位置：`apps/web/src/infrastructure/`
+   - 内容：API 客户端、缓存、外部服务集成
+
+4. **Presentation Layer（展示层）**
+   - 位置：`apps/web/app/`, `apps/web/components/`
+   - 内容：Next.js 路由、React 组件
+
+### 混合架构模式
+
+- **前端**：TypeScript + Next.js + React
+- **后端服务**：Java Spring Boot（大数据和金融计算）
+- **通信**：REST API + WebSocket
+- **数据存储**：AWS DynamoDB + S3 + HDFS
+
+### 服务集成
+
+```
+前端应用 (TypeScript)
+    ↓ REST API / WebSocket
+Java Spring Boot 服务
+    ↓
+大数据技术栈 (Spark/Flink/Hadoop)
+    ↓
+数据存储 (HDFS/DynamoDB/S3)
+```
+
+## 实施路线图
+
+### 阶段一：核心功能（MVP）
+
+1. **数据整合**
+   - [ ] 市场数据 API 集成
+   - [ ] 实时数据推送（WebSocket）
+   - [ ] 基础缓存策略
+
+2. **投资组合管理**
+   - [ ] 组合创建和查询
+   - [ ] 资产净值计算
+   - [ ] 基础可视化
+
+3. **市场分析**
+   - [ ] 市场趋势展示
+   - [ ] 基础技术指标
+
+### 阶段二：高级功能
+
+1. **金融计算**
+   - [ ] 债券分析模块
+   - [ ] 期权定价模块
+   - [ ] 组合优化模块
+
+2. **风险管理**
+   - [ ] 风险指标计算
+   - [ ] 风险可视化
+   - [ ] 风险预警
+
+3. **大数据分析**
+   - [ ] Spark 批处理集成
+   - [ ] Flink 流处理集成
+   - [ ] HDFS 存储集成
+
+### 阶段三：优化与扩展
+
+1. **性能优化**
+   - [ ] 计算性能优化
+   - [ ] 前端性能优化
+   - [ ] 缓存策略优化
+
+2. **功能扩展**
+   - [ ] 更多资产类别支持
+   - [ ] 高级分析功能
+   - [ ] 智能推荐系统
+
+3. **用户体验**
+   - [ ] 移动端应用完善
+   - [ ] 响应式设计优化
+   - [ ] 无障碍访问优化
+
+## 最佳实践
+
+### 1. 代码组织
+
+- 遵循整洁架构原则
+- 使用 TypeScript 严格模式
+- 组件化和模块化设计
+- 统一的代码风格和规范
+
+### 2. 性能优化
+
+- 计算密集型任务使用后端服务
+- 前端使用缓存减少 API 调用
+- 大数据处理使用分布式计算
+- 实时数据使用 WebSocket 推送
+
+### 3. 错误处理
+
+- 统一的错误处理机制
+- 用户友好的错误提示
+- 错误日志和监控
+- 降级策略和容错机制
+
+### 4. 测试策略
+
+- 单元测试：Domain 和 Application 层
+- 集成测试：Infrastructure 层
+- 端到端测试：Presentation 层
+- 性能测试：大数据处理性能
+
+### 5. 安全考虑
+
+- API 认证和授权
+- 数据加密传输（HTTPS）
+- 敏感数据保护
+- 输入验证和 SQL 注入防护
+
+## 监控与运维
+
+### 1. 应用监控
+
+- 性能监控：响应时间、吞吐量
+- 错误监控：错误率、异常追踪
+- 业务监控：用户行为、功能使用
+
+### 2. 数据监控
+
+- 数据质量监控
+- 数据一致性检查
+- 数据流监控
+
+### 3. 基础设施监控
+
+- 服务器资源监控
+- 大数据集群监控
+- 网络和存储监控
+
+## 参考资源
+
+- [TOGAF 架构文档](../docs/architecture/README.md)
+- [业务架构图](../docs/architecture/business-architecture.puml)
+- [应用架构图](../docs/architecture/application-architecture.puml)
+- [数据架构图](../docs/architecture/data-architecture.puml)
+- [技术架构图](../docs/architecture/technology-architecture.puml)
+
+---
+
+**文档版本**：1.0.0  
+**最后更新**：2026-01-24  
+**维护者**：FinPulse 开发团队
