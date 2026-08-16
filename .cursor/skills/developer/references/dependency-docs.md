@@ -151,4 +151,4 @@ Product UI design for this repo: **Apple HIG only** (not Material).
 | Claim in why | Artifact | Official doc |
 |--------------|----------|--------------|
 | Track FinPulse work in Jira Cloud | Jira site | [felixzhu.atlassian.net](https://felixzhu.atlassian.net) |
-| FinPulse project backlog / SP | Project AI | [AI project](https://felixzhu.atlassian.net/projects/AI) |
+| FinPulse project backlog / SP | Project EXP | [EXP project](https://felixzhu.atlassian.net/projects/EXP) |

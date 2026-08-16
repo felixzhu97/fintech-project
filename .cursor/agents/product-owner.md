@@ -48,7 +48,7 @@ Use Atlassian MCP `createJiraIssue` and set SP via `additional_fields`:
 | Parameter | Value |
 |-----------|-------|
 | `cloudId` | `75684fb5-daf5-4962-9581-c4948b9c12cf` |
-| `projectKey` | `AI` (or the active FinPulse software project) |
+| `projectKey` | `EXP` |
 | `issueTypeName` | Localized name required by Jira (e.g. `故事` / `任务`) — see [mcp.md](../skills/product-owner/references/mcp.md) |
 | `summary` | English user-story summary |
 | `description` | Full English description |

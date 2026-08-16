@@ -9,13 +9,13 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
 | Site URL | https://felixzhu.atlassian.net |
 | Cloud ID | `75684fb5-daf5-4962-9581-c4948b9c12cf` |
 | User Account ID | `62ee247ff15eecaf500efa39` |
-| Primary Project | `AI` (FinPulse) |
+| Primary Project | `EXP` (Explore) |
 
 ### Available Projects
 
 | Project Key | Name | Issue Types |
 |-------------|------|-------------|
-| `AI` | FinPulse | Epic, Story, Task, Subtask, Bug, Feature |
+| `EXP` | Explore | Epic, Story, Task, Subtask, Bug, Feature |
 | `FVXI` | Support | Service Request, Incident, Task, Subtask |
 
 > Always include `cloudId` when calling Jira MCP tools.
@@ -44,7 +44,7 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
   "toolName": "createJiraIssue",
   "arguments": {
     "cloudId": "75684fb5-daf5-4962-9581-c4948b9c12cf",
-    "projectKey": "AI",
+    "projectKey": "EXP",
     "issueTypeName": "任务",
     "summary": "As a user I want … so that …",
     "description": "Full description (markdown supported)",
@@ -61,7 +61,7 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
   "toolName": "searchJiraIssuesUsingJql",
   "arguments": {
     "cloudId": "75684fb5-daf5-4962-9581-c4948b9c12cf",
-    "jql": "project = AI ORDER BY created DESC",
+    "jql": "project = EXP ORDER BY created DESC",
     "maxResults": 20
   }
 }
@@ -75,7 +75,7 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
   "toolName": "addCommentToJiraIssue",
   "arguments": {
     "cloudId": "75684fb5-daf5-4962-9581-c4948b9c12cf",
-    "issueIdOrKey": "AI-123",
+    "issueIdOrKey": "EXP-123",
     "comment": "Comment content"
   }
 }
@@ -84,7 +84,7 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
 ## Workflow
 
 1. Call `getVisibleJiraProjects` with `cloudId: "75684fb5-daf5-4962-9581-c4948b9c12cf"` to get project information
-2. Use `createJiraIssue` to create work (use `AI` for FinPulse software delivery)
+2. Use `createJiraIssue` to create work (use `EXP` for FinPulse software delivery)
 3. Use `transitionJiraIssue` to advance the workflow
 4. Use `addCommentToJiraIssue` to record progress
 
@@ -111,4 +111,4 @@ This project uses `plugin-atlassian-atlassian` MCP Server for Jira operations.
 1. Call `getAccessibleAtlassianResources` to get `cloudId` (or use the fixed value)
 2. Use `cloudId` for all subsequent Jira operations
 3. Use localized `issueTypeName` when creating issues
-4. For `projectKey`, use `AI` for FinPulse delivery work
+4. For `projectKey`, use `EXP` for FinPulse delivery work

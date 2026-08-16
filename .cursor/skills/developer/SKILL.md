@@ -124,9 +124,9 @@ Allowed types: `feat` | `fix` | `refactor` | `docs` | `test` | `chore` | `perf` 
 Rules:
 
 - Always use `<type>/<slug>` with a kebab-case slug that describes the change
-- With a Jira ticket: still use `<type>/<slug>` — put the issue key only in commit/PR body (`Jira: https://…/AI-xxx`), not in the branch name
+- With a Jira ticket: still use `<type>/<slug>` — put the issue key only in commit/PR body (`Jira: https://…/EXP-xxx`), not in the branch name
 - Do **not** use `feature/` for new branches (legacy only; CI still accepts it)
-- Do **not** embed `AI-<key>` in new branch names
+- Do **not** embed `EXP-<key>` in new branch names
 - Long-lived integration lines: `main`, `java-angular` (do not push work directly to these except via PR)
 
 #### Branch / PR flow (Chain PRs)
@@ -217,7 +217,7 @@ References:
 - [QwenLM/Qwen3-ASR](https://github.com/QwenLM/Qwen3-ASR)
 
 Jira:
-- https://felixzhu.atlassian.net/browse/AI-XXX
+- https://felixzhu.atlassian.net/browse/EXP-XXX
 ```
 
 PR **References** must match the commit References (same links). Use the same official/research priority.
