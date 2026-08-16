@@ -87,8 +87,8 @@ Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/e
 ## Getting Started
 
 ```bash
-git clone https://github.com/felixzhu97/finpulse.git
-cd finpulse
+git clone https://github.com/felixzhu97/explore-portfolio.git
+cd explore-portfolio
 pnpm install
 ```
 
@@ -111,7 +111,7 @@ Portal, admin, and mobile use `@fintech/analytics` via `AnalyticsProvider` and `
 ## Project Structure
 
 ```text
-finpulse/
+explore-portfolio/
 ├── apps/
 │   ├── admin/         # React admin console
 │   ├── portal/        # React portal
