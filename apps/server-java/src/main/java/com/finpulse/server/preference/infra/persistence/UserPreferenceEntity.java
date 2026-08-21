@@ -1,4 +1,4 @@
-package com.finpulse.server.preference.domain;
+package com.finpulse.server.preference.infra.persistence;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -22,7 +22,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder
-public class UserPreference {
+public class UserPreferenceEntity {
 
   @Id
   @Column(name = "preference_id", nullable = false, updatable = false)
