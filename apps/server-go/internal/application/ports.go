@@ -90,15 +90,6 @@ type WatchlistItemRepo interface {
 	Remove(ctx context.Context, watchlistItemID string) (bool, error)
 }
 
-type UserPreferenceRepo interface {
-	List(ctx context.Context, limit, offset int) ([]domain.UserPreference, error)
-	GetByID(ctx context.Context, preferenceID string) (*domain.UserPreference, error)
-	Add(ctx context.Context, u *domain.UserPreference) (*domain.UserPreference, error)
-	AddMany(ctx context.Context, entities []domain.UserPreference) ([]domain.UserPreference, error)
-	Save(ctx context.Context, u *domain.UserPreference) (*domain.UserPreference, error)
-	Remove(ctx context.Context, preferenceID string) (bool, error)
-}
-
 type PortfolioRepo interface {
 	List(ctx context.Context, limit, offset int) ([]domain.PortfolioSchema, error)
 	GetByID(ctx context.Context, portfolioID string) (*domain.PortfolioSchema, error)

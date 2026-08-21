@@ -20,7 +20,6 @@ go_library(
         "settlement_repo.go",
         "trade_repo.go",
         "tx_manager.go",
-        "user_preference_repo.go",
         "wallet_balance_repo.go",
         "watchlist_item_repo.go",
         "watchlist_repo.go",

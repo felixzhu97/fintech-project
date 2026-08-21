@@ -131,7 +131,12 @@ explore-portfolio/
 ### Java (root `src/`)
 
 Per-feature packages follow `controller → service → domain ← infra` (+ `mapper`).
-Current slice: **preference**. Port **8802**.
+Current slice: **preference**. Default port **8802** (H2). For Postgres:
+
+```bash
+bazel run //:server -- --spring.profiles.active=postgres
+# or set SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/portfolio
+```
 
 ```bash
 bazel run //:server
