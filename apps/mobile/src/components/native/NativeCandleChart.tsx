@@ -1,7 +1,8 @@
 import type { ComponentType } from "react";
 import { useCallback } from "react";
 import type { ViewProps } from "react-native";
-import { Platform, requireNativeComponent, View } from "react-native";
+import { Platform, View } from "react-native";
+import { resolveNativeComponent } from "@/src/components/native/resolveNativeComponent";
 import { ScrollableChartContainer } from "./ScrollableChartContainer";
 import { useScrollableChart } from "./useScrollableChart";
 
@@ -13,9 +14,7 @@ export type NativeCandleChartProps = {
 } & ViewProps;
 
 const NativeCandleChartNative =
-  Platform.OS !== "web"
-    ? requireNativeComponent<NativeCandleChartProps>("NativeCandleChart")
-    : null;
+  resolveNativeComponent<NativeCandleChartProps>("NativeCandleChart");
 
 export function NativeCandleChart(props: NativeCandleChartProps) {
   const { data = [], theme = "light", timestamps, style, ...rest } = props;
@@ -47,7 +46,7 @@ export function NativeCandleChart(props: NativeCandleChartProps) {
     getTooltipPayload,
   });
 
-  if (Platform.OS === "web") {
+  if (Platform.OS === "web" || !NativeCandleChartNative) {
     return <View style={[{ backgroundColor: "#000", minHeight: 160 }, style]} {...rest} />;
   }
 
