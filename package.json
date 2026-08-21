@@ -23,6 +23,7 @@
     "lint": "pnpm --filter finpulse-admin lint",
     "pre-commit": "pnpm check-types && pnpm test:type && pnpm test:all && pnpm lint",
     "stop:backend": "bash scripts/backend/stop-backend.sh",
+    "generate-seed-data": "tsx scripts/seed/generate-seed-data.ts",
     "prepare": "husky"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "globals": "^15.12.0",
     "husky": "^9.1.7",
     "prettier": "^3.6.0",
+    "tsx": "^4.23.12",
     "turbo": "^2.5.4",
     "typescript": "^5"
   }
