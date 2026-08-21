@@ -207,4 +207,46 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="005-create-watchlist" author="finpulse">
+        <comment>watchlist and watchlist_item aligned with scripts/db/schema.sql</comment>
+        <createTable tableName="watchlist">
+            <column name="watchlist_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="watchlist" indexName="idx_watchlist_customer">
+            <column name="customer_id"/>
+        </createIndex>
+        <createTable tableName="watchlist_item">
+            <column name="watchlist_item_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="watchlist_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="instrument_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="added_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="watchlist_item" indexName="idx_watchlist_item_watchlist">
+            <column name="watchlist_id"/>
+        </createIndex>
+        <addUniqueConstraint
+            tableName="watchlist_item"
+            columnNames="watchlist_id, instrument_id"
+            constraintName="uk_watchlist_item_watchlist_instrument"/>
+    </changeSet>
+
 </databaseChangeLog>
