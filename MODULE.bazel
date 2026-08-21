@@ -17,7 +17,6 @@ maven.install(
         "org.springframework.boot:spring-boot-starter-test",
         "org.liquibase:liquibase-core",
         "com.h2database:h2",
-        "org.postgresql:postgresql",
         "org.junit.platform:junit-platform-console",
         "org.projectlombok:lombok",
         "org.springframework.security:spring-security-crypto",

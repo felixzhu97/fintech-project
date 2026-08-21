@@ -7,6 +7,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finpulse.server.preference.dto.UserPreferenceRequest;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -20,6 +23,7 @@ import org.springframework.test.web.servlet.MvcResult;
 class UserPreferenceControllerTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void shouldReturnHealthOk() throws Exception {
@@ -31,25 +35,24 @@ class UserPreferenceControllerTest {
 
   @Test
   void shouldCreateGetUpdateAndDeletePreference() throws Exception {
-    String body =
-        """
-        {
-          "customer_id": "11111111-1111-1111-1111-111111111111",
-          "theme": "dark",
-          "language": "en",
-          "notifications_enabled": true
-        }
-        """;
+    UUID customerId = UUID.fromString("11111111-1111-1111-1111-111111111111");
+    UserPreferenceRequest create =
+        UserPreferenceRequest.builder()
+            .customerId(customerId)
+            .theme("dark")
+            .language("en")
+            .notificationsEnabled(true)
+            .build();
 
     MvcResult created =
         mockMvc
             .perform(
                 post("/api/v1/user-preferences")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(body))
+                    .content(objectMapper.writeValueAsString(create)))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.theme").value("dark"))
-            .andExpect(jsonPath("$.customer_id").value("11111111-1111-1111-1111-111111111111"))
+            .andExpect(jsonPath("$.customer_id").value(customerId.toString()))
             .andReturn();
 
     String preferenceId =
@@ -61,21 +64,19 @@ class UserPreferenceControllerTest {
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.preference_id").value(preferenceId));
 
-    String updateBody =
-        """
-        {
-          "customer_id": "11111111-1111-1111-1111-111111111111",
-          "theme": "light",
-          "language": "zh",
-          "notifications_enabled": false
-        }
-        """;
+    UserPreferenceRequest update =
+        UserPreferenceRequest.builder()
+            .customerId(customerId)
+            .theme("light")
+            .language("zh")
+            .notificationsEnabled(false)
+            .build();
 
     mockMvc
         .perform(
             put("/api/v1/user-preferences/" + preferenceId)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(updateBody))
+                .content(objectMapper.writeValueAsString(update)))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.theme").value("light"))
         .andExpect(jsonPath("$.language").value("zh"));
@@ -92,14 +93,13 @@ class UserPreferenceControllerTest {
 
   @Test
   void shouldRejectCreateWithoutCustomerId() throws Exception {
+    UserPreferenceRequest invalid =
+        UserPreferenceRequest.builder().theme("dark").notificationsEnabled(true).build();
     mockMvc
         .perform(
             post("/api/v1/user-preferences")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    """
-                    {"theme":"dark","notifications_enabled":true}
-                    """))
+                .content(objectMapper.writeValueAsString(invalid)))
         .andExpect(status().isBadRequest());
   }
 }

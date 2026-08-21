@@ -156,4 +156,4 @@ metro-health-check*
 **/android/.gradle/
 **/android/**/build/
 **/android/local.properties
-**/android/.cxx/
+**/android/.cxx/data/

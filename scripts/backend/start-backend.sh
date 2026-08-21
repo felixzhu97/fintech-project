@@ -44,10 +44,6 @@ lsof -i :8801 -t 2>/dev/null | xargs kill 2>/dev/null || true
 sleep 1
 echo "[start-backend] Starting Java :8801..."
 PYTHON_BACKEND_URL=http://127.0.0.1:8800 \
-SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/portfolio \
-SPRING_DATASOURCE_USERNAME=postgres \
-SPRING_DATASOURCE_PASSWORD=postgres \
-SPRING_DATASOURCE_DRIVER=org.postgresql.Driver \
 PORT=8801 \
   bazel run //:server &
 JAVA_PID=$!

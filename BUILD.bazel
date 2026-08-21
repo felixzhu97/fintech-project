@@ -11,13 +11,13 @@ java_plugin(
 
 SPRING_DEPS = [
     "@maven//:com_h2database_h2",
-    "@maven//:org_postgresql_postgresql",
     "@maven//:org_springframework_boot_spring_boot",
     "@maven//:org_springframework_boot_spring_boot_autoconfigure",
     "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
     "@maven//:org_hibernate_orm_hibernate_core",
     "@maven//:org_springframework_boot_spring_boot_starter_validation",
     "@maven//:org_springframework_boot_spring_boot_starter_web",
+    "@maven//:org_hibernate_orm_hibernate_core",
     "@maven//:org_apache_tomcat_embed_tomcat_embed_core",
     "@maven//:org_liquibase_liquibase_core",
     "@maven//:org_springframework_spring_beans",
@@ -49,8 +49,7 @@ java_binary(
     runtime_deps = [
         ":server_lib",
         "@maven//:com_h2database_h2",
-        "@maven//:org_postgresql_postgresql",
-        "@maven//:org_springframework_security_spring_security_crypto",
+            "@maven//:org_springframework_security_spring_security_crypto",
         "@maven//:org_liquibase_liquibase_core",
         "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
         "@maven//:org_springframework_boot_spring_boot_starter_validation",
@@ -72,6 +71,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -83,6 +83,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",
@@ -109,6 +110,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -120,6 +122,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",
@@ -147,6 +150,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -158,6 +162,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",
@@ -184,6 +189,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -195,6 +201,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",
@@ -221,6 +228,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -232,6 +240,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",
@@ -257,6 +266,7 @@ java_test(
     use_testrunner = False,
     runtime_deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_h2database_h2",
         "@maven//:org_junit_platform_junit_platform_console",
         "@maven//:org_liquibase_liquibase_core",
@@ -268,6 +278,7 @@ java_test(
     ],
     deps = [
         ":server_lib",
+        "@maven//:com_fasterxml_jackson_core_jackson_databind",
         "@maven//:com_jayway_jsonpath_json_path",
         "@maven//:org_junit_jupiter_junit_jupiter_api",
         "@maven//:org_projectlombok_lombok",

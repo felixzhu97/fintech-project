@@ -4,6 +4,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finpulse.server.portfolio.dto.PortfolioRequest;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,18 +18,21 @@ import org.springframework.test.web.servlet.MockMvc;
 @AutoConfigureMockMvc
 class PortfolioControllerTest {
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void shouldCreatePortfolio() throws Exception {
-    UUID accountId = UUID.randomUUID();
+    PortfolioRequest request =
+        PortfolioRequest.builder()
+            .accountId(UUID.randomUUID())
+            .name("Growth")
+            .baseCurrency("USD")
+            .build();
     mockMvc
         .perform(
             post("/api/v1/portfolios")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"account_id\":\""
-                        + accountId
-                        + "\",\"name\":\"Growth\",\"base_currency\":\"USD\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.portfolio_id").isNotEmpty())
         .andExpect(jsonPath("$.name").value("Growth"));

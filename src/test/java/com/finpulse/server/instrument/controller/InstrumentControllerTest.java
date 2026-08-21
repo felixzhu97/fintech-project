@@ -5,6 +5,8 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finpulse.server.instrument.dto.InstrumentRequest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -18,20 +20,27 @@ import org.springframework.test.web.servlet.MvcResult;
 class InstrumentControllerTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void shouldCreateInstrumentAndList() throws Exception {
+    InstrumentRequest request =
+        InstrumentRequest.builder()
+            .symbol("AAPL")
+            .name("Apple Inc.")
+            .assetClass("equity")
+            .currency("USD")
+            .exchange("NASDAQ")
+            .build();
     mockMvc
         .perform(
             post("/api/v1/instruments")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"symbol\":\"AAPL\",\"name\":\"Apple Inc.\",\"asset_class\":\"equity\",\"currency\":\"USD\",\"exchange\":\"NASDAQ\"}"))
+                .content(objectMapper.writeValueAsString(request)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.instrument_id").isNotEmpty())
         .andExpect(jsonPath("$.symbol").value("AAPL"))
-        .andExpect(jsonPath("$.name").value("Apple Inc."))
-        .andReturn();
+        .andExpect(jsonPath("$.name").value("Apple Inc."));
 
     MvcResult list =
         mockMvc
@@ -41,7 +50,8 @@ class InstrumentControllerTest {
             .andReturn();
 
     String instrumentId =
-        com.jayway.jsonpath.JsonPath.read(list.getResponse().getContentAsString(), "$[0].instrument_id");
+        com.jayway.jsonpath.JsonPath.read(
+            list.getResponse().getContentAsString(), "$[0].instrument_id");
 
     mockMvc
         .perform(get("/api/v1/instruments/" + instrumentId))
