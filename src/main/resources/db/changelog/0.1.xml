@@ -249,4 +249,96 @@
             constraintName="uk_watchlist_item_watchlist_instrument"/>
     </changeSet>
 
+
+    <changeSet id="006-create-trading-payments" author="finpulse">
+        <comment>portfolio, position, orders, trade, cash_transaction, payment, settlement, realtime_quote</comment>
+        <createTable tableName="portfolio">
+            <column name="portfolio_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="name" type="varchar(512)"><constraints nullable="false"/></column>
+            <column name="base_currency" type="varchar(16)"><constraints nullable="false"/></column>
+            <column name="created_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="position">
+            <column name="position_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="portfolio_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="instrument_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="quantity" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="cost_basis" type="numeric(20, 8)"/>
+            <column name="as_of_date" type="date"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="orders">
+            <column name="order_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="instrument_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="side" type="varchar(16)"><constraints nullable="false"/></column>
+            <column name="quantity" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="order_type" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="status" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="created_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="trade">
+            <column name="trade_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="order_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="quantity" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="price" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="fee" type="numeric(20, 8)"/>
+            <column name="executed_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="cash_transaction">
+            <column name="transaction_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="type" type="varchar(64)"><constraints nullable="false"/></column>
+            <column name="amount" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="currency" type="varchar(16)"><constraints nullable="false"/></column>
+            <column name="status" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="created_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="payment">
+            <column name="payment_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="counterparty" type="varchar(512)"/>
+            <column name="amount" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="currency" type="varchar(16)"><constraints nullable="false"/></column>
+            <column name="status" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="created_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="settlement">
+            <column name="settlement_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="trade_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="payment_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="status" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="settled_at" type="timestamp with time zone"/>
+        </createTable>
+        <createTable tableName="realtime_quote">
+            <column name="symbol" type="varchar(64)"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="price" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="change" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="change_rate" type="numeric(12, 6)"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="wallet_balance">
+            <column name="account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="currency" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="balance" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="updated_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+        <addPrimaryKey tableName="wallet_balance" columnNames="account_id, currency" constraintName="pk_wallet_balance"/>
+        <createTable tableName="block">
+            <column name="block_index" type="integer"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="timestamp" type="timestamp with time zone"><constraints nullable="false"/></column>
+            <column name="previous_hash" type="varchar(128)"><constraints nullable="false"/></column>
+            <column name="hash" type="varchar(128)"><constraints nullable="false"/></column>
+        </createTable>
+        <createTable tableName="chain_transaction">
+            <column name="tx_id" type="uuid"><constraints primaryKey="true" nullable="false"/></column>
+            <column name="block_index" type="integer"><constraints nullable="false"/></column>
+            <column name="sender_account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="receiver_account_id" type="uuid"><constraints nullable="false"/></column>
+            <column name="amount" type="numeric(20, 8)"><constraints nullable="false"/></column>
+            <column name="currency" type="varchar(32)"><constraints nullable="false"/></column>
+            <column name="created_at" type="timestamp with time zone"><constraints nullable="false"/></column>
+        </createTable>
+    </changeSet>
+
+
 </databaseChangeLog>
