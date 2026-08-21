@@ -13,18 +13,28 @@ import lombok.experimental.Accessors;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Customer {
   @NonNull private final UUID customerId;
-  @NonNull private final String name;
-  private final String email;
-  private final String kycStatus;
+  @NonNull private String name;
+  private String email;
+  private String kycStatus;
   @NonNull private final Instant createdAt;
 
   public static Customer create(String name, String email) {
-    return new Customer(UUID.randomUUID(), name, email, null, Instant.now());
+    return create(name, email, null);
+  }
+
+  public static Customer create(String name, String email, String kycStatus) {
+    return new Customer(UUID.randomUUID(), name, email, kycStatus, Instant.now());
   }
 
   public static Customer rehydrate(
       UUID customerId, String name, String email, String kycStatus, Instant createdAt) {
     return new Customer(
         customerId, name, email, kycStatus, createdAt == null ? Instant.now() : createdAt);
+  }
+
+  public void update(@NonNull String name, String email, String kycStatus) {
+    this.name = name;
+    this.email = email;
+    this.kycStatus = kycStatus;
   }
 }
