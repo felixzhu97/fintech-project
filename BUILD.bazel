@@ -35,6 +35,7 @@ SPRING_DEPS = [
     "@maven//:com_fasterxml_jackson_core_jackson_annotations",
     "@maven//:com_fasterxml_jackson_core_jackson_databind",
     "@maven//:org_projectlombok_lombok",
+    "@maven//:org_springframework_security_spring_security_crypto",
 ]
 
 java_library(
@@ -52,6 +53,7 @@ java_binary(
         ":server_lib",
         "@maven//:com_h2database_h2",
         "@maven//:org_postgresql_postgresql",
+        "@maven//:org_springframework_security_spring_security_crypto",
         "@maven//:org_liquibase_liquibase_core",
         "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
         "@maven//:org_springframework_boot_spring_boot_starter_validation",
@@ -80,6 +82,44 @@ java_test(
         "@maven//:org_springframework_boot_spring_boot_starter_test",
         "@maven//:org_springframework_boot_spring_boot_starter_validation",
         "@maven//:org_springframework_boot_spring_boot_starter_web",
+        "@maven//:org_springframework_security_spring_security_crypto",
+    ],
+    deps = [
+        ":server_lib",
+        "@maven//:com_jayway_jsonpath_json_path",
+        "@maven//:org_junit_jupiter_junit_jupiter_api",
+        "@maven//:org_projectlombok_lombok",
+        "@maven//:org_springframework_boot_spring_boot_starter_test",
+        "@maven//:org_springframework_boot_spring_boot_test",
+        "@maven//:org_springframework_boot_spring_boot_test_autoconfigure",
+        "@maven//:org_springframework_spring_beans",
+        "@maven//:org_springframework_spring_test",
+        "@maven//:org_springframework_spring_web",
+    ],
+)
+
+java_test(
+    name = "AuthControllerTest",
+    size = "medium",
+    srcs = ["src/test/java/com/finpulse/server/auth/controller/AuthControllerTest.java"],
+    args = [
+        "--select-class=com.finpulse.server.auth.controller.AuthControllerTest",
+        "--disable-banner",
+        "--fail-if-no-tests",
+    ],
+    main_class = "org.junit.platform.console.ConsoleLauncher",
+    plugins = [":lombok_processor"],
+    use_testrunner = False,
+    runtime_deps = [
+        ":server_lib",
+        "@maven//:com_h2database_h2",
+        "@maven//:org_junit_platform_junit_platform_console",
+        "@maven//:org_liquibase_liquibase_core",
+        "@maven//:org_springframework_boot_spring_boot_starter_data_jpa",
+        "@maven//:org_springframework_boot_spring_boot_starter_test",
+        "@maven//:org_springframework_boot_spring_boot_starter_validation",
+        "@maven//:org_springframework_boot_spring_boot_starter_web",
+        "@maven//:org_springframework_security_spring_security_crypto",
     ],
     deps = [
         ":server_lib",

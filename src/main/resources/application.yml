@@ -26,6 +26,8 @@ spring:
     open-in-view: false
     properties:
       hibernate:
+        # Quote identifiers so H2 accepts reserved table name "session".
+        globally_quoted_identifiers: true
         jdbc:
           time_zone: UTC
   h2:
