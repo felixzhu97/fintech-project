@@ -1,14 +1,17 @@
-# FinPulse 移动应用 - C4 架构图
+# FinPulse C4 架构图
 
-本目录包含 FinPulse 移动应用的 C4 架构图。
+本目录包含 FinPulse（平台后端 + 移动应用）的 C4 架构图。
 
 ## 图表列表
 
 | 层级 | 文件 | 描述 |
 |------|------|------|
+| 容器（平台） | `c4-finpulse-platform-containers.puml` | 后端容器：Go 网关、Python 分析、Java 用户偏好 |
 | 上下文 | `c4-finpulse-mobile-context.puml` | 系统级视图，展示移动应用与外部系统的交互 |
 | 容器 | `c4-finpulse-mobile-containers.puml` | 移动应用的高层容器架构 |
 | 组件 | `c4-finpulse-mobile-components.puml` | 详细的组件架构，包含 hooks、store 和 lib 层 |
+
+说明：若 CI 未渲染 PlantUML，新平台图的 `png/` 为 pending。
 
 ## 查看图表
 

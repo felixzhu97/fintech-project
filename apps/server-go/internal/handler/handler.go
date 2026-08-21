@@ -21,7 +21,6 @@ type Handler struct {
 	OptionSvc             *application.OptionService
 	WatchlistSvc          *application.WatchlistService
 	WatchlistItemSvc      *application.WatchlistItemService
-	UserPreferenceSvc     *application.UserPreferenceService
 	PortfolioSvc          *application.PortfolioService
 	PositionSvc           *application.PositionService
 	OrderSvc              *application.OrderService

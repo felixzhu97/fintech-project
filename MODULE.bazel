@@ -5,6 +5,8 @@ module(
 
 bazel_dep(name = "rules_go", version = "0.57.0")
 bazel_dep(name = "gazelle", version = "0.45.0")
+bazel_dep(name = "rules_java", version = "8.11.0")
+bazel_dep(name = "rules_jvm_external", version = "6.7")
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
 go_sdk.from_file(go_mod = "//apps/server-go:go.mod")
@@ -13,7 +15,7 @@ go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
 go_deps.from_file(go_mod = "//apps/server-go:go.mod")
 go_deps.config(
     go_env = {
-        # Prefer official Go proxy; fall back to goproxy.cn for China networks.
+        # Prefer official proxy; fall back to goproxy.cn for China networks.
         "GOPROXY": "https://proxy.golang.org,https://goproxy.cn,direct",
     },
 )
@@ -32,3 +34,25 @@ use_repo(
     "com_github_swaggo_swag",
     "org_golang_x_crypto",
 )
+
+maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
+maven.install(
+    artifacts = [
+        "org.springframework.boot:spring-boot-starter-web",
+        "org.springframework.boot:spring-boot-starter-data-jpa",
+        "org.springframework.boot:spring-boot-starter-validation",
+        "org.springframework.boot:spring-boot-starter-test",
+        "org.liquibase:liquibase-core",
+        "com.h2database:h2",
+        "org.junit.platform:junit-platform-console",
+        "org.projectlombok:lombok",
+    ],
+    boms = [
+        "org.springframework.boot:spring-boot-dependencies:3.4.3",
+    ],
+    lock_file = "//:maven_install.json",
+    repositories = [
+        "https://repo1.maven.org/maven2",
+    ],
+)
+use_repo(maven, "maven")

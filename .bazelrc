@@ -8,3 +8,12 @@ test --test_summary=detailed
 # Prefer official Go proxy; fall back to goproxy.cn for China networks.
 build --action_env=GOPROXY=https://proxy.golang.org,https://goproxy.cn,direct
 run --action_env=GOPROXY=https://proxy.golang.org,https://goproxy.cn,direct
+
+# Pin Java to remote JDK 21 (avoids host JDK 25 mismatch with rules_java).
+build --java_language_version=21
+build --java_runtime_version=remotejdk_21
+build --tool_java_language_version=21
+build --tool_java_runtime_version=remotejdk_21
+
+# Lombok annotation processing is incompatible with Turbine header compilation.
+build --java_header_compilation=false

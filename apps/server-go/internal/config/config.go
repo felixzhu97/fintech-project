@@ -11,6 +11,7 @@ type Config struct {
 	Port               string
 	PythonBackendURL   string
 	PythonAnalyticsURL string
+	JavaBackendURL     string
 	RedisURL           string
 }
 
@@ -22,6 +23,7 @@ func Load() (*Config, error) {
 		Port:               getEnv("PORT", "8801"),
 		PythonBackendURL:   pyURL,
 		PythonAnalyticsURL: getEnv("PYTHON_ANALYTICS_URL", pyURL),
+		JavaBackendURL:     getEnv("JAVA_BACKEND_URL", "http://127.0.0.1:8802"),
 		RedisURL:           getEnv("REDIS_URL", "redis://127.0.0.1:6379/0"),
 	}
 	return c, nil

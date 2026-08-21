@@ -68,9 +68,9 @@ Chinese docs: [docs/zh/README.md](docs/zh/README.md)
 | Web | React 19 + Vite, Emotion, Radix UI |
 | Mobile | React Native + Expo |
 | Shared packages | `@fintech/analytics`, `@fintech/ui`, `@fintech/utils` |
-| Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD |
+| Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD, Java user-preferences slice |
 | Data | TimescaleDB, Redis, Kafka |
-| Tooling | pnpm workspaces, TypeScript 5; Bazel (optional) for `apps/server-go` |
+| Tooling | pnpm workspaces, TypeScript 5; Bazel for `apps/server-go` + `apps/server-java` |
 
 Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/en/rd/togaf/).
 
@@ -83,7 +83,7 @@ Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/e
 | Python | 3.10+ |
 | Docker | latest (for local backend stack) |
 | Go | 1.24+ (when building `apps/server-go` locally) |
-| Bazelisk | optional; Bazel build/test for `apps/server-go` |
+| Bazelisk | optional; Bazel build/test for `apps/server-go` and `apps/server-java` |
 
 ## Getting Started
 
@@ -118,7 +118,8 @@ explore-portfolio/
 │   ├── portal/        # React portal
 │   ├── mobile/        # React Native (Expo)
 │   ├── server-python/ # FastAPI services
-│   └── server-go/     # Go API gateway
+│   ├── server-go/     # Go API gateway (proxies user-preferences to Java)
+│   └── server-java/   # Java: health + user-preferences (Bazel)
 ├── packages/
 │   ├── analytics/     # @fintech/analytics
 │   ├── ui/            # @fintech/ui

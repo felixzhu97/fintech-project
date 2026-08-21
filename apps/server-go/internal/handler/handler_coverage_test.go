@@ -7,28 +7,6 @@ import (
 	"finpulse/server-go/internal/domain"
 )
 
-func TestUserPreferenceToJSON(t *testing.T) {
-	theme := "dark"
-	lang := "en"
-	pref := domain.UserPreference{
-		PreferenceID:         "pref-123",
-		CustomerID:           "cust-456",
-		Theme:                &theme,
-		Language:             &lang,
-		NotificationsEnabled: true,
-		UpdatedAt:            time.Now(),
-	}
-
-	json := userPreferenceToJSON(pref)
-
-	if json["preference_id"] != "pref-123" {
-		t.Errorf("preference_id = %v; want pref-123", json["preference_id"])
-	}
-	if json["theme"] != &theme {
-		t.Errorf("theme mismatch")
-	}
-}
-
 func TestBondToJSON(t *testing.T) {
 	fv := 1000.0
 	bond := domain.Bond{
@@ -298,33 +276,5 @@ func TestOptionToJSONWithAllGreeks(t *testing.T) {
 	}
 	if json["gamma"] != &gamma {
 		t.Errorf("gamma mismatch")
-	}
-}
-
-func TestUserPreferenceToJSONWithAllFields(t *testing.T) {
-	theme := "light"
-	lang := "zh"
-	pref := domain.UserPreference{
-		PreferenceID:         "pref-123",
-		CustomerID:           "cust-456",
-		Theme:                &theme,
-		Language:             &lang,
-		NotificationsEnabled: true,
-		UpdatedAt:            time.Now(),
-	}
-
-	json := userPreferenceToJSON(pref)
-
-	if json["preference_id"] != "pref-123" {
-		t.Errorf("preference_id = %v; want pref-123", json["preference_id"])
-	}
-	if json["theme"] != &theme {
-		t.Errorf("theme mismatch")
-	}
-	if json["language"] != &lang {
-		t.Errorf("language mismatch")
-	}
-	if json["notifications_enabled"] != true {
-		t.Errorf("notifications_enabled = %v; want true", json["notifications_enabled"])
 	}
 }

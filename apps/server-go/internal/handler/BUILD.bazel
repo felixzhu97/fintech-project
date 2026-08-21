@@ -15,7 +15,6 @@ go_library(
         "payment_settlement.go",
         "portfolio_position.go",
         "proxy.go",
-        "user_preference.go",
         "watchlist.go",
     ],
     importpath = "finpulse/server-go/internal/handler",

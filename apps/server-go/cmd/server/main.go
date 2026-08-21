@@ -60,7 +60,6 @@ func main() {
 	accountRepo := persistence.NewAccountRepo(pool)
 	watchlistRepo := persistence.NewWatchlistRepo(pool)
 	watchlistItemRepo := persistence.NewWatchlistItemRepo(pool)
-	userPreferenceRepo := persistence.NewUserPreferenceRepo(pool)
 	portfolioRepo := persistence.NewPortfolioRepo(pool)
 	positionRepo := persistence.NewPositionRepo(pool)
 	orderRepo := persistence.NewOrderRepo(pool)
@@ -75,7 +74,6 @@ func main() {
 	optionSvc := application.NewOptionService(optionRepo)
 	watchlistSvc := application.NewWatchlistService(watchlistRepo)
 	watchlistItemSvc := application.NewWatchlistItemService(watchlistItemRepo)
-	userPreferenceSvc := application.NewUserPreferenceService(userPreferenceRepo)
 	portfolioSvc := application.NewPortfolioService(portfolioRepo)
 	positionSvc := application.NewPositionService(positionRepo)
 	orderSvc := application.NewOrderService(orderRepo)
@@ -95,7 +93,6 @@ func main() {
 		OptionSvc:            optionSvc,
 		WatchlistSvc:         watchlistSvc,
 		WatchlistItemSvc:     watchlistItemSvc,
-		UserPreferenceSvc:    userPreferenceSvc,
 		PortfolioSvc:         portfolioSvc,
 		PositionSvc:          positionSvc,
 		OrderSvc:             orderSvc,
@@ -164,12 +161,10 @@ func main() {
 	r.POST("/api/v1/watchlist-items/batch", h.WatchlistItemsCreateBatch)
 	r.PUT("/api/v1/watchlist-items/:watchlist_item_id", h.WatchlistItemsUpdate)
 	r.DELETE("/api/v1/watchlist-items/:watchlist_item_id", h.WatchlistItemsDelete)
-	r.GET("/api/v1/user-preferences", h.UserPreferencesList)
-	r.GET("/api/v1/user-preferences/:preference_id", h.UserPreferencesGet)
-	r.POST("/api/v1/user-preferences", h.UserPreferencesCreate)
-	r.POST("/api/v1/user-preferences/batch", h.UserPreferencesCreateBatch)
-	r.PUT("/api/v1/user-preferences/:preference_id", h.UserPreferencesUpdate)
-	r.DELETE("/api/v1/user-preferences/:preference_id", h.UserPreferencesDelete)
+	// User preferences migrated to Java (apps/server-java); Go gateway proxies.
+	javaProxy := handler.ProxyToJava(cfg.JavaBackendURL)
+	r.Any("/api/v1/user-preferences", javaProxy)
+	r.Any("/api/v1/user-preferences/*path", javaProxy)
 	r.GET("/api/v1/portfolios", h.PortfoliosList)
 	r.GET("/api/v1/portfolios/:portfolio_id", h.PortfoliosGet)
 	r.POST("/api/v1/portfolios", h.PortfoliosCreate)
