@@ -47,6 +47,7 @@ maven.install(
         "org.postgresql:postgresql",
         "org.junit.platform:junit-platform-console",
         "org.projectlombok:lombok",
+        "org.springframework.security:spring-security-crypto",
     ],
     boms = [
         "org.springframework.boot:spring-boot-dependencies:3.4.3",
