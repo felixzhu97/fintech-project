@@ -1,0 +1,24 @@
+@startuml c4-finpulse-platform-containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/core/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title FinPulse 平台 - 容器架构
+
+Person(client, "客户端", "Admin、门户或移动端")
+
+System_Boundary(platform, "FinPulse 后端") {
+    Container(gateway, "Go API 网关", "Go + Gin :8801", "对外 API 入口；代理部分路由")
+    Container(python, "Python 分析 API", "FastAPI :8800", "分析、行情、组合、AI/ML")
+    Container(javaPrefs, "用户偏好 API", "Java :8802", "健康检查 + 用户偏好 CRUD")
+    ContainerDb(db, "主数据库", "TimescaleDB / H2（本地偏好）", "事务与时序数据")
+}
+
+Rel(client, gateway, "HTTPS / JSON", "REST")
+Rel(gateway, python, "代理", "HTTP")
+Rel(gateway, javaPrefs, "代理 user-preferences", "HTTP")
+Rel(gateway, db, "读写", "SQL")
+Rel(javaPrefs, db, "读写偏好", "JDBC / Liquibase")
+Rel(python, db, "读写", "SQL")
+
+@enduml

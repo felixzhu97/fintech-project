@@ -68,9 +68,9 @@ Chinese docs: [docs/zh/README.md](docs/zh/README.md)
 | Web | React 19 + Vite, Emotion, Radix UI |
 | Mobile | React Native + Expo |
 | Shared packages | `@fintech/analytics`, `@fintech/ui`, `@fintech/utils` |
-| Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD |
+| Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD, Java user-preferences slice |
 | Data | TimescaleDB, Redis, Kafka |
-| Tooling | pnpm workspaces, TypeScript 5; Bazel (optional) for `apps/server-go` |
+| Tooling | pnpm workspaces, TypeScript 5; Bazel for `apps/server-go` + root Java (`src/`) |
 
 Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/en/rd/togaf/).
 
@@ -83,7 +83,7 @@ Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/e
 | Python | 3.10+ |
 | Docker | latest (for local backend stack) |
 | Go | 1.24+ (when building `apps/server-go` locally) |
-| Bazelisk | optional; Bazel build/test for `apps/server-go` |
+| Bazelisk | optional; Bazel for `apps/server-go` and root Java (`//:server`) |
 
 ## Getting Started
 
@@ -113,18 +113,30 @@ Portal, admin, and mobile use `@fintech/analytics` via `AnalyticsProvider` and `
 
 ```text
 explore-portfolio/
+├── src/               # Java (Spring): health + user-preferences; Bazel //:server
 ├── apps/
 │   ├── admin/         # React admin console
 │   ├── portal/        # React portal
 │   ├── mobile/        # React Native (Expo)
 │   ├── server-python/ # FastAPI services
-│   └── server-go/     # Go API gateway
+│   └── server-go/     # Go API gateway (proxies user-preferences to Java)
 ├── packages/
 │   ├── analytics/     # @fintech/analytics
 │   ├── ui/            # @fintech/ui
 │   └── utils/         # @fintech/utils
 ├── scripts/           # Backend start, seed, database helpers
 └── docs/              # Product, data, and R&D docs (en / zh)
+```
+
+### Java (root `src/`)
+
+Per-feature packages follow `controller → service → domain ← infra` (+ `mapper`).
+Current slice: **preference**. Port **8802**.
+
+```bash
+bazel run //:server
+bazel test //:UserPreferenceControllerTest
+# or: make -f Makefile.java java-run / java-test
 ```
 
 ## Scripts

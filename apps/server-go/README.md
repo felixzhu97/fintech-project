@@ -79,3 +79,7 @@ bazel mod tidy   # if go.mod / direct deps changed
 ```
 
 Existing `go build` / `make build` remain supported; Bazel does not replace them yet.
+
+### Java migration note
+
+`/api/v1/user-preferences*` is served by the Java app under repo-root [`src/`](../../src) (port 8802; `bazel run //:server`). This Go gateway proxies those paths using `JAVA_BACKEND_URL` (default `http://127.0.0.1:8802`). Start the Java service before calling those endpoints through `:8801`.

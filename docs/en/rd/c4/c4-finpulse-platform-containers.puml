@@ -1,0 +1,24 @@
+@startuml c4-finpulse-platform-containers
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/core/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title FinPulse Platform - Container Architecture
+
+Person(client, "Client", "Admin, portal, or mobile client")
+
+System_Boundary(platform, "FinPulse Backend") {
+    Container(gateway, "Go API Gateway", "Go + Gin :8801", "Public API entry; proxies selected routes")
+    Container(python, "Python Analytics API", "FastAPI :8800", "Analytics, quotes, portfolio, AI/ML")
+    Container(javaPrefs, "User Preferences API", "Java :8802", "Health + user-preferences CRUD")
+    ContainerDb(db, "Primary Database", "TimescaleDB / H2 (local prefs)", "Transactional and time-series data")
+}
+
+Rel(client, gateway, "HTTPS / JSON", "REST")
+Rel(gateway, python, "Proxy", "HTTP")
+Rel(gateway, javaPrefs, "Proxy user-preferences", "HTTP")
+Rel(gateway, db, "Read/Write", "SQL")
+Rel(javaPrefs, db, "Read/Write preferences", "JDBC / Liquibase")
+Rel(python, db, "Read/Write", "SQL")
+
+@enduml

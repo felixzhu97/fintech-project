@@ -1,14 +1,17 @@
-# FinPulse Mobile App - C4 Architecture Diagrams
+# FinPulse C4 Architecture Diagrams
 
-This directory contains C4 architecture diagrams for the FinPulse mobile application.
+This directory contains C4 architecture diagrams for FinPulse (platform backends + mobile).
 
 ## Diagrams
 
 | Level | File | Description |
 |-------|------|-------------|
+| Container (platform) | `c4-finpulse-platform-containers.puml` | Backend containers: Go gateway, Python analytics, Java user-preferences |
 | Context | `c4-finpulse-mobile-context.puml` | System-level view showing the mobile app's interaction with external systems |
 | Container | `c4-finpulse-mobile-containers.puml` | High-level container architecture of the mobile app |
 | Component | `c4-finpulse-mobile-components.puml` | Detailed component architecture with hooks, store, and lib layers |
+
+Note: `png/` renders for the new platform diagram are pending if PlantUML is not run in CI.
 
 ## Viewing Diagrams
 

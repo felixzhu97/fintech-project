@@ -14,6 +14,21 @@ func ProxyToPython(pythonBackendURL string) gin.HandlerFunc {
 	return conditionalProxy(pythonBackendURL, pythonBackendURL)
 }
 
+// ProxyToJava forwards requests to the Java backend (user-preferences slice).
+func ProxyToJava(javaBackendURL string) gin.HandlerFunc {
+	target, err := url.Parse(javaBackendURL)
+	if err != nil || target.Host == "" {
+		return func(c *gin.Context) {
+			c.JSON(http.StatusBadGateway, gin.H{"detail": "Java backend URL is not configured"})
+		}
+	}
+	proxy := httputil.NewSingleHostReverseProxy(target)
+	return func(c *gin.Context) {
+		log.Printf("[proxy] %s %s -> Java", c.Request.Method, c.Request.URL.Path)
+		proxy.ServeHTTP(c.Writer, c.Request)
+	}
+}
+
 func ProxyAnalyticsOnly(analyticsURL, fallbackURL string) gin.HandlerFunc {
 	return conditionalProxy(analyticsURL, fallbackURL)
 }
