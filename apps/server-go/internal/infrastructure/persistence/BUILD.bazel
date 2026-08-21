@@ -1,0 +1,37 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "persistence",
+    srcs = [
+        "account_repo.go",
+        "auth_repo.go",
+        "blockchain_repo.go",
+        "bond_repo.go",
+        "cash_transaction_repo.go",
+        "customer_repo.go",
+        "instrument_repo.go",
+        "market_data_repo.go",
+        "option_repo.go",
+        "order_repo.go",
+        "payment_repo.go",
+        "portfolio_repo.go",
+        "position_repo.go",
+        "quote_repo.go",
+        "settlement_repo.go",
+        "trade_repo.go",
+        "tx_manager.go",
+        "user_preference_repo.go",
+        "wallet_balance_repo.go",
+        "watchlist_item_repo.go",
+        "watchlist_repo.go",
+    ],
+    importpath = "finpulse/server-go/internal/infrastructure/persistence",
+    visibility = ["//apps/server-go:__subpackages__"],
+    deps = [
+        "//apps/server-go/internal/application",
+        "//apps/server-go/internal/domain",
+        "//apps/server-go/internal/infrastructure/crypto",
+        "@com_github_jackc_pgx_v5//:pgx",
+        "@com_github_jackc_pgx_v5//pgxpool",
+    ],
+)

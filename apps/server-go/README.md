@@ -55,3 +55,27 @@ go build -o bin/server ./cmd/server
 ```
 
 Or run `make deps` then `make build`.
+
+## Bazel (optional)
+
+Parallel build/test entry via Bazel (repo root). Install [Bazelisk](https://github.com/bazelbuild/bazelisk) first (`brew install bazelisk`).
+
+```bash
+# from apps/server-go
+make bazel-build
+make bazel-test
+
+# or from repo root
+bazel build //apps/server-go/cmd/server:server
+bazel test //apps/server-go/...
+```
+
+After changing Go packages or imports, regenerate BUILD files:
+
+```bash
+# from repo root
+bazel run //:gazelle
+bazel mod tidy   # if go.mod / direct deps changed
+```
+
+Existing `go build` / `make build` remain supported; Bazel does not replace them yet.

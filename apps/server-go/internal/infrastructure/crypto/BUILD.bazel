@@ -1,0 +1,21 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "crypto",
+    srcs = [
+        "block_hash.go",
+        "password.go",
+    ],
+    importpath = "finpulse/server-go/internal/infrastructure/crypto",
+    visibility = ["//apps/server-go:__subpackages__"],
+    deps = ["@org_golang_x_crypto//bcrypt"],
+)
+
+go_test(
+    name = "crypto_test",
+    srcs = [
+        "block_hash_test.go",
+        "password_test.go",
+    ],
+    embed = [":crypto"],
+)

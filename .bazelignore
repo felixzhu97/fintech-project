@@ -1,0 +1,20 @@
+# Keep Bazel focused on the Go backend; JS/Python/mobile stay on existing toolchains.
+.git
+node_modules
+.pnpm-store
+.turbo
+.venv
+venv
+apps/admin
+apps/portal
+apps/mobile
+apps/server-python
+packages
+docs
+scripts
+coverage
+.cursor
+.github
+.husky
+.vscode
+.idea
