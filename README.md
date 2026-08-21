@@ -70,7 +70,7 @@ Chinese docs: [docs/zh/README.md](docs/zh/README.md)
 | Shared packages | `@fintech/analytics`, `@fintech/ui`, `@fintech/utils` |
 | Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD |
 | Data | TimescaleDB, Redis, Kafka |
-| Tooling | pnpm workspaces, TypeScript 5 |
+| Tooling | pnpm workspaces, TypeScript 5; Bazel (optional) for `apps/server-go` |
 
 Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/en/rd/togaf/).
 
@@ -83,6 +83,7 @@ Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/e
 | Python | 3.10+ |
 | Docker | latest (for local backend stack) |
 | Go | 1.24+ (when building `apps/server-go` locally) |
+| Bazelisk | optional; Bazel build/test for `apps/server-go` |
 
 ## Getting Started
 

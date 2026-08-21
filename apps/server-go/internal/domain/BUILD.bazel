@@ -1,0 +1,24 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "domain",
+    srcs = [
+        "account.go",
+        "auth.go",
+        "blockchain.go",
+        "bond.go",
+        "customer.go",
+        "identity.go",
+        "instrument.go",
+        "market_data.go",
+        "option.go",
+        "payments.go",
+        "portfolio.go",
+        "quote.go",
+        "trading.go",
+        "user_preference.go",
+        "watchlist.go",
+    ],
+    importpath = "finpulse/server-go/internal/domain",
+    visibility = ["//apps/server-go:__subpackages__"],
+)

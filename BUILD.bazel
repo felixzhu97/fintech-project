@@ -1,0 +1,4 @@
+load("@gazelle//:def.bzl", "gazelle")
+
+# Go module lives under apps/server-go; prefix is declared there.
+gazelle(name = "gazelle")

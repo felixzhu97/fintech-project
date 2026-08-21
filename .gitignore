@@ -81,6 +81,11 @@ ehthumbs.db
 Thumbs.db
 Desktop.ini
 
+# Bazel
+/bazel-*
+.bazelrc.user
+user.bazelrc
+
 # Temp / cache
 *.tmp
 *.temp

@@ -1,0 +1,10 @@
+# Bzlmod is the default on Bazel 8; keep explicit for clarity.
+common --enable_bzlmod
+
+# Surfacing test logs on failure helps local debugging.
+test --test_output=errors
+test --test_summary=detailed
+
+# Prefer official Go proxy; fall back to goproxy.cn for China networks.
+build --action_env=GOPROXY=https://proxy.golang.org,https://goproxy.cn,direct
+run --action_env=GOPROXY=https://proxy.golang.org,https://goproxy.cn,direct

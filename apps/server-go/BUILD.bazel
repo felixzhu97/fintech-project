@@ -1,0 +1,9 @@
+# gazelle:prefix finpulse/server-go
+# gazelle:build_file_name BUILD.bazel
+# gazelle:exclude bin
+# gazelle:exclude server
+
+exports_files([
+    "go.mod",
+    "go.sum",
+])

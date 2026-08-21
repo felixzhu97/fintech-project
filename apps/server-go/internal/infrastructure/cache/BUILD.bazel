@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library")
+
+go_library(
+    name = "cache",
+    srcs = [
+        "quote_cache.go",
+        "redis.go",
+    ],
+    importpath = "finpulse/server-go/internal/infrastructure/cache",
+    visibility = ["//apps/server-go:__subpackages__"],
+    deps = [
+        "//apps/server-go/internal/domain",
+        "@com_github_redis_go_redis_v9//:go-redis",
+    ],
+)

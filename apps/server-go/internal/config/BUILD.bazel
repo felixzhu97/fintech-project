@@ -1,0 +1,15 @@
+load("@rules_go//go:def.bzl", "go_library", "go_test")
+
+go_library(
+    name = "config",
+    srcs = ["config.go"],
+    importpath = "finpulse/server-go/internal/config",
+    visibility = ["//apps/server-go:__subpackages__"],
+    deps = ["@com_github_joho_godotenv//:godotenv"],
+)
+
+go_test(
+    name = "config_test",
+    srcs = ["config_test.go"],
+    embed = [":config"],
+)
