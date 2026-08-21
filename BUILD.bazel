@@ -17,7 +17,6 @@ SPRING_DEPS = [
     "@maven//:org_hibernate_orm_hibernate_core",
     "@maven//:org_springframework_boot_spring_boot_starter_validation",
     "@maven//:org_springframework_boot_spring_boot_starter_web",
-    "@maven//:org_hibernate_orm_hibernate_core",
     "@maven//:org_apache_tomcat_embed_tomcat_embed_core",
     "@maven//:org_liquibase_liquibase_core",
     "@maven//:org_springframework_spring_beans",
