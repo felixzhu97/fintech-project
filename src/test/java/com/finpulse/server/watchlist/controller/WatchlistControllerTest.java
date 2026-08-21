@@ -5,6 +5,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.finpulse.server.customer.dto.CustomerRequest;
+import com.finpulse.server.watchlist.dto.WatchlistRequest;
+import com.finpulse.server.watchlistitem.dto.WatchlistItemRequest;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,60 +23,66 @@ import org.springframework.test.web.servlet.MvcResult;
 class WatchlistControllerTest {
 
   @Autowired private MockMvc mockMvc;
+  @Autowired private ObjectMapper objectMapper;
 
   @Test
   void shouldCreateWatchlistAndItem() throws Exception {
-    MvcResult customer =
+    CustomerRequest customer =
+        CustomerRequest.builder()
+            .name("Grace")
+            .email("grace@example.com")
+            .kycStatus("pending")
+            .build();
+    MvcResult customerResult =
         mockMvc
             .perform(
                 post("/api/v1/customers")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        "{\"name\":\"Grace\",\"email\":\"grace@example.com\",\"kyc_status\":\"pending\"}"))
+                    .content(objectMapper.writeValueAsString(customer)))
             .andExpect(status().isCreated())
             .andReturn();
 
-    String customerId =
-        com.jayway.jsonpath.JsonPath.read(
-            customer.getResponse().getContentAsString(), "$.customer_id");
+    UUID customerId =
+        UUID.fromString(
+            com.jayway.jsonpath.JsonPath.read(
+                customerResult.getResponse().getContentAsString(), "$.customer_id"));
 
-    MvcResult watchlist =
+    WatchlistRequest watchlist =
+        WatchlistRequest.builder().customerId(customerId).name("Tech stocks").build();
+    MvcResult watchlistResult =
         mockMvc
             .perform(
                 post("/api/v1/watchlists")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(
-                        "{\"customer_id\":\""
-                            + customerId
-                            + "\",\"name\":\"Tech stocks\"}"))
+                    .content(objectMapper.writeValueAsString(watchlist)))
             .andExpect(status().isCreated())
             .andExpect(jsonPath("$.watchlist_id").isNotEmpty())
             .andExpect(jsonPath("$.name").value("Tech stocks"))
             .andReturn();
 
-    String watchlistId =
-        com.jayway.jsonpath.JsonPath.read(
-            watchlist.getResponse().getContentAsString(), "$.watchlist_id");
+    UUID watchlistId =
+        UUID.fromString(
+            com.jayway.jsonpath.JsonPath.read(
+                watchlistResult.getResponse().getContentAsString(), "$.watchlist_id"));
 
-    String instrumentId = UUID.randomUUID().toString();
-
+    UUID instrumentId = UUID.randomUUID();
+    WatchlistItemRequest item =
+        WatchlistItemRequest.builder()
+            .watchlistId(watchlistId)
+            .instrumentId(instrumentId)
+            .build();
     mockMvc
         .perform(
             post("/api/v1/watchlist-items")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(
-                    "{\"watchlist_id\":\""
-                        + watchlistId
-                        + "\",\"instrument_id\":\""
-                        + instrumentId
-                        + "\"}"))
+                .content(objectMapper.writeValueAsString(item)))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.watchlist_item_id").isNotEmpty())
-        .andExpect(jsonPath("$.instrument_id").value(instrumentId));
+        .andExpect(jsonPath("$.instrument_id").value(instrumentId.toString()));
 
     mockMvc
         .perform(get("/api/v1/watchlists/" + watchlistId))
         .andExpect(status().isOk())
-        .andExpect(jsonPath("$.customer_id").value(customerId));
+        .andExpect(jsonPath("$.customer_id").value(customerId.toString()));
   }
 }

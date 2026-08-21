@@ -1,32 +1,26 @@
 server:
-  port: ${PORT:8802}
+  port: ${PORT:8801}
 
 spring:
   application:
     name: portfolio
   datasource:
-    # Override for Postgres, e.g.:
-    # SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/portfolio
-    # SPRING_DATASOURCE_USERNAME=postgres
-    # SPRING_DATASOURCE_PASSWORD=postgres
-    # SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
-    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:finpulse;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE}
-    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
-    username: ${SPRING_DATASOURCE_USERNAME:sa}
-    password: ${SPRING_DATASOURCE_PASSWORD:}
+    # Embedded H2 file database (no Postgres profile/driver).
+    url: jdbc:h2:file:./data/finpulse;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE;AUTO_SERVER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/0.1.xml
   jpa:
     hibernate:
-      # Schema owned by Liquibase; Hibernate only validates.
       ddl-auto: validate
       naming:
         physical-strategy: com.finpulse.server.config.EntityTableNamingStrategy
     open-in-view: false
     properties:
       hibernate:
-        # Quote identifiers so H2 accepts reserved table name "session".
         globally_quoted_identifiers: true
         jdbc:
           time_zone: UTC
@@ -38,3 +32,6 @@ spring:
     property-naming-strategy: SNAKE_CASE
     serialization:
       write-dates-as-timestamps: false
+
+app:
+  python-backend-url: ${PYTHON_BACKEND_URL:http://127.0.0.1:8800}

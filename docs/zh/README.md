@@ -91,11 +91,11 @@ FinPulse 是现代金融科技分析平台，为投资者提供投资组合管�
 ### 后端服务
 
 - **Python 3.10+ + FastAPI** - 投资组合分析 API（`apps/server-python`），端口 8800。Clean Architecture（composition.py、container、crud_helpers、api/config）；通过 `.env` 配置。
-- **Go** - 非 AI 投资组合 API（`apps/server-go`），端口 8801。health、GET /api/v1/quotes、GET /api/v1/instruments；DDD；与 Python 服务共享 DB；`pnpm run start:server:go`；API 测试 `pnpm run test:api:go`。
+- **Java** - 非 AI 投资组合 API（仓库根目录 `src/`），端口 8801。health、quotes、instruments 等 CRUD；与 Python 分析服务共享 DB；`pnpm run start:server`；API 测试见 Bazel `//:*ControllerTest`。
 - **PostgreSQL** - 投资组合持久化（Docker，主机端口 5433）
 - **Apache Kafka** - 投资组合事件消息（Docker，端口 9092）
 - **AI/ML** - 融入业务流（无独立 AI 路由）：`POST /payments` 返回欺诈检测；`POST /trades` 返回监控告警；`POST /customers` 返回身份评分；`POST /risk-metrics/compute` 根据组合历史计算 VaR。可选：Ollama、Hugging Face、TensorFlow 用于后续集成。
-- **一键启动** - `pnpm run start:server`（Docker + API + 种子数据）。**API 测试** - `pnpm run test:api`（Python pytest）；`pnpm run test:api:go`（Go 单元测试）。Ollama/HF/TF 测试在服务不可用时可能跳过。
+- **一键启动** - `pnpm run start:server`（Docker + API + 种子数据）。**API 测试** - `pnpm run test:api`（Python pytest）；Bazel Java 控制器测试。Ollama/HF/TF 测试在服务不可用时可能跳过。
 
 ### UI 与可视化
 
@@ -127,7 +127,7 @@ FinPulse 是现代金融科技分析平台，为投资者提供投资组合管�
 - **apps/portal** - React（Vite）门户应用（包名 `finpulse-portal`）；Robinhood 风格 UI，`@fintech/ui`，开发端口 3001。
 - **apps/mobile** - React Native（Expo）组合概览与指标应用；**Stocks** 屏幕展示实时价格与每股票 sparkline（NativeSparkline、useSymbolDisplayData）；含原生视图 **NativeDemoCard** 及六类原生图表：**NativeLineChart**、**NativeCandleChart**、**NativeAmericanLineChart**、**NativeBaselineChart**、**NativeHistogramChart**、**NativeLineOnlyChart**（iOS Metal，Android OpenGL ES）。图表支持主题（亮/暗）、提示、X 轴标签与水平拖拽滚动，共享 `useScrollableChart`、`ScrollableChartContainer`。
 - **apps/server-python** - Python FastAPI 后端（Clean Architecture）；PostgreSQL；Kafka；AI/ML 融入 payments、trades、customers、risk-metrics；配置见 `.env.example`；`pnpm run start:server`；API 测试 `pnpm run test:api`。
-- **apps/server-go** - Go 非 AI API（Gin、DDD、Swagger）；与 server-python 共享 DB；端口 8801；`pnpm run start:server:go`；`pnpm run test:api:go`。
+- **Java API (`src/`)** - Spring Boot 非 AI API；与 server-python 共享 DB；端口 8801；`pnpm run start:server`。
 - **packages/ui** - 共享 UI 组件库。
 - **packages/utils** - 共享工具函数库。
 
@@ -140,7 +140,7 @@ FinPulse 是现代金融科技分析平台，为投资者提供投资组合管�
 - Node.js 18+
 - pnpm 10.6.0+（必须，项目使用 pnpm workspaces）
 - Python 3.10+（后端 FastAPI 服务）
-- Go 1.22+（可选，用于 `apps/server-go`）
+- JDK 21+（用于根目录 Java API）
 - Docker（使用 `pnpm run start:server` 时的 PostgreSQL 与 Kafka）
 
 ### 安装依赖
@@ -219,7 +219,7 @@ pnpm lint
 
 ```
 fintech-project/
-├── apps/           # Web / 移动应用 / server-python, server-go
+├── apps/           # Web / 移动应用 / server-python, Java server
 ├── scripts/        # backend/, seed/, db/
 ├── packages/       # ui, utils
 ├── docs/           # 英文架构与领域文档

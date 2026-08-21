@@ -42,27 +42,27 @@ done
 
 lsof -i :8801 -t 2>/dev/null | xargs kill 2>/dev/null || true
 sleep 1
-echo "[start-backend] Starting Go :8801..."
-cd "$ROOT/apps/server-go"
-PYTHON_BACKEND_URL=http://127.0.0.1:8800 go run ./cmd/server &
-GO_PID=$!
-cd "$ROOT"
+echo "[start-backend] Starting Java :8801..."
+PYTHON_BACKEND_URL=http://127.0.0.1:8800 \
+PORT=8801 \
+  bazel run //:server &
+JAVA_PID=$!
 
-echo "[start-backend] Waiting for Go :8801..."
-GO_READY=
-for i in $(seq 1 20); do
-  curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 --max-time 5 http://127.0.0.1:8801/health 2>/dev/null | grep -q 200 && GO_READY=1 && break
+echo "[start-backend] Waiting for Java :8801..."
+JAVA_READY=
+for i in $(seq 1 60); do
+  curl -s -o /dev/null -w "%{http_code}" --connect-timeout 2 --max-time 5 http://127.0.0.1:8801/health 2>/dev/null | grep -q 200 && JAVA_READY=1 && break
   sleep 1
 done
-[ -n "$GO_READY" ] && echo "[start-backend] Go ready"
+[ -n "$JAVA_READY" ] && echo "[start-backend] Java ready"
 
-if [ -n "$GO_READY" ]; then
+if [ -n "$JAVA_READY" ] && [ -f scripts/seed/generate-seed-data.js ]; then
   PORTFOLIO_API_URL=http://127.0.0.1:8801 node scripts/seed/generate-seed-data.js
 fi
 
-cleanup() { kill $API_PID $GO_PID 2>/dev/null; exit 0; }
+cleanup() { kill $API_PID $JAVA_PID 2>/dev/null; exit 0; }
 trap cleanup SIGINT SIGTERM
 echo ""
 echo "API: http://127.0.0.1:8801  (Ctrl+C to stop)"
 echo ""
-wait $API_PID $GO_PID
+wait $API_PID $JAVA_PID

@@ -34,22 +34,6 @@ jobs:
       - name: Lint
         run: pnpm lint
 
-  go-bazel:
-    name: Go (Bazel)
-    runs-on: ubuntu-latest
-    timeout-minutes: 20
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: bazel-contrib/setup-bazel@0.19.0
-        with:
-          bazelisk-cache: true
-          disk-cache: ${{ github.workflow }}
-          repository-cache: true
-
-      - name: Test server-go
-        run: bazel test //apps/server-go/...
-
   java-bazel:
     name: Java (Bazel)
     runs-on: ubuntu-latest
@@ -63,8 +47,15 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - name: Test Java preferences
-        run: bazel test //:UserPreferenceControllerTest
+      - name: Test Java controllers
+        run: >
+          bazel test
+          //:AuthControllerTest
+          //:CustomerAccountControllerTest
+          //:InstrumentControllerTest
+          //:WatchlistControllerTest
+          //:PortfolioControllerTest
+          //:UserPreferenceControllerTest
 
       - name: Build Java server
         run: bazel build //:server
