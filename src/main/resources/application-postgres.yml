@@ -1,5 +1,5 @@
 # Activate with: --spring.profiles.active=postgres
-# Matches apps/server-go/.env.example DATABASE_URL host/db defaults.
+# Matches Postgres DATABASE_URL host/db defaults.
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://127.0.0.1:5433/portfolio}

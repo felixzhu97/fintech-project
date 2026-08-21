@@ -70,7 +70,7 @@ Chinese docs: [docs/zh/README.md](docs/zh/README.md)
 | Shared packages | `@fintech/analytics`, `@fintech/ui`, `@fintech/utils` |
 | Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD, Java user-preferences slice |
 | Data | TimescaleDB, Redis, Kafka |
-| Tooling | pnpm workspaces, TypeScript 5; Bazel for `apps/server-go` + root Java (`src/`) |
+| Tooling | pnpm workspaces, TypeScript 5; Bazel for root Java API (`src/`) |
 
 Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/en/rd/togaf/).
 
@@ -82,8 +82,7 @@ Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/e
 | pnpm | 10.6+ |
 | Python | 3.10+ |
 | Docker | latest (for local backend stack) |
-| Go | 1.24+ (when building `apps/server-go` locally) |
-| Bazelisk | optional; Bazel for `apps/server-go` and root Java (`//:server`) |
+| Bazelisk | optional; Bazel for root Java (`//:server`) |
 
 ## Getting Started
 
@@ -119,7 +118,6 @@ explore-portfolio/
 │   ├── portal/        # React portal
 │   ├── mobile/        # React Native (Expo)
 │   ├── server-python/ # FastAPI services
-│   └── server-go/     # Go API gateway (proxies user-preferences to Java)
 ├── packages/
 │   ├── analytics/     # @fintech/analytics
 │   ├── ui/            # @fintech/ui
@@ -163,7 +161,6 @@ bazel test //:UserPreferenceControllerTest
 pnpm test:all
 pnpm test:all:coverage
 pnpm test:api
-pnpm test:api:go
 ```
 
 ## Documentation

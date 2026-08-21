@@ -3,37 +3,10 @@ module(
     version = "0.1.0",
 )
 
-bazel_dep(name = "rules_go", version = "0.57.0")
-bazel_dep(name = "gazelle", version = "0.45.0")
 bazel_dep(name = "rules_java", version = "8.11.0")
 bazel_dep(name = "rules_jvm_external", version = "6.7")
 
-go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
-go_sdk.from_file(go_mod = "//apps/server-go:go.mod")
 
-go_deps = use_extension("@gazelle//:extensions.bzl", "go_deps")
-go_deps.from_file(go_mod = "//apps/server-go:go.mod")
-go_deps.config(
-    go_env = {
-        # Prefer official proxy; fall back to goproxy.cn for China networks.
-        "GOPROXY": "https://proxy.golang.org,https://goproxy.cn,direct",
-    },
-)
-
-# Direct Go deps; kept in sync by `bazel mod tidy`.
-use_repo(
-    go_deps,
-    "com_github_gin_gonic_gin",
-    "com_github_google_uuid",
-    "com_github_jackc_pgx_v5",
-    "com_github_joho_godotenv",
-    "com_github_minio_minio_go_v7",
-    "com_github_redis_go_redis_v9",
-    "com_github_swaggo_files",
-    "com_github_swaggo_gin_swagger",
-    "com_github_swaggo_swag",
-    "org_golang_x_crypto",
-)
 
 maven = use_extension("@rules_jvm_external//:extensions.bzl", "maven")
 maven.install(

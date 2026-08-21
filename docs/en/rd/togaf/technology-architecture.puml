@@ -138,7 +138,7 @@ package "API Gateway & Backend" <<Infra>> {
         component "Auth, quotes, blockchain" as GoAuthTech
         component "CRUD (customers, accounts, instruments, ...)" as GoCRUDTech
         component "Proxy to Python" as GoProxyTech
-        note right: apps/server-go\nport 8801, single entry\nhandlers split by domain\nproxies to Python :8800
+        note right: apps Java API (src/)\nport 8801, single entry\nhandlers split by domain\nproxies to Python :8800
     }
 }
 

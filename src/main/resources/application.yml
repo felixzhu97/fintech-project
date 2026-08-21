@@ -1,5 +1,5 @@
 server:
-  port: ${PORT:8802}
+  port: ${PORT:8801}
 
 spring:
   application:
@@ -38,3 +38,6 @@ spring:
     property-naming-strategy: SNAKE_CASE
     serialization:
       write-dates-as-timestamps: false
+
+app:
+  python-backend-url: ${PYTHON_BACKEND_URL:http://127.0.0.1:8800}
