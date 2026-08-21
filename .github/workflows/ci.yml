@@ -63,8 +63,8 @@ jobs:
           disk-cache: ${{ github.workflow }}
           repository-cache: true
 
-      - name: Test server-java
-        run: bazel test //apps/server-java:UserPreferenceControllerTest
+      - name: Test Java preferences
+        run: bazel test //:UserPreferenceControllerTest
 
-      - name: Build server-java
-        run: bazel build //apps/server-java:server
+      - name: Build Java server
+        run: bazel build //:server

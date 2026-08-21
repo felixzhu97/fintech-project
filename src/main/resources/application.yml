@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: finpulse-server-java
+    name: portfolio
   datasource:
     url: jdbc:h2:mem:finpulse;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
     driver-class-name: org.h2.Driver

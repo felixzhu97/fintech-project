@@ -161,7 +161,7 @@ func main() {
 	r.POST("/api/v1/watchlist-items/batch", h.WatchlistItemsCreateBatch)
 	r.PUT("/api/v1/watchlist-items/:watchlist_item_id", h.WatchlistItemsUpdate)
 	r.DELETE("/api/v1/watchlist-items/:watchlist_item_id", h.WatchlistItemsDelete)
-	// User preferences migrated to Java (apps/server-java); Go gateway proxies.
+	// User preferences migrated to Java (repo-root src/); Go gateway proxies.
 	javaProxy := handler.ProxyToJava(cfg.JavaBackendURL)
 	r.Any("/api/v1/user-preferences", javaProxy)
 	r.Any("/api/v1/user-preferences/*path", javaProxy)
