@@ -21,6 +21,8 @@ spring:
     hibernate:
       # Schema owned by Liquibase; Hibernate only validates.
       ddl-auto: validate
+      naming:
+        physical-strategy: com.finpulse.server.config.EntityTableNamingStrategy
     open-in-view: false
     properties:
       hibernate:
