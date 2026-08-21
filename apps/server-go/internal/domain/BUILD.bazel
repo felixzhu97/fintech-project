@@ -16,7 +16,6 @@ go_library(
         "portfolio.go",
         "quote.go",
         "trading.go",
-        "user_preference.go",
         "watchlist.go",
     ],
     importpath = "finpulse/server-go/internal/domain",

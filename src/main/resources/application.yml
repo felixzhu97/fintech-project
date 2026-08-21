@@ -5,10 +5,15 @@ spring:
   application:
     name: portfolio
   datasource:
-    url: jdbc:h2:mem:finpulse;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE
-    driver-class-name: org.h2.Driver
-    username: sa
-    password:
+    # Override for Postgres, e.g.:
+    # SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5433/portfolio
+    # SPRING_DATASOURCE_USERNAME=postgres
+    # SPRING_DATASOURCE_PASSWORD=postgres
+    # SPRING_DATASOURCE_DRIVER=org.postgresql.Driver
+    url: ${SPRING_DATASOURCE_URL:jdbc:h2:mem:finpulse;DB_CLOSE_DELAY=-1;MODE=PostgreSQL;DATABASE_TO_LOWER=TRUE}
+    driver-class-name: ${SPRING_DATASOURCE_DRIVER:org.h2.Driver}
+    username: ${SPRING_DATASOURCE_USERNAME:sa}
+    password: ${SPRING_DATASOURCE_PASSWORD:}
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/db.changelog-master.xml

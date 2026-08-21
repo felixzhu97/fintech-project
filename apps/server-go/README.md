@@ -4,7 +4,7 @@ API gateway and core services. Same DB as `server-python`. Port 8801 by default.
 
 ## Handler Structure
 
-Split by domain: `handler.go`, `helpers.go` (core); `customer_account`, `instrument`, `bond_option`, `watchlist`, `user_preference`, `portfolio_position`, `order_trade`, `payment_settlement`, `market_data` (CRUD); `auth`, `blockchain`, `proxy`.
+Split by domain: `handler.go`, `helpers.go` (core); `customer_account`, `instrument`, `bond_option`, `watchlist`, `portfolio_position`, `order_trade`, `payment_settlement`, `market_data` (CRUD); `auth`, `blockchain`, `proxy`. User-preferences are served by the Java app under repo-root `src/` (proxied).
 
 ## Endpoints (Go)
 
