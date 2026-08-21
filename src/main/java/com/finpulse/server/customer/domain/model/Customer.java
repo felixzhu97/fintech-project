@@ -1,23 +1,22 @@
 package com.finpulse.server.customer.domain.model;
 
 import java.time.Instant;
-import java.util.Objects;
 import java.util.UUID;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.experimental.Accessors;
 
+@Getter
+@Accessors(fluent = true)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Customer {
-  private final UUID customerId;
-  private final String name;
+  @NonNull private final UUID customerId;
+  @NonNull private final String name;
   private final String email;
   private final String kycStatus;
-  private final Instant createdAt;
-
-  private Customer(UUID customerId, String name, String email, String kycStatus, Instant createdAt) {
-    this.customerId = Objects.requireNonNull(customerId);
-    this.name = Objects.requireNonNull(name);
-    this.email = email;
-    this.kycStatus = kycStatus;
-    this.createdAt = createdAt == null ? Instant.now() : createdAt;
-  }
+  @NonNull private final Instant createdAt;
 
   public static Customer create(String name, String email) {
     return new Customer(UUID.randomUUID(), name, email, null, Instant.now());
@@ -25,12 +24,7 @@ public final class Customer {
 
   public static Customer rehydrate(
       UUID customerId, String name, String email, String kycStatus, Instant createdAt) {
-    return new Customer(customerId, name, email, kycStatus, createdAt);
+    return new Customer(
+        customerId, name, email, kycStatus, createdAt == null ? Instant.now() : createdAt);
   }
-
-  public UUID customerId() { return customerId; }
-  public String name() { return name; }
-  public String email() { return email; }
-  public String kycStatus() { return kycStatus; }
-  public Instant createdAt() { return createdAt; }
 }
