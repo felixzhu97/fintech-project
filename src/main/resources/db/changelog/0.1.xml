@@ -5,6 +5,26 @@
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
         https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
 
+    <changeSet id="001-create-user-preference" author="finpulse">
+        <comment>Align with scripts/db/schema.sql user_preference</comment>
+        <createTable tableName="user_preference">
+            <column name="preference_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="theme" type="varchar(64)"/>
+            <column name="language" type="varchar(32)"/>
+            <column name="notifications_enabled" type="boolean">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
     <changeSet id="002-create-customer-auth" author="finpulse">
         <comment>customer, user_credential, session aligned with scripts/db/schema.sql</comment>
         <createTable tableName="customer">
@@ -59,6 +79,33 @@
         </createTable>
         <createIndex tableName="session" indexName="idx_session_token">
             <column name="token"/>
+        </createIndex>
+    </changeSet>
+
+    <changeSet id="003-create-account" author="finpulse">
+        <comment>account aligned with scripts/db/schema.sql</comment>
+        <createTable tableName="account">
+            <column name="account_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="customer_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="account_type" type="varchar(64)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="currency" type="varchar(16)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="opened_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <createIndex tableName="account" indexName="idx_account_customer">
+            <column name="customer_id"/>
         </createIndex>
     </changeSet>
 

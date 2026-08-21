@@ -16,7 +16,7 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD:}
   liquibase:
     enabled: true
-    change-log: classpath:db/changelog/db.changelog-master.xml
+    change-log: classpath:db/changelog/0.1.xml
   jpa:
     hibernate:
       # Schema owned by Liquibase; Hibernate only validates.
