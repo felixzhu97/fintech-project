@@ -109,4 +109,102 @@
         </createIndex>
     </changeSet>
 
+    <changeSet id="004-create-instrument-bond-option-market-data" author="finpulse">
+        <comment>instrument, bond, option, market_data aligned with scripts/db/schema.sql</comment>
+        <createTable tableName="instrument">
+            <column name="instrument_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="symbol" type="varchar(512)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar(512)"/>
+            <column name="asset_class" type="varchar(64)"/>
+            <column name="currency" type="varchar(16)"/>
+            <column name="exchange" type="varchar(64)"/>
+        </createTable>
+        <createTable tableName="bond">
+            <column name="bond_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="instrument_id" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="face_value" type="numeric(20, 8)"/>
+            <column name="coupon_rate" type="numeric(12, 6)"/>
+            <column name="ytm" type="numeric(12, 6)"/>
+            <column name="duration" type="numeric(12, 6)"/>
+            <column name="convexity" type="numeric(12, 6)"/>
+            <column name="maturity_years" type="numeric(8, 4)"/>
+            <column name="frequency" type="integer"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="bond" baseColumnNames="instrument_id"
+            referencedTableName="instrument" referencedColumnNames="instrument_id"
+            constraintName="fk_bond_instrument" onDelete="CASCADE"/>
+        <createTable tableName="option">
+            <column name="option_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="instrument_id" type="uuid">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="underlying_instrument_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="strike" type="numeric(20, 8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="expiry" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="option_type" type="varchar(32)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="risk_free_rate" type="numeric(12, 6)"/>
+            <column name="volatility" type="numeric(12, 6)"/>
+            <column name="bs_price" type="numeric(20, 8)"/>
+            <column name="delta" type="numeric(12, 6)"/>
+            <column name="gamma" type="numeric(12, 6)"/>
+            <column name="theta" type="numeric(12, 6)"/>
+            <column name="vega" type="numeric(12, 6)"/>
+            <column name="rho" type="numeric(12, 6)"/>
+            <column name="implied_volatility" type="numeric(12, 6)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="option" baseColumnNames="instrument_id"
+            referencedTableName="instrument" referencedColumnNames="instrument_id"
+            constraintName="fk_option_instrument" onDelete="CASCADE"/>
+        <addForeignKeyConstraint baseTableName="option" baseColumnNames="underlying_instrument_id"
+            referencedTableName="instrument" referencedColumnNames="instrument_id"
+            constraintName="fk_option_underlying_instrument" onDelete="CASCADE"/>
+        <createTable tableName="market_data">
+            <column name="data_id" type="uuid">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="instrument_id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="timestamp" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="open" type="numeric(20, 8)"/>
+            <column name="high" type="numeric(20, 8)"/>
+            <column name="low" type="numeric(20, 8)"/>
+            <column name="close" type="numeric(20, 8)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="volume" type="numeric(20, 4)"/>
+            <column name="change_pct" type="numeric(12, 6)"/>
+        </createTable>
+        <addForeignKeyConstraint baseTableName="market_data" baseColumnNames="instrument_id"
+            referencedTableName="instrument" referencedColumnNames="instrument_id"
+            constraintName="fk_market_data_instrument" onDelete="CASCADE"/>
+        <createIndex tableName="market_data" indexName="idx_market_data_instrument">
+            <column name="instrument_id"/>
+        </createIndex>
+        <createIndex tableName="market_data" indexName="idx_market_data_timestamp">
+            <column name="instrument_id"/>
+            <column name="timestamp"/>
+        </createIndex>
+    </changeSet>
+
 </databaseChangeLog>
