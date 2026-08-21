@@ -3,7 +3,6 @@ package com.finpulse.server.blockchain.infra.persistence;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
@@ -15,7 +14,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "chain_transaction")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)

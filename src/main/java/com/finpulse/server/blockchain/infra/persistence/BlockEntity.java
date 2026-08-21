@@ -3,7 +3,6 @@ package com.finpulse.server.blockchain.infra.persistence;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
 import java.time.Instant;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -13,7 +12,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "block")
 @Getter
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
