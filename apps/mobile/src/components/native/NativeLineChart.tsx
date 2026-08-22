@@ -1,8 +1,9 @@
 import type { ComponentType } from "react";
 import { useCallback, useMemo, useState } from "react";
 import type { ViewProps } from "react-native";
-import { Platform, requireNativeComponent, Text, View, PanResponder } from "react-native";
+import { Platform, Text, View, PanResponder } from "react-native";
 import { formatChartLabel, formatChartTooltipDate } from "@/src/lib/utils";
+import { resolveNativeComponent } from "@/src/components/native/resolveNativeComponent";
 
 export type PointSelectPayload = {
   index: number;
@@ -22,10 +23,7 @@ export type NativeLineChartProps = {
   onInteractionEnd?: () => void;
 } & ViewProps;
 
-const NativeLineChartNative =
-  Platform.OS !== "web"
-    ? requireNativeComponent<NativeLineChartProps>("NativeLineChart")
-    : null;
+const NativeLineChartNative = resolveNativeComponent<NativeLineChartProps>("NativeLineChart");
 
 function formatValue(value: number): string {
   if (value >= 1e9) return `${(value / 1e9).toFixed(2)}B`;
@@ -51,13 +49,30 @@ function formatHour(ts: number): string {
 const ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 export function NativeLineChart(props: NativeLineChartProps) {
-  const { data = [], onPointSelect, timestamps, theme = "light", trend: trendProp, baselineValue, currencySymbol = "", onInteractionStart, onInteractionEnd, style, ...rest } = props;
+  const {
+    data = [],
+    onPointSelect,
+    timestamps,
+    theme = "light",
+    trend: trendProp,
+    baselineValue,
+    currencySymbol = "",
+    onInteractionStart,
+    onInteractionEnd,
+    style,
+    ...rest
+  } = props;
   const isDark = theme === "dark";
   const crosshairColor = isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.35)";
   const [layoutWidth, setLayoutWidth] = useState(0);
   const [layoutHeight, setLayoutHeight] = useState(0);
-  const [selected, setSelected] = useState<{ index: number; value: number; x: number; ts?: number } | null>(null);
-  
+  const [selected, setSelected] = useState<{
+    index: number;
+    value: number;
+    x: number;
+    ts?: number;
+  } | null>(null);
+
   const trend = useMemo(() => {
     if (trendProp !== undefined) return trendProp;
     if (baselineValue !== undefined && data.length > 0) {
@@ -109,12 +124,6 @@ export function NativeLineChart(props: NativeLineChartProps) {
     [updateSelection, onInteractionStart, onInteractionEnd]
   );
 
-  if (Platform.OS === "web") {
-    return <View {...rest} style={[{ backgroundColor: "#f7f7fa", justifyContent: "center", alignItems: "center" }, style]} />;
-  }
-
-  const NativeView = NativeLineChartNative as ComponentType<NativeLineChartProps>;
-
   const onLayout = useCallback((e: { nativeEvent: { layout: { width: number; height: number } } }) => {
     setLayoutWidth(e.nativeEvent.layout.width);
     setLayoutHeight(e.nativeEvent.layout.height);
@@ -122,7 +131,8 @@ export function NativeLineChart(props: NativeLineChartProps) {
 
   const chartWidth = layoutWidth > 90 ? layoutWidth - 90 : layoutWidth;
   const xAxisLabelHeight = 20;
-  const chartDataHeight = layoutHeight > xAxisLabelHeight ? layoutHeight - xAxisLabelHeight : layoutHeight;
+  const chartDataHeight =
+    layoutHeight > xAxisLabelHeight ? layoutHeight - xAxisLabelHeight : layoutHeight;
 
   const yAxisLabels = useMemo(() => {
     if (data.length === 0 || chartDataHeight === 0) return [];
@@ -130,7 +140,6 @@ export function NativeLineChart(props: NativeLineChartProps) {
     const maxVal = Math.max(...data);
     const range = maxVal - minVal || 1;
     const labelCount = 6;
-    
     return Array.from({ length: labelCount }, (_, i) => {
       const t = i / (labelCount - 1);
       const value = maxVal - t * range;
@@ -141,7 +150,7 @@ export function NativeLineChart(props: NativeLineChartProps) {
 
   const isDaySpan = useMemo(() => {
     if (!timestamps || timestamps.length < 2) return false;
-    return (timestamps[timestamps.length - 1] - timestamps[0]) > ONE_DAY_MS;
+    return timestamps[timestamps.length - 1] - timestamps[0] > ONE_DAY_MS;
   }, [timestamps]);
 
   const xAxisLabels = useMemo(() => {
@@ -152,7 +161,6 @@ export function NativeLineChart(props: NativeLineChartProps) {
     const duration = endTime - startTime;
     const labelWidth = 36;
     const formatX = isDaySpan ? formatShortDate : formatHour;
-
     return Array.from({ length: labelCount }, (_, i) => {
       const t = i / (labelCount - 1);
       const timestamp = startTime + t * duration;
@@ -173,19 +181,42 @@ export function NativeLineChart(props: NativeLineChartProps) {
     });
   }, [timestamps, chartWidth, isDaySpan]);
 
+  // Hooks must run unconditionally above this point.
+  if (Platform.OS === "web" || !NativeLineChartNative) {
+    return (
+      <View
+        {...rest}
+        style={[
+          {
+            backgroundColor: "transparent",
+            justifyContent: "center",
+            alignItems: "center",
+            minHeight: 120,
+          },
+          style,
+        ]}
+      >
+        <Text style={{ color: isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.4)", fontSize: 12 }}>
+          Chart preview (native build required)
+        </Text>
+      </View>
+    );
+  }
+
+  const NativeView = NativeLineChartNative as ComponentType<NativeLineChartProps>;
   const labelColor = isDark ? "rgba(255,255,255,0.9)" : "rgba(0,0,0,0.7)";
 
   return (
     <View style={[{ overflow: "visible", backgroundColor: "transparent" }, style]} onLayout={onLayout}>
       <View style={{ width: chartWidth, height: chartDataHeight }}>
-        <NativeView 
-          data={data} 
-          theme={theme} 
+        <NativeView
+          data={data}
+          theme={theme}
           trend={trend}
           timestamps={timestamps}
           baselineValue={baselineValue}
-          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }} 
-          {...rest} 
+          style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0 }}
+          {...rest}
         />
       </View>
       {yAxisLabels.map((label, i) => (
@@ -202,7 +233,8 @@ export function NativeLineChart(props: NativeLineChartProps) {
             left: chartWidth + 8,
           }}
         >
-          {currencySymbol}{formatValue(label.value)}
+          {currencySymbol}
+          {formatValue(label.value)}
         </Text>
       ))}
       {xAxisLabels.map((label, i) => (
@@ -225,7 +257,10 @@ export function NativeLineChart(props: NativeLineChartProps) {
         </Text>
       ))}
       <View
-        style={[{ width: chartWidth, height: chartDataHeight, position: "absolute", left: 0, top: 0 }, { pointerEvents: "auto" }]}
+        style={[
+          { width: chartWidth, height: chartDataHeight, position: "absolute", left: 0, top: 0 },
+          { pointerEvents: "auto" },
+        ]}
         {...pan.panHandlers}
       >
         {selected !== null && (
@@ -255,9 +290,14 @@ export function NativeLineChart(props: NativeLineChartProps) {
                 left: Math.max(8, Math.min(chartWidth - 8, selected.x - 40)),
               }}
             >
-              <Text style={{ fontSize: 14, fontWeight: "600", color: "#fff" }}>{currencySymbol}{formatValue(selected.value)}</Text>
+              <Text style={{ fontSize: 14, fontWeight: "600", color: "#fff" }}>
+                {currencySymbol}
+                {formatValue(selected.value)}
+              </Text>
               {selected.ts != null && (
-                <Text style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>{formatTimestamp(selected.ts)}</Text>
+                <Text style={{ fontSize: 11, color: "rgba(255,255,255,0.7)", marginTop: 2 }}>
+                  {formatTimestamp(selected.ts)}
+                </Text>
               )}
             </View>
           </>

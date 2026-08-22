@@ -1,6 +1,7 @@
 import type { ComponentType } from "react";
 import type { ViewProps } from "react-native";
-import { Platform, requireNativeComponent, View } from "react-native";
+import { Platform, View } from "react-native";
+import { resolveNativeComponent } from "@/src/components/native/resolveNativeComponent";
 
 export type NativeHistogramChartProps = {
   data?: number[];
@@ -10,15 +11,13 @@ export type NativeHistogramChartProps = {
 } & ViewProps;
 
 const NativeHistogramChartNative =
-  Platform.OS !== "web"
-    ? requireNativeComponent<NativeHistogramChartProps>("NativeHistogramChart")
-    : null;
+  resolveNativeComponent<NativeHistogramChartProps>("NativeHistogramChart");
 
 export function NativeHistogramChart(props: NativeHistogramChartProps) {
   const { data = [], theme = "light", timestamps, style, ...rest } = props;
   const flatData = Array.isArray(data) ? data : [];
 
-  if (Platform.OS === "web") {
+  if (Platform.OS === "web" || !NativeHistogramChartNative) {
     return <View style={[{ backgroundColor: "#000", minHeight: 160 }, style]} {...rest} />;
   }
 
