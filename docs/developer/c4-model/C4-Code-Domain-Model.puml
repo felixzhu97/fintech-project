@@ -4,31 +4,119 @@ title Code diagram (C4) — FinPulse domain model (DDD)
 
 hide empty members
 
+<style>
+  document {
+    BackgroundColor #FAFAFA
+    FontColor #18181B
+  }
+  title {
+    FontColor #09090B
+    FontSize 18
+    FontStyle bold
+    Margin 20
+  }
+  legend {
+    BackgroundColor #FFFFFF
+    BorderColor #E4E4E7
+    FontColor #3F3F46
+    FontSize 11
+    RoundCorner 12
+    Padding 10
+  }
+  note {
+    BackgroundColor #F8FAFC
+    BorderColor #CBD5E1
+    FontColor #334155
+    FontSize 11
+    RoundCorner 10
+    Padding 10
+    Shadowing 0
+  }
+  classDiagram {
+    LineColor #A1A1AA
+    LineThickness 1.2
+    FontColor #52525B
+    FontSize 11
+    Padding 8
+    Margin 10
+    RoundCorner 12
+    Shadowing 0
+
+    class {
+      BackgroundColor #FFFFFF
+      BorderColor #D4D4D8
+      FontColor #18181B
+      FontSize 12
+      RoundCorner 12
+      Padding 8
+      Shadowing 0
+    }
+    enum {
+      BackgroundColor #FFFBEB
+      BorderColor #F59E0B
+      FontColor #78350F
+      RoundCorner 12
+      Padding 8
+    }
+    package {
+      BackgroundColor #FFFFFF
+      BorderColor #E4E4E7
+      FontColor #3F3F46
+      FontSize 13
+      FontStyle bold
+      RoundCorner 16
+      Padding 14
+      Margin 12
+    }
+    arrow {
+      LineColor #71717A
+      LineThickness 1.25
+      FontColor #52525B
+      FontSize 11
+    }
+
+    .AggregateRoot {
+      BackgroundColor #ECFDF5
+      BorderColor #10B981
+      FontColor #064E3B
+      BorderThickness 1.5
+    }
+    .Entity {
+      BackgroundColor #EFF6FF
+      BorderColor #3B82F6
+      FontColor #1E3A8A
+      BorderThickness 1.5
+    }
+    .ValueObject {
+      BackgroundColor #FFF7ED
+      BorderColor #FB923C
+      FontColor #7C2D12
+    }
+  }
+</style>
+
 skinparam classAttributeIconSize 0
 skinparam linetype ortho
-skinparam nodesep 40
-skinparam ranksep 50
+skinparam nodesep 42
+skinparam ranksep 52
 
 legend right
   |= Stereotype |= Meaning |
-  | <<AggregateRoot>> | Consistency boundary; load/save via root |
-  | <<Entity>> | Identity + lifecycle |
+  | <<AggregateRoot>> | Consistency boundary; access via root |
+  | <<Entity>> | Identity + lifecycle; private ctor + factory |
   | <<ValueObject>> | Immutable; equality by value |
   | | |
   | **Associations** | Composition = ownership; arrow = reference |
   | **Preferred Terms** | See docs/Glossary.md |
-  | **Code note** | Java currently stores many IDs as UUID; |
-  | | typed Id VOs are the ubiquitous-language target |
+  | **Code note** | Java may still store bare UUID; typed Id VOs are the UL target |
 endlegend
 
 note as N_LAYERS
-  Java feature modules: controller → service → domain ← infra
-  Domain models are framework-free (no JPA / Spring in domain/).
+  Feature modules: controller → service → domain ← infra
+  Domain is framework-free (no JPA / Spring in domain/).
 end note
 
-' ============================================================
-' Shared value objects
-' ============================================================
+' ── shared kernel ──────────────────────────────────────────
 package "shared kernel (VOs)" as pkg_shared {
   class CustomerId <<ValueObject>> {
     UUID value
@@ -69,9 +157,7 @@ package "shared kernel (VOs)" as pkg_shared {
   }
 }
 
-' ============================================================
-' Customer / Account
-' ============================================================
+' ── customer & account ─────────────────────────────────────
 package "customer & account" as pkg_crm {
   class Customer <<AggregateRoot>> {
     CustomerId customerId
@@ -127,9 +213,7 @@ Account --> CurrencyCode
 UserPreference --> PreferenceId
 UserPreference --> CustomerId
 
-' ============================================================
-' Portfolio / Position
-' ============================================================
+' ── portfolio ──────────────────────────────────────────────
 package "portfolio" as pkg_pf {
   class Portfolio <<AggregateRoot>> {
     PortfolioId portfolioId
@@ -159,9 +243,7 @@ Position --> InstrumentId
 Position --> Quantity
 Position --> Money
 
-' ============================================================
-' Instrument / Bond / Option / Market data
-' ============================================================
+' ── instrument & market ────────────────────────────────────
 package "instrument & market" as pkg_mkt {
   class Instrument <<AggregateRoot>> {
     InstrumentId instrumentId
@@ -241,9 +323,7 @@ MarketData --> InstrumentId
 MarketData --> Money
 Instrument "1" o-- "0..*" MarketData : priced by
 
-' ============================================================
-' Watchlist
-' ============================================================
+' ── watchlist ──────────────────────────────────────────────
 package "watchlist" as pkg_wl {
   class Watchlist <<AggregateRoot>> {
     WatchlistId watchlistId
@@ -270,9 +350,7 @@ WatchlistItem --> WatchlistItemId
 WatchlistItem --> WatchlistId
 WatchlistItem --> InstrumentId
 
-' ============================================================
-' Trading / payments / settlement
-' ============================================================
+' ── trading & money ────────────────────────────────────────
 package "trading & money" as pkg_trade {
   class TradeOrder <<AggregateRoot>> {
     OrderId orderId
