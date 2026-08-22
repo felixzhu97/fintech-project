@@ -1,7 +1,8 @@
 @startuml C4-Deployment
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+' Theme before C4 includes; do not combine with !NEW_C4_STYLE=1
+!theme C4_blue_new from https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/themes
 
-LAYOUT_WITH_LEGEND()
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
 
 title Deployment (C4) — local/dev + production (single view)
 
