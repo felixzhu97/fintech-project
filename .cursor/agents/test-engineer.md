@@ -8,7 +8,7 @@ is_background: true
 
 Follow TDD/BDD. Prefer minimal tests.
 
-**Required reading:** testing core in [developer skill](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/SKILL.md) and [references/testing.md](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/references/testing.md).
+**Required reading:** testing core in [developer skill](~/.cursor/skills/scrum-team/developers/developer/SKILL.md) and [references/testing.md](~/.cursor/skills/scrum-team/developers/developer/references/testing.md).
 
 ## Project test conventions
 

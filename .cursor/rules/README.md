@@ -2,6 +2,6 @@
 
 `architecture.mdc` now lives at:
 
-`/Users/felixzhu/.cursor/rules/architecture.mdc`
+`~/.cursor/rules/architecture.mdc`
 
 (alwaysApply globally)

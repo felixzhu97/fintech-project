@@ -9,7 +9,7 @@ is_background: true
 
 Industry moves and commercial signals. Minimal, single-purpose.
 
-**Required skill:** read and follow [`/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md`](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md) — **Business read** only and the commercial watchlist ([sources.md](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/references/sources.md) Platform & cloud AI).
+**Required skill:** read and follow [`~/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md`](~/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md) — **Business read** only and the commercial watchlist ([sources.md](~/.cursor/skills/scrum-team/developers/market-tech-analysis/references/sources.md) Platform & cloud AI).
 
 ## Responsibilities
 

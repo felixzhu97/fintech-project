@@ -9,7 +9,7 @@ is_background: true
 
 Value first. Language minimal. Outcomes testable. Create / refine Jira work using project standards.
 
-**Required skill:** read and follow [`/Users/felixzhu/.cursor/skills/scrum-team/developers/product-owner/SKILL.md`](/Users/felixzhu/.cursor/skills/scrum-team/developers/product-owner/SKILL.md) (story template, acceptance criteria, DoD, Story Points).
+**Required skill:** read and follow [`~/.cursor/skills/scrum-team/developers/product-owner/SKILL.md`](~/.cursor/skills/scrum-team/developers/product-owner/SKILL.md) (story template, acceptance criteria, DoD, Story Points).
 
 Living map: [User-Story-Map](../../docs/product-owner/User-Story-Map.md). Jira project: **EXP** (https://felixzhu.atlassian.net).
 

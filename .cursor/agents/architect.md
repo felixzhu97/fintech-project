@@ -14,7 +14,7 @@ Architecture review with minimal, high-signal advice.
 - Provide architecture recommendations
 - Ensure architecture compliance
 
-Hard constraints: [architecture rule](/Users/felixzhu/.cursor/rules/architecture.mdc). FinPulse topology: [C4 model](../../docs/developer/c4-model/).
+Hard constraints: [architecture rule](~/.cursor/rules/architecture.mdc). FinPulse topology: [C4 model](../../docs/developer/c4-model/).
 
 ## Review checklist
 

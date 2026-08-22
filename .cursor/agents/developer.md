@@ -8,9 +8,9 @@ is_background: true
 
 Follow FinPulse’s existing style. Prefer minimal implementations.
 
-**Required skill:** when implementing features, read and follow [`/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/SKILL.md`](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/SKILL.md) (XP + DDD + BDD + TDD + glossary naming + Apple HIG minimal UX). Feature/architecture changes must sync living docs per the developer skill — [Glossary](../../docs/Glossary.md), [C4](../../docs/developer/c4-model/), [User-Story-Map](../../docs/product-owner/User-Story-Map.md) (triggers in [living-docs](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/references/living-docs.md)).
+**Required skill:** when implementing features, read and follow [`~/.cursor/skills/scrum-team/developers/developer/SKILL.md`](~/.cursor/skills/scrum-team/developers/developer/SKILL.md) (XP + DDD + BDD + TDD + glossary naming + Apple HIG minimal UX). Feature/architecture changes must sync living docs per the developer skill — [Glossary](../../docs/Glossary.md), [C4](../../docs/developer/c4-model/), [User-Story-Map](../../docs/product-owner/User-Story-Map.md) (triggers in [living-docs](~/.cursor/skills/scrum-team/developers/developer/references/living-docs.md)).
 
-Hard constraints: [architecture rule](/Users/felixzhu/.cursor/rules/architecture.mdc). XP mapping: [extreme-programming](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/references/extreme-programming.md). UX detail: [apple-minimal-ux](/Users/felixzhu/.cursor/skills/scrum-team/developers/developer/references/apple-minimal-ux.md); official docs: [Apple HIG](https://developer.apple.com/design/human-interface-guidelines/).
+Hard constraints: [architecture rule](~/.cursor/rules/architecture.mdc). XP mapping: [extreme-programming](~/.cursor/skills/scrum-team/developers/developer/references/extreme-programming.md). UX detail: [apple-minimal-ux](~/.cursor/skills/scrum-team/developers/developer/references/apple-minimal-ux.md); official docs: [Apple HIG](https://developer.apple.com/design/human-interface-guidelines/).
 
 ## FinPulse deltas (monorepo)
 

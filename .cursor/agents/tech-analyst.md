@@ -9,7 +9,7 @@ is_background: true
 
 Frontier research and technical signals. Minimal, single-purpose.
 
-**Required skill:** read and follow [`/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md`](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md) — **Technical read** only plus research/OSS/arXiv/HF ([sources.md](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/references/sources.md)).
+**Required skill:** read and follow [`~/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md`](~/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md) — **Technical read** only plus research/OSS/arXiv/HF ([sources.md](~/.cursor/skills/scrum-team/developers/market-tech-analysis/references/sources.md)).
 
 ## Responsibilities
 

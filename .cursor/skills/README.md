@@ -2,10 +2,10 @@
 
 FinPulse Cursor skills live under:
 
-`/Users/felixzhu/.cursor/skills/scrum-team/developers/`
+`~/.cursor/skills/scrum-team/developers/`
 
-See also: `/Users/felixzhu/.cursor/skills/scrum-team/developers/EXPLORE_SKILLS.md`
+See also: `~/.cursor/skills/scrum-team/developers/EXPLORE_SKILLS.md`
 
-Rules: `.cursor/rules/README.md` → `/Users/felixzhu/.cursor/rules/architecture.mdc`
+Rules: `.cursor/rules/README.md` → `~/.cursor/rules/architecture.mdc`
 
 Jira project: EXP (https://felixzhu.atlassian.net)
