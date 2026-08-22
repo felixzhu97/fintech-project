@@ -124,6 +124,12 @@
       BorderColor #10B981
       FontColor #064E3B
     }
+    database {
+      BackgroundColor #FFFBEB
+      BorderColor #F59E0B
+      FontColor #78350F
+      RoundCorner 12
+    }
     arrow {
       LineColor #71717A
       LineThickness 1.25
@@ -141,6 +147,44 @@
       FontColor #3F3F46
       RoundCorner 12
     }
+
+    ' Role stereotypes for Dynamic diagrams (apply <<ui>> <<java>> …)
+    .ui {
+      BackgroundColor #F8FAFC
+      BorderColor #64748B
+      FontColor #0F172A
+      BorderThickness 1.5
+    }
+    .java {
+      BackgroundColor #EFF6FF
+      BorderColor #3B82F6
+      FontColor #1E3A8A
+      BorderThickness 1.5
+    }
+    .python {
+      BackgroundColor #F0FDFA
+      BorderColor #14B8A6
+      FontColor #134E4A
+      BorderThickness 1.5
+    }
+    .db {
+      BackgroundColor #FFFBEB
+      BorderColor #F59E0B
+      FontColor #78350F
+      BorderThickness 1.5
+    }
+    .bus {
+      BackgroundColor #FFF7ED
+      BorderColor #FB923C
+      FontColor #7C2D12
+      BorderThickness 1.5
+    }
+    .external {
+      BackgroundColor #F4F4F5
+      BorderColor #A1A1AA
+      FontColor #3F3F46
+      BorderThickness 1.5
+    }
   }
 </style>
 
@@ -152,3 +196,30 @@ skinparam shadowing false
 skinparam sequenceMessageAlign center
 skinparam ParticipantPadding 20
 skinparam BoxPadding 12
+
+' Fallback for engines that style sequence via skinparam stereotypes
+skinparam participant {
+  BackgroundColor<<ui>> #F8FAFC
+  BorderColor<<ui>> #64748B
+  FontColor<<ui>> #0F172A
+  BackgroundColor<<java>> #EFF6FF
+  BorderColor<<java>> #3B82F6
+  FontColor<<java>> #1E3A8A
+  BackgroundColor<<python>> #F0FDFA
+  BorderColor<<python>> #14B8A6
+  FontColor<<python>> #134E4A
+  BackgroundColor<<db>> #FFFBEB
+  BorderColor<<db>> #F59E0B
+  FontColor<<db>> #78350F
+  BackgroundColor<<bus>> #FFF7ED
+  BorderColor<<bus>> #FB923C
+  FontColor<<bus>> #7C2D12
+  BackgroundColor<<external>> #F4F4F5
+  BorderColor<<external>> #A1A1AA
+  FontColor<<external>> #3F3F46
+}
+skinparam database {
+  BackgroundColor<<db>> #FFFBEB
+  BorderColor<<db>> #F59E0B
+  FontColor<<db>> #78350F
+}

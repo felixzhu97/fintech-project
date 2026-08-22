@@ -1,0 +1,35 @@
+@startuml C4-Dynamic-Portfolio-Aggregate
+!include style-zinc.puml
+
+title Dynamic — Portfolio aggregate (Java → Python)
+
+actor Investor as investor
+participant "Portal / Mobile" as ui <<ui>>
+participant "Java API\nproxy routes :8801" as java <<java>>
+participant "Python Analytics\nrouters/services :8800" as py <<python>>
+database "PostgreSQL" as db <<db>>
+
+investor -> ui: 1. Open portfolio view
+ui -> java: 2. GET /api/v1/portfolio\n(Authorization: Bearer)
+java -> py: 3. Proxy HTTP via PYTHON_BACKEND_URL
+py -> db: 4. Read holdings / positions
+db --> py: 5. Rows
+py --> java: 6. Aggregated portfolio JSON
+java --> ui: 7. 200 aggregate
+ui --> investor: 8. Render portfolio
+
+legend right
+  |= Role |= Color |
+  | Actor | Emerald |
+  | <<ui>> | Slate |
+  | <<java>> | Blue |
+  | <<python>> | Teal |
+  | <<db>> | Amber |
+endlegend
+
+note right of java
+  Java is the public entry (:8801);
+  analytics composition stays on :8800.
+end note
+
+@enduml

@@ -7,9 +7,9 @@ PlantUML C4 diagrams for the current FinPulse monorepo.
 | Track | Files | Style |
 | ----- | ----- | ----- |
 | **Structural C4** | C1–C3, Deployment | Official **`C4_blue_new`** theme (wireframe; covers components too) |
-| **Domain** | Code domain model | Shared zinc look via [`style-zinc.puml`](./style-zinc.puml) |
+| **Domain + Dynamics** | Code domain model, `C4-Dynamic-*` | Shared zinc look via [`style-zinc.puml`](./style-zinc.puml) |
 
-Do not mix `C4_blue_new` into domain diagrams (and do not apply `style-zinc.puml` to structural C4). Prefer `C4_blue_new` over bare `!NEW_C4_STYLE=1` so Component diagrams keep the wireframe look.
+Do not mix `C4_blue_new` into domain/dynamic diagrams (and do not apply `style-zinc.puml` to structural C4). Prefer `C4_blue_new` over bare `!NEW_C4_STYLE=1` so Component diagrams keep the wireframe look.
 
 ## Files
 
@@ -20,7 +20,10 @@ Do not mix `C4_blue_new` into domain diagrams (and do not apply `style-zinc.puml
 | [C3-Component.puml](./C3-Component.puml) | Component | **Single** diagram: Java feature modules + Python analytics + UI apps |
 | [C4-Code-Domain-Model.puml](./C4-Code-Domain-Model.puml) | Code | DDD class model: AggregateRoot / Entity / ValueObject + associations (aligned to `com.finpulse.server.*.domain`) |
 | [C4-Deployment.puml](./C4-Deployment.puml) | Deployment | **Single** diagram: local/dev and production notes in one view |
-| [style-zinc.puml](./style-zinc.puml) | Shared | Zinc styles for Code (and later Dynamics) |
+| [C4-Dynamic-Auth-Login.puml](./C4-Dynamic-Auth-Login.puml) | Dynamic | Login → auth module → DB → Bearer token |
+| [C4-Dynamic-Portfolio-Aggregate.puml](./C4-Dynamic-Portfolio-Aggregate.puml) | Dynamic | Client → Java proxy → Python → DB → aggregate |
+| [C4-Dynamic-Quotes-Subscribe.puml](./C4-Dynamic-Quotes-Subscribe.puml) | Dynamic | WS `/ws/quotes` subscribe and quote push |
+| [style-zinc.puml](./style-zinc.puml) | Shared | Zinc styles for Code + Dynamics only |
 
 > Component and Deployment are intentionally **not** split into Backend/Frontend or Production sibling files.
 
@@ -30,10 +33,25 @@ Do not mix `C4_blue_new` into domain diagrams (and do not apply `style-zinc.puml
 - Composition (`*--`) = ownership inside an aggregate; open aggregation / arrows = reference by id.
 - Typed Id / Money / Symbol VOs express ubiquitous language; Java may still store bare `UUID` until extracted.
 
+### Dynamic role colors
+
+`C4-Dynamic-*` diagrams color participants by role (via `style-zinc.puml` stereotypes):
+
+| Stereotype | Role | Tint |
+| ---------- | ---- | ---- |
+| (actor) | Investor / user | Emerald |
+| `<<ui>>` | Portal / Admin / Mobile | Slate |
+| `<<java>>` | Java API `:8801` | Blue |
+| `<<python>>` | Python Analytics `:8800` | Teal |
+| `<<db>>` | PostgreSQL | Amber |
+| `<<bus>>` | Redis / Kafka | Orange |
+| `<<external>>` | Market providers | Zinc gray |
+
 ### When to open which track
 
 - Boundaries / deploy topology → Structural C4 (`C4_blue_new`).
 - Ubiquitous language / aggregates → Code domain model.
+- Runtime request paths (auth, portfolio aggregate, quotes) → `C4-Dynamic-*`.
 
 ## Stack (current)
 
