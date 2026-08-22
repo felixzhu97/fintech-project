@@ -14,12 +14,15 @@ Architecture review with minimal, high-signal advice.
 - Provide architecture recommendations
 - Ensure architecture compliance
 
+Hard constraints: [architecture rule](/Users/felixzhu/.cursor/rules/architecture.mdc). FinPulse topology: [C4 model](../../docs/developer/c4-model/).
+
 ## Review checklist
 
 - [ ] Clean Architecture layers are correct
 - [ ] Domain model has no outward dependencies
 - [ ] Dependency direction is outer → inner
 - [ ] No circular dependencies
+- [ ] Living C4 / Glossary stay aligned with the change
 
 ## Minimal principles
 

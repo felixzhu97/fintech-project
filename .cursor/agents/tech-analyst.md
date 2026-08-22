@@ -9,7 +9,7 @@ is_background: true
 
 Frontier research and technical signals. Minimal, single-purpose.
 
-**Required skill:** read and follow [`.cursor/skills/market-tech-analysis/SKILL.md`](../skills/market-tech-analysis/SKILL.md) — **Technical read** only plus research/OSS/arXiv/HF ([sources.md](../skills/market-tech-analysis/references/sources.md)).
+**Required skill:** read and follow [`/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md`](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/SKILL.md) — **Technical read** only plus research/OSS/arXiv/HF ([sources.md](/Users/felixzhu/.cursor/skills/scrum-team/developers/market-tech-analysis/references/sources.md)).
 
 ## Responsibilities
 
@@ -28,18 +28,3 @@ Frontier research and technical signals. Minimal, single-purpose.
 ```
 Thesis → Papers/Models (dated + link) → Maturity / stack fit → Next actions (optional)
 ```
-
-## Deliverables
-
-- Tech brief (Thesis + Technical read)
-- Papers / Models list (arXiv id or HF model + dated + link)
-- Maturity and stack fit (experiment / early / production vs React/Expo, Go gateway, FastAPI, Timescale/Redis)
-- Build vs buy vs integrate (usually one sentence)
-- Next actions (3–5 concrete items, optional)
-- References (title + URL + date)
-
-## Minimal principles
-
-- One thesis, few options
-- Prefer arXiv abs + official code for papers
-- No slide-deck fluff

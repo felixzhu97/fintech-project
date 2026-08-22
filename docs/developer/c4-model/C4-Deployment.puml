@@ -1,0 +1,61 @@
+@startuml C4-Deployment
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Deployment.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Deployment (C4) — local/dev + production (single view)
+
+Deployment_Node(local, "Local / Dev", "Developer workstation") {
+    Deployment_Node(node, "Node 20 + pnpm", "Vite / Expo") {
+        Container(admin_dev, "Admin", "Vite", "apps/admin")
+        Container(portal_dev, "Portal", "Vite", "apps/portal")
+        Container(mobile_dev, "Mobile", "Expo", "apps/mobile")
+    }
+    Deployment_Node(jvm, "JDK 21 + Bazel", "Spring Boot") {
+        Container(java_dev, "Java API", "Spring Boot", ":8801 entry")
+    }
+    Deployment_Node(py, "Python 3.10+ venv", "uvicorn") {
+        Container(python_dev, "Python Analytics", "FastAPI", ":8800")
+    }
+    Deployment_Node(docker_local, "Docker Compose", "local deps") {
+        ContainerDb(pg_local, "PostgreSQL", "Docker")
+        ContainerDb(redis_local, "Redis", "Docker")
+        ContainerQueue(kafka_local, "Kafka", "Docker")
+    }
+}
+
+Deployment_Node(prod, "Production (target)", "Cloud / VPS — configure per env") {
+    Deployment_Node(edge, "TLS edge", "CDN / reverse proxy") {
+        Container(web_static, "Admin + Portal static", "HTTPS", "Built Vite assets")
+    }
+    Deployment_Node(app_tier, "App tier", "containers or VMs") {
+        Container(java_prod, "Java API", "Spring Boot", "Public API")
+        Container(python_prod, "Python Analytics", "FastAPI", "Private network")
+    }
+    Deployment_Node(data_tier, "Data tier", "managed services") {
+        ContainerDb(pg_prod, "PostgreSQL", "Managed")
+        ContainerDb(redis_prod, "Redis", "Managed / optional")
+        ContainerQueue(kafka_prod, "Kafka", "Managed / optional")
+    }
+    Container(mobile_stores, "Mobile binaries", "App Store / Play", "Expo EAS build artifacts")
+}
+
+Rel(admin_dev, java_dev, "HTTP :8801")
+Rel(portal_dev, java_dev, "HTTP :8801")
+Rel(mobile_dev, java_dev, "HTTP :8801")
+Rel(java_dev, python_dev, "HTTP :8800")
+Rel(java_dev, pg_local, "JDBC")
+Rel(python_dev, pg_local, "SQL")
+Rel(python_dev, redis_local, "cache")
+Rel(python_dev, kafka_local, "events")
+
+Rel(web_static, java_prod, "HTTPS /api")
+Rel(mobile_stores, java_prod, "HTTPS /api")
+Rel(java_prod, python_prod, "private HTTP")
+Rel(java_prod, pg_prod, "JDBC")
+Rel(python_prod, pg_prod, "SQL")
+Rel(python_prod, redis_prod, "cache")
+Rel(python_prod, kafka_prod, "events")
+
+SHOW_LEGEND()
+@enduml

@@ -1,0 +1,43 @@
+@startuml C4-Code-Domain-Model
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Code / Domain Model (C4) — FinPulse core types
+
+Container_Boundary(domain, "Domain (preferred terms)") {
+    Component(customer, "Customer", "Entity", "Owns accounts & portfolios")
+    Component(account, "Account", "Entity", "Cash / brokerage account")
+    Component(instrument, "Instrument", "Entity", "Tradable symbol")
+    Component(bond, "Bond", "Entity", "Fixed-income extension")
+    Component(option, "Option", "Entity", "Derivatives extension")
+    Component(portfolio, "Portfolio", "Aggregate", "Named holdings container")
+    Component(position, "Position", "Entity", "Qty of Instrument in Portfolio")
+    Component(watchlist, "Watchlist", "Entity", "Followed symbols")
+    Component(watchlist_item, "WatchlistItem", "Entity", "Watchlist row")
+    Component(order, "Order", "Entity", "Buy/sell instruction")
+    Component(trade, "Trade", "Entity", "Execution")
+    Component(payment, "Payment", "Entity", "Funding / payout")
+    Component(settlement, "Settlement", "Entity", "Post-trade settlement")
+    Component(quote, "Quote", "Value / record", "Price snapshot")
+    Component(preference, "Preference", "Entity", "User preference")
+}
+
+Rel(customer, account, "has")
+Rel(customer, portfolio, "has")
+Rel(account, portfolio, "linked")
+Rel(portfolio, position, "contains")
+Rel(position, instrument, "refs")
+Rel(bond, instrument, "extends")
+Rel(option, instrument, "extends")
+Rel(watchlist, watchlist_item, "contains")
+Rel(watchlist_item, instrument, "refs")
+Rel(order, instrument, "refs")
+Rel(trade, order, "fills")
+Rel(payment, account, "refs")
+Rel(settlement, trade, "settles")
+Rel(quote, instrument, "prices")
+Rel(preference, customer, "belongs to")
+
+SHOW_LEGEND()
+@enduml

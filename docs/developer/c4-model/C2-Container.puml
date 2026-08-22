@@ -1,0 +1,42 @@
+@startuml C2-Container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Container Diagram (C2) — FinPulse
+
+Person(user, "User", "Investor, advisor, or operator")
+
+System_Boundary(clients, "Clients") {
+    Container(admin, "Admin", "React + Vite + Emotion", "apps/admin — CRM-style ops UI")
+    Container(portal, "Portal", "React + Vite + Emotion", "apps/portal — investor web")
+    Container(mobile, "Mobile", "Expo + RN", "apps/mobile — on-the-go portfolio")
+}
+
+System_Boundary(backend, "Backend") {
+    Container(java_api, "Java API", "Spring Boot / Bazel", "Auth + domain CRUD; entry :8801\nsrc/main/java/com/finpulse/server")
+    Container(python_api, "Python Analytics", "FastAPI", "Portfolio aggregate, quotes WS,\nrisk, forecast, events :8800\napps/server-python")
+}
+
+System_Boundary(data, "Data & messaging") {
+    ContainerDb(postgres, "PostgreSQL", "Docker", "Shared transactional store")
+    ContainerDb(redis, "Redis", "Docker", "Cache (optional paths)")
+    ContainerQueue(kafka, "Kafka", "Docker", "Portfolio / quote events (optional)")
+}
+
+Rel(user, admin, "HTTPS")
+Rel(user, portal, "HTTPS")
+Rel(user, mobile, "HTTPS / WS")
+
+Rel(admin, java_api, "REST /api/v1", "HTTP")
+Rel(portal, java_api, "REST /api/v1", "HTTP")
+Rel(mobile, java_api, "REST /api/v1", "HTTP")
+
+Rel(java_api, python_api, "PYTHON_BACKEND_URL", "HTTP")
+Rel(java_api, postgres, "JDBC", "SQL")
+Rel(python_api, postgres, "SQLAlchemy / drivers", "SQL")
+Rel(python_api, redis, "Cache", "Redis")
+Rel(python_api, kafka, "Produce/consume", "Kafka")
+
+SHOW_LEGEND()
+@enduml
