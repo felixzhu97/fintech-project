@@ -9,10 +9,16 @@ PlantUML C4 diagrams for the current FinPulse monorepo.
 | [C1-Context.puml](./C1-Context.puml) | Context | People and external systems |
 | [C2-Container.puml](./C2-Container.puml) | Container | Admin, portal, mobile, Java API, Python analytics, data stores |
 | [C3-Component.puml](./C3-Component.puml) | Component | **Single** diagram: Java feature modules + Python analytics + UI apps |
-| [C4-Code-Domain-Model.puml](./C4-Code-Domain-Model.puml) | Code | Core domain types |
+| [C4-Code-Domain-Model.puml](./C4-Code-Domain-Model.puml) | Code | DDD class model: AggregateRoot / Entity / ValueObject + associations (aligned to `com.finpulse.server.*.domain`) |
 | [C4-Deployment.puml](./C4-Deployment.puml) | Deployment | **Single** diagram: local/dev and production notes in one view |
 
 > Component and Deployment are intentionally **not** split into Backend/Frontend or Production sibling files.
+
+### Code / domain model notes
+
+- Stereotypes: **AggregateRoot**, **Entity**, **ValueObject** (see diagram legend).
+- Composition (`*--`) = ownership inside an aggregate; open aggregation / arrows = reference by id.
+- Typed Id / Money / Symbol VOs express ubiquitous language; Java may still store bare `UUID` until extracted.
 
 ## Stack (current)
 
