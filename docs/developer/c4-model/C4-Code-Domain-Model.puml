@@ -1,43 +1,391 @@
 @startuml C4-Code-Domain-Model
-!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+!theme plain
+title Code diagram (C4) — FinPulse domain model (DDD)
 
-LAYOUT_WITH_LEGEND()
+hide empty members
 
-title Code / Domain Model (C4) — FinPulse core types
+skinparam classAttributeIconSize 0
+skinparam linetype ortho
+skinparam nodesep 40
+skinparam ranksep 50
 
-Container_Boundary(domain, "Domain (preferred terms)") {
-    Component(customer, "Customer", "Entity", "Owns accounts & portfolios")
-    Component(account, "Account", "Entity", "Cash / brokerage account")
-    Component(instrument, "Instrument", "Entity", "Tradable symbol")
-    Component(bond, "Bond", "Entity", "Fixed-income extension")
-    Component(option, "Option", "Entity", "Derivatives extension")
-    Component(portfolio, "Portfolio", "Aggregate", "Named holdings container")
-    Component(position, "Position", "Entity", "Qty of Instrument in Portfolio")
-    Component(watchlist, "Watchlist", "Entity", "Followed symbols")
-    Component(watchlist_item, "WatchlistItem", "Entity", "Watchlist row")
-    Component(order, "Order", "Entity", "Buy/sell instruction")
-    Component(trade, "Trade", "Entity", "Execution")
-    Component(payment, "Payment", "Entity", "Funding / payout")
-    Component(settlement, "Settlement", "Entity", "Post-trade settlement")
-    Component(quote, "Quote", "Value / record", "Price snapshot")
-    Component(preference, "Preference", "Entity", "User preference")
+legend right
+  |= Stereotype |= Meaning |
+  | <<AggregateRoot>> | Consistency boundary; load/save via root |
+  | <<Entity>> | Identity + lifecycle |
+  | <<ValueObject>> | Immutable; equality by value |
+  | | |
+  | **Associations** | Composition = ownership; arrow = reference |
+  | **Preferred Terms** | See docs/Glossary.md |
+  | **Code note** | Java currently stores many IDs as UUID; |
+  | | typed Id VOs are the ubiquitous-language target |
+endlegend
+
+note as N_LAYERS
+  Java feature modules: controller → service → domain ← infra
+  Domain models are framework-free (no JPA / Spring in domain/).
+end note
+
+' ============================================================
+' Shared value objects
+' ============================================================
+package "shared kernel (VOs)" as pkg_shared {
+  class CustomerId <<ValueObject>> {
+    UUID value
+  }
+  class AccountId <<ValueObject>> {
+    UUID value
+  }
+  class PortfolioId <<ValueObject>> {
+    UUID value
+  }
+  class PositionId <<ValueObject>> {
+    UUID value
+  }
+  class InstrumentId <<ValueObject>> {
+    UUID value
+  }
+  class OrderId <<ValueObject>> {
+    UUID value
+  }
+  class TradeId <<ValueObject>> {
+    UUID value
+  }
+  class WatchlistId <<ValueObject>> {
+    UUID value
+  }
+  class Money <<ValueObject>> {
+    BigDecimal amount
+    CurrencyCode currency
+  }
+  class CurrencyCode <<ValueObject>> {
+    String code
+  }
+  class Symbol <<ValueObject>> {
+    String value
+  }
+  class Quantity <<ValueObject>> {
+    BigDecimal value
+  }
 }
 
-Rel(customer, account, "has")
-Rel(customer, portfolio, "has")
-Rel(account, portfolio, "linked")
-Rel(portfolio, position, "contains")
-Rel(position, instrument, "refs")
-Rel(bond, instrument, "extends")
-Rel(option, instrument, "extends")
-Rel(watchlist, watchlist_item, "contains")
-Rel(watchlist_item, instrument, "refs")
-Rel(order, instrument, "refs")
-Rel(trade, order, "fills")
-Rel(payment, account, "refs")
-Rel(settlement, trade, "settles")
-Rel(quote, instrument, "prices")
-Rel(preference, customer, "belongs to")
+' ============================================================
+' Customer / Account
+' ============================================================
+package "customer & account" as pkg_crm {
+  class Customer <<AggregateRoot>> {
+    CustomerId customerId
+    String name
+    String email
+    KycStatus kycStatus
+    Instant createdAt
+  }
+  enum KycStatus <<ValueObject>> {
+    PENDING
+    VERIFIED
+    REJECTED
+  }
+  class Account <<Entity>> {
+    AccountId accountId
+    CustomerId customerId
+    AccountType accountType
+    CurrencyCode currency
+    AccountStatus status
+    Instant openedAt
+  }
+  enum AccountType <<ValueObject>> {
+    CASH
+    MARGIN
+    BROKERAGE
+  }
+  enum AccountStatus <<ValueObject>> {
+    ACTIVE
+    CLOSED
+    SUSPENDED
+  }
+  class UserPreference <<Entity>> {
+    PreferenceId preferenceId
+    CustomerId customerId
+    String theme
+    String language
+    boolean notificationsEnabled
+  }
+  class PreferenceId <<ValueObject>> {
+    UUID value
+  }
+}
 
-SHOW_LEGEND()
+Customer "1" *-- "0..*" Account : owns
+Customer "1" o-- "0..1" UserPreference : has
+Customer --> CustomerId
+Customer --> KycStatus
+Account --> AccountId
+Account --> CustomerId
+Account --> AccountType
+Account --> AccountStatus
+Account --> CurrencyCode
+UserPreference --> PreferenceId
+UserPreference --> CustomerId
+
+' ============================================================
+' Portfolio / Position
+' ============================================================
+package "portfolio" as pkg_pf {
+  class Portfolio <<AggregateRoot>> {
+    PortfolioId portfolioId
+    AccountId accountId
+    String name
+    CurrencyCode baseCurrency
+    Instant createdAt
+  }
+  class Position <<Entity>> {
+    PositionId positionId
+    PortfolioId portfolioId
+    InstrumentId instrumentId
+    Quantity quantity
+    Money costBasis
+    LocalDate asOfDate
+  }
+}
+
+Account "1" *-- "0..*" Portfolio : holds
+Portfolio "1" *-- "0..*" Position : contains
+Portfolio --> PortfolioId
+Portfolio --> AccountId
+Portfolio --> CurrencyCode
+Position --> PositionId
+Position --> PortfolioId
+Position --> InstrumentId
+Position --> Quantity
+Position --> Money
+
+' ============================================================
+' Instrument / Bond / Option / Market data
+' ============================================================
+package "instrument & market" as pkg_mkt {
+  class Instrument <<AggregateRoot>> {
+    InstrumentId instrumentId
+    Symbol symbol
+    String name
+    AssetClass assetClass
+    CurrencyCode currency
+    String exchange
+  }
+  enum AssetClass <<ValueObject>> {
+    EQUITY
+    BOND
+    OPTION
+    OTHER
+  }
+  class Bond <<Entity>> {
+    BondId bondId
+    InstrumentId instrumentId
+    Money faceValue
+    BigDecimal couponRate
+    BigDecimal ytm
+    BigDecimal duration
+    BigDecimal convexity
+    BigDecimal maturityYears
+    Integer frequency
+  }
+  class BondId <<ValueObject>> {
+    UUID value
+  }
+  class OptionContract <<Entity>> {
+    OptionId optionId
+    InstrumentId instrumentId
+    InstrumentId underlyingInstrumentId
+    Money strike
+    Instant expiry
+    OptionType optionType
+  }
+  class OptionId <<ValueObject>> {
+    UUID value
+  }
+  enum OptionType <<ValueObject>> {
+    CALL
+    PUT
+  }
+  class MarketData <<Entity>> {
+    MarketDataId dataId
+    InstrumentId instrumentId
+    Instant timestamp
+    Money open
+    Money high
+    Money low
+    Money close
+    BigDecimal volume
+    BigDecimal changePct
+  }
+  class MarketDataId <<ValueObject>> {
+    UUID value
+  }
+}
+
+Instrument --> InstrumentId
+Instrument --> Symbol
+Instrument --> AssetClass
+Instrument --> CurrencyCode
+Instrument "1" o-- "0..1" Bond : extends as
+Instrument "1" o-- "0..1" OptionContract : listed as
+OptionContract --> Instrument : underlying
+Bond --> BondId
+Bond --> InstrumentId
+Bond --> Money
+OptionContract --> OptionId
+OptionContract --> InstrumentId
+OptionContract --> Money
+OptionContract --> OptionType
+MarketData --> MarketDataId
+MarketData --> InstrumentId
+MarketData --> Money
+Instrument "1" o-- "0..*" MarketData : priced by
+
+' ============================================================
+' Watchlist
+' ============================================================
+package "watchlist" as pkg_wl {
+  class Watchlist <<AggregateRoot>> {
+    WatchlistId watchlistId
+    CustomerId customerId
+    String name
+    Instant createdAt
+  }
+  class WatchlistItem <<Entity>> {
+    WatchlistItemId watchlistItemId
+    WatchlistId watchlistId
+    InstrumentId instrumentId
+    Instant addedAt
+  }
+  class WatchlistItemId <<ValueObject>> {
+    UUID value
+  }
+}
+
+Customer "1" *-- "0..*" Watchlist : follows
+Watchlist "1" *-- "0..*" WatchlistItem : contains
+Watchlist --> WatchlistId
+Watchlist --> CustomerId
+WatchlistItem --> WatchlistItemId
+WatchlistItem --> WatchlistId
+WatchlistItem --> InstrumentId
+
+' ============================================================
+' Trading / payments / settlement
+' ============================================================
+package "trading & money" as pkg_trade {
+  class TradeOrder <<AggregateRoot>> {
+    OrderId orderId
+    AccountId accountId
+    InstrumentId instrumentId
+    OrderSide side
+    Quantity quantity
+    OrderType orderType
+    OrderStatus status
+    Instant createdAt
+  }
+  enum OrderSide <<ValueObject>> {
+    BUY
+    SELL
+  }
+  enum OrderType <<ValueObject>> {
+    MARKET
+    LIMIT
+  }
+  enum OrderStatus <<ValueObject>> {
+    PENDING
+    FILLED
+    CANCELLED
+  }
+  class Trade <<Entity>> {
+    TradeId tradeId
+    OrderId orderId
+    Quantity quantity
+    Money price
+    Money fee
+    Instant executedAt
+  }
+  class Payment <<Entity>> {
+    PaymentId paymentId
+    AccountId accountId
+    String counterparty
+    Money amount
+    PaymentStatus status
+    Instant createdAt
+  }
+  class PaymentId <<ValueObject>> {
+    UUID value
+  }
+  enum PaymentStatus <<ValueObject>> {
+    PENDING
+    COMPLETED
+    FAILED
+  }
+  class CashTransaction <<Entity>> {
+    CashTransactionId transactionId
+    AccountId accountId
+    CashTxnType type
+    Money amount
+    CashTxnStatus status
+    Instant createdAt
+  }
+  class CashTransactionId <<ValueObject>> {
+    UUID value
+  }
+  enum CashTxnType <<ValueObject>> {
+    DEPOSIT
+    WITHDRAWAL
+    FEE
+  }
+  enum CashTxnStatus <<ValueObject>> {
+    COMPLETED
+    PENDING
+  }
+  class Settlement <<Entity>> {
+    SettlementId settlementId
+    TradeId tradeId
+    PaymentId paymentId
+    SettlementStatus status
+    Instant settledAt
+  }
+  class SettlementId <<ValueObject>> {
+    UUID value
+  }
+  enum SettlementStatus <<ValueObject>> {
+    PENDING
+    SETTLED
+  }
+}
+
+Account "1" *-- "0..*" TradeOrder : places
+TradeOrder "1" *-- "0..*" Trade : fills
+TradeOrder --> OrderId
+TradeOrder --> AccountId
+TradeOrder --> InstrumentId
+TradeOrder --> OrderSide
+TradeOrder --> Quantity
+TradeOrder --> OrderType
+TradeOrder --> OrderStatus
+Trade --> TradeId
+Trade --> OrderId
+Trade --> Quantity
+Trade --> Money
+Account "1" *-- "0..*" Payment : funds
+Account "1" *-- "0..*" CashTransaction : ledger
+Payment --> PaymentId
+Payment --> AccountId
+Payment --> Money
+Payment --> PaymentStatus
+CashTransaction --> CashTransactionId
+CashTransaction --> AccountId
+CashTransaction --> CashTxnType
+CashTransaction --> Money
+CashTransaction --> CashTxnStatus
+Settlement --> SettlementId
+Settlement --> TradeId
+Settlement --> PaymentId
+Settlement --> SettlementStatus
+Trade "1" o-- "0..1" Settlement : settled by
+Payment "1" o-- "0..1" Settlement : settles
+
 @enduml
