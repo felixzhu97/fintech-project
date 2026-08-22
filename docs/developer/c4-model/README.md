@@ -33,6 +33,20 @@ Do not mix `C4_blue_new` into domain/dynamic diagrams (and do not apply `style-z
 - Composition (`*--`) = ownership inside an aggregate; open aggregation / arrows = reference by id.
 - Typed Id / Money / Symbol VOs express ubiquitous language; Java may still store bare `UUID` until extracted.
 
+### Dynamic role colors
+
+`C4-Dynamic-*` diagrams color participants by role (via `style-zinc.puml` stereotypes):
+
+| Stereotype | Role | Tint |
+| ---------- | ---- | ---- |
+| (actor) | Investor / user | Emerald |
+| `<<ui>>` | Portal / Admin / Mobile | Slate |
+| `<<java>>` | Java API `:8801` | Blue |
+| `<<python>>` | Python Analytics `:8800` | Teal |
+| `<<db>>` | PostgreSQL | Amber |
+| `<<bus>>` | Redis / Kafka | Orange |
+| `<<external>>` | Market providers | Zinc gray |
+
 ### When to open which track
 
 - Boundaries / deploy topology → Structural C4 (`C4_blue_new`).

@@ -4,10 +4,10 @@
 title Dynamic — Portfolio aggregate (Java → Python)
 
 actor Investor as investor
-participant "Portal / Mobile" as ui
-participant "Java API\nproxy routes :8801" as java
-participant "Python Analytics\nrouters/services :8800" as py
-database "PostgreSQL" as db
+participant "Portal / Mobile" as ui <<ui>>
+participant "Java API\nproxy routes :8801" as java <<java>>
+participant "Python Analytics\nrouters/services :8800" as py <<python>>
+database "PostgreSQL" as db <<db>>
 
 investor -> ui: 1. Open portfolio view
 ui -> java: 2. GET /api/v1/portfolio\n(Authorization: Bearer)
@@ -17,6 +17,15 @@ db --> py: 5. Rows
 py --> java: 6. Aggregated portfolio JSON
 java --> ui: 7. 200 aggregate
 ui --> investor: 8. Render portfolio
+
+legend right
+  |= Role |= Color |
+  | Actor | Emerald |
+  | <<ui>> | Slate |
+  | <<java>> | Blue |
+  | <<python>> | Teal |
+  | <<db>> | Amber |
+endlegend
 
 note right of java
   Java is the public entry (:8801);
