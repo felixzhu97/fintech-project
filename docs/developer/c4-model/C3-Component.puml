@@ -1,0 +1,63 @@
+@startuml C3-Component
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+LAYOUT_WITH_LEGEND()
+
+title Component Diagram (C3) — FinPulse (backend + frontends)
+
+' ---- Clients ----
+Container_Boundary(ui, "UI applications") {
+    Component(admin_app, "Admin app", "React", "Customers, portfolios, transactions, behavior")
+    Component(portal_app, "Portal app", "React", "Portfolio, markets, watchlists")
+    Component(mobile_app, "Mobile app", "Expo", "Dashboard, watchlist, payments, blockchain demo")
+    Component(ui_pkg, "@fintech/ui + analytics", "packages/*", "Shared Emotion components & tracking")
+}
+
+' ---- Java API ----
+Container_Boundary(java, "Java API :8801") {
+    Component(auth_mod, "auth", "feature module", "Login / register / session")
+    Component(customer_mod, "customer / account", "feature module", "Customer & Account CRUD")
+    Component(market_mod, "instrument / bond / option / quote", "feature module", "Reference & quotes CRUD")
+    Component(pf_mod, "portfolio / position / watchlist", "feature module", "Holdings & watchlists")
+    Component(trade_mod, "order / trade / payment / settlement", "feature module", "Trading & money flows")
+    Component(pref_mod, "preference", "feature module", "User preferences")
+    Component(chain_mod, "blockchain", "feature module", "Demo chain endpoints")
+    Component(java_proxy, "Python proxy routes", "config / clients", "Forward analytics to :8800")
+}
+
+' ---- Python ----
+Container_Boundary(py, "Python Analytics :8800") {
+    Component(py_routes, "API routers", "FastAPI", "portfolio, quotes, risk, forecast, events")
+    Component(py_services, "Services / use cases", "Python", "Aggregates, VaR, ML inference")
+    Component(py_infra, "Infrastructure", "Python", "DB, Redis, Kafka, ClickHouse, MLflow")
+}
+
+ContainerDb(db, "PostgreSQL", "DB", "Shared persistence")
+
+Rel(admin_app, ui_pkg, "imports")
+Rel(portal_app, ui_pkg, "imports")
+Rel(mobile_app, ui_pkg, "imports")
+
+Rel(admin_app, auth_mod, "REST")
+Rel(admin_app, customer_mod, "REST")
+Rel(admin_app, pf_mod, "REST")
+Rel(portal_app, pf_mod, "REST")
+Rel(portal_app, market_mod, "REST")
+Rel(mobile_app, pf_mod, "REST")
+Rel(mobile_app, trade_mod, "REST")
+Rel(mobile_app, chain_mod, "REST")
+
+Rel(auth_mod, db, "JDBC")
+Rel(customer_mod, db, "JDBC")
+Rel(market_mod, db, "JDBC")
+Rel(pf_mod, db, "JDBC")
+Rel(trade_mod, db, "JDBC")
+Rel(pref_mod, db, "JDBC")
+
+Rel(java_proxy, py_routes, "HTTP")
+Rel(py_routes, py_services, "calls")
+Rel(py_services, py_infra, "uses")
+Rel(py_infra, db, "SQL")
+
+SHOW_LEGEND()
+@enduml

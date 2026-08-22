@@ -1,0 +1,40 @@
+@startuml cicd-workflow
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title CI workflow — FinPulse (GitHub Actions)
+
+rectangle "Trigger" as trig {
+  card "push main" as push
+  card "pull_request → main" as pr
+}
+
+rectangle "Job: CI (Node)" as node_job {
+  card "checkout" as n1
+  card "pnpm install --frozen-lockfile" as n2
+  card "pnpm --filter './packages/**' build" as n3
+  card "pnpm test:type" as n4
+  card "pnpm lint" as n5
+}
+
+rectangle "Job: Java (Bazel)" as java_job {
+  card "checkout" as j1
+  card "setup-bazel" as j2
+  card "bazel test //:*ControllerTest" as j3
+  card "bazel build //:server" as j4
+}
+
+rectangle "Job: Coverage (optional)" as cov_job {
+  card "coverage.yml" as c1
+}
+
+push --> node_job
+pr --> node_job
+push --> java_job
+pr --> java_job
+push --> cov_job
+pr --> cov_job
+
+n1 --> n2 --> n3 --> n4 --> n5
+j1 --> j2 --> j3 --> j4
+
+@enduml

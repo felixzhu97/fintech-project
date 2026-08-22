@@ -2,12 +2,12 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-61DAFB.svg)](https://react.dev/)
-[![Go](https://img.shields.io/badge/Go-1.24-00ADD8.svg)](https://go.dev/)
+[![Java](https://img.shields.io/badge/Java-21-orange.svg)](https://openjdk.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-10-F69220.svg)](https://pnpm.io/)
 
 FinPulse brings financial technology into everyday life. Our mission is to drive breakthroughs that benefit people, society, and the portfolios we manage every day.
 
-Chinese docs: [docs/zh/README.md](docs/zh/README.md)
+Chinese docs: see bilingual [docs/Glossary.md](docs/Glossary.md). Living docs live under [`docs/`](docs/).
 
 ## Table of Contents
 
@@ -68,11 +68,11 @@ Chinese docs: [docs/zh/README.md](docs/zh/README.md)
 | Web | React 19 + Vite, Emotion, Radix UI |
 | Mobile | React Native + Expo |
 | Shared packages | `@fintech/analytics`, `@fintech/ui`, `@fintech/utils` |
-| Backend | Python FastAPI (analytics, portfolio, quotes, events, AI/ML), Go gateway + CRUD, Java user-preferences slice |
+| Backend | Java Spring Boot API (primary entry :8801), Python FastAPI analytics (:8800) |
 | Data | TimescaleDB, Redis, Kafka |
 | Tooling | pnpm workspaces, TypeScript 5; Bazel for root Java API (`src/`) |
 
-Architecture notes: [docs/en/rd/c4/](docs/en/rd/c4/), [docs/en/rd/togaf/](docs/en/rd/togaf/).
+Architecture notes: [docs/developer/c4-model/](docs/developer/c4-model/), [docs/developer/QUICKSTART.md](docs/developer/QUICKSTART.md).
 
 ## Prerequisites
 
@@ -96,7 +96,7 @@ pnpm install
 pnpm dev:admin    # admin @ http://localhost:4200
 pnpm dev:portal   # portal @ http://localhost:3001
 pnpm dev:mobile   # Expo mobile
-pnpm dev:server   # Docker + Python :8800 + Go :8801 + seed data
+pnpm dev:server   # Docker + Python :8800 + Java :8801 + seed data
 ```
 
 After the backend is up, use `http://127.0.0.1:8801` as the API entry.
@@ -166,12 +166,12 @@ pnpm test:api
 
 | Doc | Link |
 |-----|------|
-| English docs index | [docs/en/README.md](docs/en/README.md) |
-| Chinese docs index | [docs/zh/README.md](docs/zh/README.md) |
-| C4 model | [docs/en/rd/c4/](docs/en/rd/c4/) |
-| TOGAF | [docs/en/rd/togaf/](docs/en/rd/togaf/) |
-| ER diagrams | [docs/en/data/er-diagram/](docs/en/data/er-diagram/) |
-| TODO | [docs/en/TODO.md](docs/en/TODO.md) |
+| Glossary | [docs/Glossary.md](docs/Glossary.md) |
+| Quick start | [docs/developer/QUICKSTART.md](docs/developer/QUICKSTART.md) |
+| API | [docs/developer/api.md](docs/developer/api.md) |
+| C4 model | [docs/developer/c4-model/](docs/developer/c4-model/) |
+| CI/CD | [docs/developer/cicd/](docs/developer/cicd/) |
+| User Story Map | [docs/product-owner/User-Story-Map.md](docs/product-owner/User-Story-Map.md) |
 
 ## Deployment
 
