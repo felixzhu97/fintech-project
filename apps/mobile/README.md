@@ -97,8 +97,7 @@ Components / Hooks → lib/ (api, services)
 
 ### Diagrams
 
-- **C4 component diagram** (en): `docs/en/rd/c4/c4-finpulse-mobile-components.puml`
-- **C4 component diagram** (zh): `docs/zh/rd/c4/c4-finpulse-mobile-components.puml`
+- **C4 model**: [`docs/developer/c4-model/`](../../docs/developer/c4-model/) (single Component + Deployment diagrams)
 
 ## Storybook (native component catalog)
 
@@ -163,11 +162,11 @@ If `pod install` fails with **"RPC failed; curl 56 Recv failure: Operation timed
 
 ## Auth
 
-Login and signup are handled by the Go API (same base URL as portfolio). **Auth flow**: `app/(auth)/login.tsx`, `signup.tsx`; token stored via `authBridge` (AsyncStorage); `useAuth`, `useAuthTokenSync`, `useAuthRestore`, `useAuthFetchCustomer` in `src/hooks/auth/`; Redux `authSlice` (token, customer, restored). After login, `Authorization: Bearer <token>` is sent by `httpClient`. **Settings** (when logged in): Change password, Log out; logout clears token and redirects to login.
+Login and signup are handled by the Java API (same base URL as portfolio). **Auth flow**: `app/(auth)/login.tsx`, `signup.tsx`; token stored via `authBridge` (AsyncStorage); `useAuth`, `useAuthTokenSync`, `useAuthRestore`, `useAuthFetchCustomer` in `src/hooks/auth/`; Redux `authSlice` (token, customer, restored). After login, `Authorization: Bearer <token>` is sent by `httpClient`. **Settings** (when logged in): Change password, Log out; logout clears token and redirects to login.
 
 ## Backend
 
-The app is a thin client: all portfolio and risk business logic runs on the Portfolio Analytics API (reached via Go proxy); auth and gateway are in Go. The mobile app uses a **single base URL** (`EXPO_PUBLIC_API_BASE_URL`, default `http://localhost:8801`).
+The app is a thin client: all portfolio and risk business logic runs on the backend APIs; clients call the Java API entry (:8801), which proxies analytics to Python (:8800). The mobile app uses a **single base URL** (`EXPO_PUBLIC_API_BASE_URL`, default `http://localhost:8801`).
 
 | Endpoint | Usage |
 |----------|--------|

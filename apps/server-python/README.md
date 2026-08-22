@@ -49,7 +49,7 @@ For core-only: `docker compose up -d postgres redis zookeeper kafka`.
 Default connection:
 
 - **TimescaleDB (PostgreSQL):** `postgresql://postgres:postgres@127.0.0.1:5433/portfolio` – portfolio metadata in JSONB; portfolio history in hypertable `portfolio_history`
-- **Redis:** `redis://127.0.0.1:6379/0` – server-side cache (shared client in app lifespan). Used for: portfolio history range (`portfolio:history:{id}:{days}d`, TTL from `HISTORY_CACHE_TTL_SECONDS`), portfolio aggregate response (`portfolio:aggregate:demo-portfolio`, 300s). `POST /seed` invalidates portfolio cache. (Blockchain cache is in Go.)
+- **Redis:** `redis://127.0.0.1:6379/0` – server-side cache (shared client in app lifespan). Used for: portfolio history range (`portfolio:history:{id}:{days}d`, TTL from `HISTORY_CACHE_TTL_SECONDS`), portfolio aggregate response (`portfolio:aggregate:demo-portfolio`, 300s). `POST /seed` invalidates portfolio cache. (Blockchain demo lives on the Java API.)
 - **Kafka:** `localhost:9092`. Topics:
   - `portfolio.events` – portfolio seed events (created on first produce)
   - `market.quotes.enriched` – enriched real-time market quotes (symbol-keyed, produced by external provider or Flink jobs)
@@ -109,17 +109,17 @@ alembic current        # Show current revision
 
 **Python-only endpoints**: Portfolio aggregate, quotes, risk-summary, asset-allocation, analytics. CRUD for customers, accounts, instruments, portfolios, positions, watchlists, bonds, options, orders, trades, payments, settlements, market-data, user-preferences, and blockchain is served by **Java** at port 8801 (primary API entry). The seed script (`scripts/seed/generate-seed-data.ts`) calls the Java API for batch seeding.
 
-**Python endpoints** (port 8800; also reachable via Go proxy when clients use `http://127.0.0.1:8801`):
+**Python endpoints** (port 8800; also reachable when clients use Java entry `http://127.0.0.1:8801` which proxies analytics):
 
 - Portfolio: `GET /api/v1/portfolio`, `POST /api/v1/seed`, `GET /api/v1/portfolio/risk-summary`, `GET /api/v1/portfolio/asset-allocation-by-account-type`
 - Quotes: `GET /api/v1/quotes`, `WebSocket /ws/quotes`, `GET /api/v1/quotes/history`
 - Analytics: `/api/v1/risk-metrics`, `/api/v1/valuations`, `/api/v1/analytics/*`, `/api/v1/forecast/*`
 
-**Blockchain**: Endpoints are implemented by the Go server. See `docs/en/product/domain/blockchain-simulation.md`.
+**Blockchain**: Demo endpoints are on the Java API. See [User Story E11](../../docs/product-owner/user-stories/E11-blockchain-demo.md) and [C4](../../docs/developer/c4-model/).
 
 ### AI, ML and DL (integrated into business flows)
 
-AI/ML is integrated into analytics and risk flows. CRUD for payments, trades, customers is in Go; when Go proxies analytics or enrichment requests to Python, these compute services run:
+AI/ML is integrated into analytics and risk flows. Domain CRUD lives in Java; when Java proxies analytics or enrichment requests to Python, these compute services run:
 
 | Business flow | AI/ML integration |
 |---------------|-------------------|

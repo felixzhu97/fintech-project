@@ -1,0 +1,40 @@
+@startuml C1-Context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+LAYOUT_WITH_LEGEND()
+
+title System Context (C1) — FinPulse
+
+Person(investor, "Investor", "Views portfolios, watchlists, quotes; trades and pays via portal/mobile")
+Person(advisor, "Advisor / Ops", "Manages customers, accounts, and portfolios in Admin")
+Person(developer, "Developer", "Runs local stack, seeds data, extends APIs")
+
+System_Boundary(finpulse, "FinPulse") {
+    System(web_admin, "Admin Console", "React + Vite — client & portfolio operations")
+    System(web_portal, "Investor Portal", "React + Vite — self-serve portfolio & markets")
+    System(mobile, "Mobile App", "React Native + Expo — portfolio, watchlist, payments, blockchain demo")
+    System(java_api, "Java API", "Spring Boot — auth + domain CRUD; primary API entry :8801")
+    System(python_api, "Python Analytics API", "FastAPI — quotes, aggregates, risk, AI/ML :8800")
+}
+
+System_Ext(market_feed, "Market Data Providers", "External quote / reference feeds (as configured)")
+System_Ext(eth_testnet, "Ethereum Sepolia", "Testnet for wallet connect / ETH transfer demo")
+System_Ext(db, "Primary Database", "PostgreSQL (Docker) / H2 for local slices")
+
+Rel(investor, web_portal, "Uses", "HTTPS")
+Rel(investor, mobile, "Uses", "HTTPS / WS")
+Rel(advisor, web_admin, "Uses", "HTTPS")
+Rel(developer, java_api, "Dev / seed / health", "HTTP :8801")
+
+Rel(web_admin, java_api, "REST", "HTTPS/JSON")
+Rel(web_portal, java_api, "REST", "HTTPS/JSON")
+Rel(mobile, java_api, "REST", "HTTPS/JSON")
+
+Rel(java_api, python_api, "Proxies analytics routes", "HTTP :8800")
+Rel(java_api, db, "Read/Write", "JDBC")
+Rel(python_api, db, "Read/Write analytics state", "SQL")
+Rel(python_api, market_feed, "Fetch quotes", "HTTPS")
+Rel(mobile, eth_testnet, "Wallet / transfer demo", "JSON-RPC")
+
+SHOW_LEGEND()
+@enduml

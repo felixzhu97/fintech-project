@@ -1,4 +1,4 @@
-const DEFAULT_PORT = 8801; // Go gateway (Python proxied via Go)
+const DEFAULT_PORT = 8801; // Java API entry (Python analytics proxied via Java)
 
 export function getBaseUrl(): string {
   const url = typeof process !== "undefined" && process.env?.EXPO_PUBLIC_API_BASE_URL;
