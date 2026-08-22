@@ -2,6 +2,39 @@
  * Seed script — payload fields match Java *Request DTOs (Jackson SNAKE_CASE).
  * Run: pnpm generate-seed-data
  */
+import type {
+  AccountRequest,
+  AccountRow,
+  BlockchainSeedBalanceRequest,
+  BlockchainTransferRequest,
+  BondRequest,
+  CashTransactionRequest,
+  CustomerRequest,
+  CustomerRow,
+  InstrumentRequest,
+  InstrumentRow,
+  MarketDataRequest,
+  MarketQuote,
+  OptionRequest,
+  OrderRow,
+  PaymentRequest,
+  PaymentRow,
+  PortfolioRequest,
+  PortfolioRow,
+  PositionRequest,
+  RegisterRequest,
+  RiskMetricRequest,
+  SettlementRequest,
+  TradeOrderRequest,
+  TradeRequest,
+  TradeRow,
+  UserPreferenceRequest,
+  ValuationRequest,
+  WatchlistItemRequest,
+  WatchlistRequest,
+  WatchlistRow,
+} from "./api-types.ts";
+
 declare const process: {
   env: Record<string, string | undefined>;
   exit: (code?: number) => never;
@@ -19,229 +52,6 @@ const authBase =
 
 const api = (path: string) => `${apiBase.replace(/\/$/, "")}${path}`;
 const authApi = (path: string) => `${authBase.replace(/\/$/, "")}${path}`;
-
-/** CustomerRequest */
-interface CustomerRequest {
-  name: string;
-  email?: string;
-  kyc_status?: string;
-}
-
-/** UserPreferenceRequest */
-interface UserPreferenceRequest {
-  customer_id: string;
-  theme?: string;
-  language?: string;
-  notifications_enabled?: boolean;
-}
-
-/** AccountRequest */
-interface AccountRequest {
-  customer_id: string;
-  account_type: string;
-  currency: string;
-  status?: string;
-}
-
-/** InstrumentRequest */
-interface InstrumentRequest {
-  symbol: string;
-  name?: string;
-  asset_class?: string;
-  currency?: string;
-  exchange?: string;
-}
-
-/** PortfolioRequest */
-interface PortfolioRequest {
-  account_id: string;
-  name: string;
-  base_currency: string;
-}
-
-/** PositionRequest */
-interface PositionRequest {
-  portfolio_id: string;
-  instrument_id: string;
-  quantity: number;
-  cost_basis?: number;
-}
-
-/** WatchlistRequest */
-interface WatchlistRequest {
-  customer_id: string;
-  name: string;
-}
-
-/** WatchlistItemRequest */
-interface WatchlistItemRequest {
-  watchlist_id: string;
-  instrument_id: string;
-}
-
-/** BondRequest */
-interface BondRequest {
-  instrument_id: string;
-  face_value?: number;
-  coupon_rate?: number;
-  ytm?: number;
-  duration?: number;
-  convexity?: number;
-  maturity_years?: number;
-  frequency?: number;
-}
-
-/** OptionRequest */
-interface OptionRequest {
-  instrument_id: string;
-  underlying_instrument_id: string;
-  strike: number;
-  expiry: string;
-  option_type: string;
-  risk_free_rate?: number;
-  volatility?: number;
-  bs_price?: number;
-  delta?: number;
-  gamma?: number;
-  theta?: number;
-  vega?: number;
-  rho?: number;
-  implied_volatility?: number;
-}
-
-/** TradeOrderRequest */
-interface TradeOrderRequest {
-  account_id: string;
-  instrument_id: string;
-  side: string;
-  quantity: number;
-  order_type: string;
-  status: string;
-}
-
-/** TradeRequest */
-interface TradeRequest {
-  order_id: string;
-  quantity: number;
-  price: number;
-  fee?: number;
-}
-
-/** CashTransactionRequest */
-interface CashTransactionRequest {
-  account_id: string;
-  type: string;
-  amount: number;
-  currency: string;
-  status: string;
-}
-
-/** PaymentRequest */
-interface PaymentRequest {
-  account_id: string;
-  counterparty?: string;
-  amount: number;
-  currency: string;
-  status: string;
-}
-
-/** SettlementRequest */
-interface SettlementRequest {
-  trade_id: string;
-  payment_id: string;
-  status: string;
-  settled_at?: string;
-}
-
-/** MarketDataRequest */
-interface MarketDataRequest {
-  instrument_id: string;
-  timestamp: string;
-  open?: number;
-  high?: number;
-  low?: number;
-  close: number;
-  volume?: number;
-  change_pct?: number;
-}
-
-/** RegisterRequest */
-interface RegisterRequest {
-  name: string;
-  email: string;
-  password: string;
-}
-
-interface BlockchainSeedBalanceRequest {
-  account_id: string;
-  currency?: string;
-  amount: number;
-}
-
-interface BlockchainTransferRequest {
-  sender_account_id: string;
-  receiver_account_id: string;
-  amount: number;
-  currency?: string;
-}
-
-interface CustomerRow {
-  customer_id: string;
-}
-
-interface AccountRow {
-  account_id: string;
-}
-
-interface InstrumentRow {
-  instrument_id: string;
-}
-
-interface PortfolioRow {
-  portfolio_id: string;
-}
-
-interface WatchlistRow {
-  watchlist_id: string;
-}
-
-interface OrderRow {
-  order_id: string;
-}
-
-interface TradeRow {
-  trade_id: string;
-}
-
-interface PaymentRow {
-  payment_id: string;
-}
-
-/** Proxied analytics payloads (no Java DTO). */
-interface RiskMetricRequest {
-  portfolio_id: string;
-  risk_level: string;
-  volatility: number;
-  sharpe_ratio: number;
-  var: number;
-  beta: number;
-}
-
-interface ValuationRequest {
-  instrument_id: string;
-  method: string;
-  ev?: number;
-  equity_value?: number;
-  target_price?: number;
-  discount_rate?: number;
-  growth_rate?: number;
-  multiples?: number;
-}
-
-type MarketQuote = Pick<
-  MarketDataRequest,
-  "open" | "high" | "low" | "close" | "volume" | "change_pct"
->;
 
 const NASDAQ_STOCKS_EXTRA: [string, string][] = [
   ["ABNB", "Airbnb, Inc."], ["ALGN", "Align Technology, Inc."], ["AMAT", "Applied Materials, Inc."], ["ANSS", "Ansys, Inc."], ["ARM", "Arm Holdings plc"],
@@ -583,29 +393,29 @@ async function seedLegacyPortfolio() {
 }
 
 async function seedResources() {
-  const customers = await postBatch("/api/v1/customers/batch", [
+  const customers = await postBatch<CustomerRequest, CustomerRow>("/api/v1/customers/batch", [
     { name: "Warren Buffett", email: "wb@example.com", kyc_status: "verified" },
     { name: "Ray Dalio", email: "rd@example.com", kyc_status: "pending" },
     { name: "Carl Icahn", email: "ci@example.com", kyc_status: "verified" },
   ]);
-  const customerIds = customers.map((c: IdRow) => c.customer_id as string);
+  const customerIds = customers.map((c: CustomerRow) => c.customer_id as string);
 
-  await postBatch("/api/v1/user-preferences/batch", [
+  await postBatch<UserPreferenceRequest>("/api/v1/user-preferences/batch", [
     { customer_id: customerIds[0], theme: "light", language: "en", notifications_enabled: true },
     { customer_id: customerIds[1], theme: "dark", language: "en", notifications_enabled: false },
     { customer_id: customerIds[2], theme: "system", language: "en", notifications_enabled: true },
   ]);
 
-  const accounts = await postBatch("/api/v1/accounts/batch", [
+  const accounts = await postBatch<AccountRequest, AccountRow>("/api/v1/accounts/batch", [
     { customer_id: customerIds[0], account_type: "brokerage", currency: "USD", status: "active" },
     { customer_id: customerIds[0], account_type: "cash", currency: "USD", status: "active" },
     { customer_id: customerIds[1], account_type: "brokerage", currency: "USD", status: "active" },
     { customer_id: customerIds[1], account_type: "ira", currency: "USD", status: "active" },
     { customer_id: customerIds[2], account_type: "brokerage", currency: "USD", status: "active" },
   ]);
-  const accountIds = accounts.map((a: IdRow) => a.account_id as string);
+  const accountIds = accounts.map((a: AccountRow) => a.account_id as string);
 
-  const instruments = await postBatch(
+  const instruments = await postBatch<InstrumentRequest, InstrumentRow>(
     "/api/v1/instruments/batch",
     dedupeInstrumentsBySymbol([
       { symbol: "AAPL", name: "Apple Inc.", asset_class: "equity", currency: "USD", exchange: "NASDAQ" },
@@ -657,15 +467,15 @@ async function seedResources() {
   const instOption = instruments[9];
   const instNasdaqStocks = instruments.slice(10);
 
-  const portfolios = await postBatch("/api/v1/portfolios/batch", [
+  const portfolios = await postBatch<PortfolioRequest, PortfolioRow>("/api/v1/portfolios/batch", [
     { account_id: accountIds[0], name: "S&P 500 Growth", base_currency: "USD" },
     { account_id: accountIds[2], name: "60/40 Bogleheads", base_currency: "USD" },
     { account_id: accountIds[0], name: "Dividend Growth", base_currency: "USD" },
     { account_id: accountIds[3], name: "IRA Index", base_currency: "USD" },
   ]);
-  const portfolioIds = portfolios.map((p: IdRow) => p.portfolio_id);
+  const portfolioIds = portfolios.map((p: PortfolioRow) => p.portfolio_id);
 
-  const watchlists = await postBatch("/api/v1/watchlists/batch", [
+  const watchlists = await postBatch<WatchlistRequest, WatchlistRow>("/api/v1/watchlists/batch", [
     { customer_id: customerIds[0], name: "Mega Cap Tech" },
     { customer_id: customerIds[0], name: "Dividend Aristocrats" },
     { customer_id: customerIds[1], name: "All Weather" },
@@ -674,7 +484,7 @@ async function seedResources() {
   const watchlist2 = watchlists[1];
   const watchlist3 = watchlists[2];
 
-  await postBatch("/api/v1/watchlist-items/batch", [
+  await postBatch<WatchlistItemRequest>("/api/v1/watchlist-items/batch", [
     { watchlist_id: watchlist1.watchlist_id, instrument_id: inst1.instrument_id },
     { watchlist_id: watchlist1.watchlist_id, instrument_id: inst2.instrument_id },
     { watchlist_id: watchlist1.watchlist_id, instrument_id: inst5.instrument_id },
@@ -686,7 +496,7 @@ async function seedResources() {
     { watchlist_id: watchlist3.watchlist_id, instrument_id: inst3.instrument_id },
   ]);
 
-  await postBatch("/api/v1/positions/batch", [
+  await postBatch<PositionRequest>("/api/v1/positions/batch", [
     { portfolio_id: portfolioIds[0], instrument_id: inst1.instrument_id, quantity: 100, cost_basis: 215 },
     { portfolio_id: portfolioIds[0], instrument_id: inst2.instrument_id, quantity: 50, cost_basis: 395 },
     { portfolio_id: portfolioIds[0], instrument_id: inst4.instrument_id, quantity: 20, cost_basis: 560 },
@@ -699,13 +509,13 @@ async function seedResources() {
     { portfolio_id: portfolioIds[3], instrument_id: inst8.instrument_id, quantity: 40, cost_basis: 485 },
   ]);
 
-  await postBatch("/api/v1/bonds/batch", [
+  await postBatch<BondRequest>("/api/v1/bonds/batch", [
     { instrument_id: inst3.instrument_id, face_value: 1000, coupon_rate: 0.045, ytm: 0.0475, duration: 1.92, convexity: 4.2, maturity_years: 2, frequency: 2 },
     { instrument_id: inst9.instrument_id, face_value: 1000, coupon_rate: 0.0425, ytm: 0.044, duration: 8.5, convexity: 82, maturity_years: 10, frequency: 2 },
   ]);
 
   const expiry = new Date("2026-01-17T21:00:00.000Z").toISOString();
-  await post("/api/v1/options", {
+  await post<OptionRequest>("/api/v1/options", {
     instrument_id: instOption.instrument_id,
     underlying_instrument_id: inst1.instrument_id,
     strike: 230,
@@ -722,7 +532,7 @@ async function seedResources() {
     implied_volatility: 0.21,
   });
 
-  const orders = await postBatch("/api/v1/orders/batch", [
+  const orders = await postBatch<TradeOrderRequest, OrderRow>("/api/v1/orders/batch", [
     { account_id: accountIds[0], instrument_id: inst1.instrument_id, side: "buy", quantity: 100, order_type: "market", status: "filled" },
     { account_id: accountIds[0], instrument_id: inst2.instrument_id, side: "buy", quantity: 50, order_type: "limit", status: "filled" },
     { account_id: accountIds[0], instrument_id: inst4.instrument_id, side: "buy", quantity: 20, order_type: "market", status: "filled" },
@@ -733,7 +543,7 @@ async function seedResources() {
   const order3 = orders[2];
   const order4 = orders[3];
 
-  const trades = await postBatch("/api/v1/trades/batch", [
+  const trades = await postBatch<TradeRequest, TradeRow>("/api/v1/trades/batch", [
     { order_id: order1.order_id, quantity: 100, price: 225.0, fee: 0 },
     { order_id: order2.order_id, quantity: 50, price: 398.0, fee: 0 },
     { order_id: order3.order_id, quantity: 20, price: 562.0, fee: 0 },
@@ -744,14 +554,14 @@ async function seedResources() {
   const trade3 = trades[2];
   const trade4 = trades[3];
 
-  await postBatch("/api/v1/cash-transactions/batch", [
+  await postBatch<CashTransactionRequest>("/api/v1/cash-transactions/batch", [
     { account_id: accountIds[1], type: "deposit", amount: 50000, currency: "USD", status: "completed" },
     { account_id: accountIds[1], type: "withdrawal", amount: 5000, currency: "USD", status: "completed" },
     { account_id: accountIds[2], type: "deposit", amount: 100000, currency: "USD", status: "completed" },
     { account_id: accountIds[4], type: "deposit", amount: 25000, currency: "USD", status: "completed" },
   ]);
 
-  const payments = await postBatch("/api/v1/payments/batch", [
+  const payments = await postBatch<PaymentRequest, PaymentRow>("/api/v1/payments/batch", [
     { account_id: accountIds[0], counterparty: "Interactive Brokers", amount: 22500, currency: "USD", status: "completed" },
     { account_id: accountIds[0], counterparty: "Charles Schwab", amount: 19900, currency: "USD", status: "completed" },
     { account_id: accountIds[0], counterparty: "Fidelity", amount: 11240, currency: "USD", status: "completed" },
@@ -762,7 +572,7 @@ async function seedResources() {
   const payment3 = payments[2];
   const payment4 = payments[3];
 
-  await postBatch("/api/v1/settlements/batch", [
+  await postBatch<SettlementRequest>("/api/v1/settlements/batch", [
     { trade_id: trade1.trade_id, payment_id: payment1.payment_id, status: "settled" },
     { trade_id: trade2.trade_id, payment_id: payment2.payment_id, status: "settled" },
     { trade_id: trade3.trade_id, payment_id: payment3.payment_id, status: "settled" },
@@ -772,7 +582,7 @@ async function seedResources() {
   await seedBlockchain(accountIds);
 
   const now = new Date().toISOString();
-  const nasdaqMarketData = [
+  const nasdaqMarketData: MarketQuote[] = [
     { open: 22.4, high: 22.8, low: 22.2, close: 22.6, volume: 42000000, change_pct: 0.89 },
     { open: 178.5, high: 181.0, low: 177.8, close: 180.2, volume: 52000000, change_pct: 1.52 },
     { open: 548.0, high: 552.0, low: 546.0, close: 550.5, volume: 2100000, change_pct: 0.46 },
@@ -799,7 +609,7 @@ async function seedResources() {
     { open: 1025.0, high: 1032.0, low: 1022.0, close: 1028.0, volume: 1200000, change_pct: 0.29 },
     { open: 1125.0, high: 1132.0, low: 1122.0, close: 1128.0, volume: 980000, change_pct: 0.27 },
   ];
-  const marketDataItems = [
+  const marketDataItems: MarketDataRequest[] = [
     { instrument_id: inst1.instrument_id, timestamp: now, open: 227.2, high: 229.5, low: 226.8, close: 228.5, volume: 52000000, change_pct: 0.57 },
     { instrument_id: inst2.instrument_id, timestamp: now, open: 416.5, high: 419.0, low: 415.2, close: 418.2, volume: 18500000, change_pct: 0.41 },
     { instrument_id: inst4.instrument_id, timestamp: now, open: 582.0, high: 586.5, low: 581.0, close: 585.0, volume: 65000000, change_pct: 0.52 },
@@ -807,21 +617,21 @@ async function seedResources() {
     { instrument_id: inst6.instrument_id, timestamp: now, open: 197.0, high: 199.5, low: 196.2, close: 198.6, volume: 45000000, change_pct: 0.81 },
     { instrument_id: inst7.instrument_id, timestamp: now, open: 136.5, high: 139.2, low: 135.8, close: 138.5, volume: 38000000, change_pct: 1.47 },
     { instrument_id: inst8.instrument_id, timestamp: now, open: 518.0, high: 522.5, low: 517.0, close: 521.0, volume: 42000000, change_pct: 0.58 },
-    ...instNasdaqStocks.map((inst: IdRow, i: number) => {
+    ...instNasdaqStocks.map((inst: InstrumentRow, i: number) => {
       const data = i < nasdaqMarketData.length ? nasdaqMarketData[i] : buildNasdaqExtraMarketData(null, i - nasdaqMarketData.length);
       return { instrument_id: inst.instrument_id, timestamp: now, ...data };
     }),
   ];
-  await postBatch("/api/v1/market-data/batch", marketDataItems);
+  await postBatch<MarketDataRequest>("/api/v1/market-data/batch", marketDataItems);
 
-  const riskMetricsData = [
+  const riskMetricsData: RiskMetricRequest[] = [
     { portfolio_id: portfolioIds[0], risk_level: "balanced", volatility: 0.18, sharpe_ratio: 1.25, var: -0.0039, beta: 1.05 },
     { portfolio_id: portfolioIds[1], risk_level: "moderate", volatility: 0.12, sharpe_ratio: 1.1, var: -0.0025, beta: 0.95 },
     { portfolio_id: portfolioIds[3], risk_level: "conservative", volatility: 0.08, sharpe_ratio: 0.95, var: -0.0018, beta: 0.88 },
   ];
   
   try {
-    const demoPortfolioRecord = await post("/api/v1/portfolios", {
+    const demoPortfolioRecord = await post<PortfolioRequest, PortfolioRow>("/api/v1/portfolios", {
       account_id: accountIds[0],
       name: "BlackRock Model Portfolio",
       base_currency: "USD",
@@ -842,13 +652,13 @@ async function seedResources() {
   // Proxied to Python PG; portfolios/instruments live in Java H2, so FK may fail — soft-skip.
   if (riskMetricsData.length > 0) {
     try {
-      await postBatch("/api/v1/risk-metrics/batch", riskMetricsData);
+      await postBatch<RiskMetricRequest>("/api/v1/risk-metrics/batch", riskMetricsData);
     } catch (err: unknown) {
       console.warn("[seed] risk-metrics skipped:", (err as Error).message || err);
     }
   }
 
-  const valuationItems = [
+  const valuationItems: ValuationRequest[] = [
     { instrument_id: inst1.instrument_id, method: "DCF", ev: 2.8e11, equity_value: 2.75e11, target_price: 230, discount_rate: 0.08, growth_rate: 0.05 },
     { instrument_id: inst2.instrument_id, method: "DCF", ev: 2.6e11, equity_value: 2.55e11, target_price: 435, discount_rate: 0.08, growth_rate: 0.06 },
     { instrument_id: inst4.instrument_id, method: "multiples", target_price: 600, multiples: 22.5 },
@@ -856,7 +666,7 @@ async function seedResources() {
     { instrument_id: inst7.instrument_id, method: "DCF", ev: 3.2e11, equity_value: 3.1e11, target_price: 145, discount_rate: 0.10, growth_rate: 0.20 },
   ];
   try {
-    await postBatch("/api/v1/valuations/batch", valuationItems);
+    await postBatch<ValuationRequest>("/api/v1/valuations/batch", valuationItems);
   } catch (err: unknown) {
     console.warn("[seed] valuations skipped:", (err as Error).message || err);
   }
@@ -869,7 +679,7 @@ async function seedResources() {
         name: "Demo User",
         email: "demo@finpulse.app",
         password: "demo123",
-      }),
+      } satisfies RegisterRequest),
     });
     if (authRes.ok) {
       console.log("[seed] Auth: demo user registered (demo@finpulse.app / demo123)");
@@ -903,7 +713,7 @@ async function seedBlockchain(accountIds: string[]): Promise<void> {
 
   for (let i = 0; i < accountIds.length; i++) {
     const amount = amounts[i % amounts.length] || 10000;
-    await post("/api/v1/blockchain/seed-balance", {
+    await post<BlockchainSeedBalanceRequest>("/api/v1/blockchain/seed-balance", {
       account_id: accountIds[i],
       currency,
       amount,
@@ -911,19 +721,19 @@ async function seedBlockchain(accountIds: string[]): Promise<void> {
   }
   console.log(`[seed] Blockchain: seeded SIM_COIN balance for ${accountIds.length} accounts`);
 
-  await post("/api/v1/blockchain/transfers", {
+  await post<BlockchainTransferRequest>("/api/v1/blockchain/transfers", {
     sender_account_id: accountIds[0],
     receiver_account_id: accountIds[1],
     amount: 500,
     currency,
   });
-  await post("/api/v1/blockchain/transfers", {
+  await post<BlockchainTransferRequest>("/api/v1/blockchain/transfers", {
     sender_account_id: accountIds[0],
     receiver_account_id: accountIds[2],
     amount: 300,
     currency,
   });
-  await post("/api/v1/blockchain/transfers", {
+  await post<BlockchainTransferRequest>("/api/v1/blockchain/transfers", {
     sender_account_id: accountIds[1],
     receiver_account_id: accountIds[2],
     amount: 200,
