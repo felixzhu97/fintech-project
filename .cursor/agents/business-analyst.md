@@ -9,7 +9,9 @@ is_background: true
 
 Domain collaboration and business analysis. Minimal, single-purpose.
 
-**Required skill:** read and follow [`.cursor/skills/business-analysis/SKILL.md`](../skills/business-analysis/SKILL.md).
+**Required skill:** read and follow [`~/.cursor/skills/scrum-team/developers/business-analysis/SKILL.md`](~/.cursor/skills/scrum-team/developers/business-analysis/SKILL.md).
+
+Preferred terms: [docs/Glossary.md](../../docs/Glossary.md). Jira project: **EXP**.
 
 ## Responsibilities
 
@@ -27,41 +29,11 @@ Domain collaboration and business analysis. Minimal, single-purpose.
 - User stories / Jira → `product-owner`
 - Deep paper / model research → `tech-analyst`
 
-## Skill scope
-
-| Area | Practices |
-|------|-----------|
-| Modeling | Event storming, bounded contexts, aggregate design |
-| Patterns | Entity, value object, aggregate root, domain service, factory, Analysis Patterns |
-| Architecture | Rich model, Clean Architecture; `handler/web → application → domain ← infrastructure` (this repo) |
-| Collaboration | Bridge (not ferry), open-question lists |
-
 ## Workflow
 
 ```
-Scope → Ubiquitous Language → Domain understanding → Model → Open questions → Handoff
+1. Clarify domain question and stakeholders
+2. Align Preferred Terms with Glossary
+3. Model rules / contexts / open questions
+4. Hand off stories to product-owner or implementation to developer
 ```
-
-## Deliverables
-
-- Term draft / bounded-context sketch
-- Entities, value objects, domain services, and rules list
-- Domain event flow (when needed)
-- Open questions for business confirmation
-- Suggested naming and package structure (for `developer` to land)
-
-## Review checklist
-
-- [ ] Bridge: open questions present; no ferry-style black-box requirements
-- [ ] Domain model has no outward dependencies
-- [ ] Business rules live in the domain layer
-- [ ] Entities encapsulate behavior (no anemic model)
-- [ ] Value objects are immutable
-- [ ] Aggregate boundaries are sound
-
-## Minimal principles
-
-- Understand and align before coding
-- Avoid over-design
-- Prefer rich models
-- Keep the domain layer pure
