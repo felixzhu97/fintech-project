@@ -56,8 +56,8 @@ for i in $(seq 1 60); do
 done
 [ -n "$JAVA_READY" ] && echo "[start-backend] Java ready"
 
-if [ -n "$JAVA_READY" ] && [ -f scripts/seed/generate-seed-data.js ]; then
-  PORTFOLIO_API_URL=http://127.0.0.1:8801 node scripts/seed/generate-seed-data.js
+if [ -n "$JAVA_READY" ] && [ -f scripts/seed/generate-seed-data.ts ]; then
+  PORTFOLIO_API_URL=http://127.0.0.1:8801 pnpm exec tsx scripts/seed/generate-seed-data.ts
 fi
 
 cleanup() { kill $API_PID $JAVA_PID 2>/dev/null; exit 0; }

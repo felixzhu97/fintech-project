@@ -1,17 +1,249 @@
-const baseUrl =
+/**
+ * Seed script — payload fields match Java *Request DTOs (Jackson SNAKE_CASE).
+ * Run: pnpm generate-seed-data
+ */
+declare const process: {
+  env: Record<string, string | undefined>;
+  exit: (code?: number) => never;
+};
+
+const apiBase =
   process.env.PORTFOLIO_API_URL ||
   process.env.EXPO_PUBLIC_API_BASE_URL ||
-  "http://localhost:8800";
+  "http://127.0.0.1:8801";
 
-const authBaseUrl =
+const authBase =
   process.env.AUTH_API_URL ||
   process.env.EXPO_PUBLIC_AUTH_API_URL ||
-  baseUrl;
+  apiBase;
 
-const api = (path) => `${baseUrl.replace(/\/$/, "")}${path}`;
-const authApi = (path) => `${authBaseUrl.replace(/\/$/, "")}${path}`;
+const api = (path: string) => `${apiBase.replace(/\/$/, "")}${path}`;
+const authApi = (path: string) => `${authBase.replace(/\/$/, "")}${path}`;
 
-const NASDAQ_STOCKS_EXTRA = [
+/** CustomerRequest */
+interface CustomerRequest {
+  name: string;
+  email?: string;
+  kyc_status?: string;
+}
+
+/** UserPreferenceRequest */
+interface UserPreferenceRequest {
+  customer_id: string;
+  theme?: string;
+  language?: string;
+  notifications_enabled?: boolean;
+}
+
+/** AccountRequest */
+interface AccountRequest {
+  customer_id: string;
+  account_type: string;
+  currency: string;
+  status?: string;
+}
+
+/** InstrumentRequest */
+interface InstrumentRequest {
+  symbol: string;
+  name?: string;
+  asset_class?: string;
+  currency?: string;
+  exchange?: string;
+}
+
+/** PortfolioRequest */
+interface PortfolioRequest {
+  account_id: string;
+  name: string;
+  base_currency: string;
+}
+
+/** PositionRequest */
+interface PositionRequest {
+  portfolio_id: string;
+  instrument_id: string;
+  quantity: number;
+  cost_basis?: number;
+}
+
+/** WatchlistRequest */
+interface WatchlistRequest {
+  customer_id: string;
+  name: string;
+}
+
+/** WatchlistItemRequest */
+interface WatchlistItemRequest {
+  watchlist_id: string;
+  instrument_id: string;
+}
+
+/** BondRequest */
+interface BondRequest {
+  instrument_id: string;
+  face_value?: number;
+  coupon_rate?: number;
+  ytm?: number;
+  duration?: number;
+  convexity?: number;
+  maturity_years?: number;
+  frequency?: number;
+}
+
+/** OptionRequest */
+interface OptionRequest {
+  instrument_id: string;
+  underlying_instrument_id: string;
+  strike: number;
+  expiry: string;
+  option_type: string;
+  risk_free_rate?: number;
+  volatility?: number;
+  bs_price?: number;
+  delta?: number;
+  gamma?: number;
+  theta?: number;
+  vega?: number;
+  rho?: number;
+  implied_volatility?: number;
+}
+
+/** TradeOrderRequest */
+interface TradeOrderRequest {
+  account_id: string;
+  instrument_id: string;
+  side: string;
+  quantity: number;
+  order_type: string;
+  status: string;
+}
+
+/** TradeRequest */
+interface TradeRequest {
+  order_id: string;
+  quantity: number;
+  price: number;
+  fee?: number;
+}
+
+/** CashTransactionRequest */
+interface CashTransactionRequest {
+  account_id: string;
+  type: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
+
+/** PaymentRequest */
+interface PaymentRequest {
+  account_id: string;
+  counterparty?: string;
+  amount: number;
+  currency: string;
+  status: string;
+}
+
+/** SettlementRequest */
+interface SettlementRequest {
+  trade_id: string;
+  payment_id: string;
+  status: string;
+  settled_at?: string;
+}
+
+/** MarketDataRequest */
+interface MarketDataRequest {
+  instrument_id: string;
+  timestamp: string;
+  open?: number;
+  high?: number;
+  low?: number;
+  close: number;
+  volume?: number;
+  change_pct?: number;
+}
+
+/** RegisterRequest */
+interface RegisterRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+
+interface BlockchainSeedBalanceRequest {
+  account_id: string;
+  currency?: string;
+  amount: number;
+}
+
+interface BlockchainTransferRequest {
+  sender_account_id: string;
+  receiver_account_id: string;
+  amount: number;
+  currency?: string;
+}
+
+interface CustomerRow {
+  customer_id: string;
+}
+
+interface AccountRow {
+  account_id: string;
+}
+
+interface InstrumentRow {
+  instrument_id: string;
+}
+
+interface PortfolioRow {
+  portfolio_id: string;
+}
+
+interface WatchlistRow {
+  watchlist_id: string;
+}
+
+interface OrderRow {
+  order_id: string;
+}
+
+interface TradeRow {
+  trade_id: string;
+}
+
+interface PaymentRow {
+  payment_id: string;
+}
+
+/** Proxied analytics payloads (no Java DTO). */
+interface RiskMetricRequest {
+  portfolio_id: string;
+  risk_level: string;
+  volatility: number;
+  sharpe_ratio: number;
+  var: number;
+  beta: number;
+}
+
+interface ValuationRequest {
+  instrument_id: string;
+  method: string;
+  ev?: number;
+  equity_value?: number;
+  target_price?: number;
+  discount_rate?: number;
+  growth_rate?: number;
+  multiples?: number;
+}
+
+type MarketQuote = Pick<
+  MarketDataRequest,
+  "open" | "high" | "low" | "close" | "volume" | "change_pct"
+>;
+
+const NASDAQ_STOCKS_EXTRA: [string, string][] = [
   ["ABNB", "Airbnb, Inc."], ["ALGN", "Align Technology, Inc."], ["AMAT", "Applied Materials, Inc."], ["ANSS", "Ansys, Inc."], ["ARM", "Arm Holdings plc"],
   ["BIIB", "Biogen Inc."], ["BKR", "Baker Hughes Company"], ["CCEP", "Coca-Cola Europacific Partners plc"], ["CHTR", "Charter Communications, Inc."], ["CRWD", "CrowdStrike Holdings, Inc."],
   ["CTAS", "Cintas Corporation"], ["CTSH", "Cognizant Technology Solutions Corporation"], ["DDOG", "Datadog, Inc."], ["DXCM", "DexCom, Inc."], ["EA", "Electronic Arts Inc."],
@@ -50,18 +282,20 @@ const NASDAQ_STOCKS_EXTRA = [
   ["SYNA", "Synaptics Incorporated"], ["ZG", "Zillow Group, Inc. Class C"], ["YELP", "Yelp Inc."],
 ];
 
-function buildNasdaqExtraInstruments() {
-  const seen = new Set();
-  return NASDAQ_STOCKS_EXTRA.map(([symbol, name]) => {
-    if (seen.has(symbol)) return null;
+function buildNasdaqExtraInstruments(): InstrumentRequest[] {
+  const seen = new Set<string>();
+  const out: InstrumentRequest[] = [];
+  for (const [symbol, name] of NASDAQ_STOCKS_EXTRA) {
+    if (seen.has(symbol)) continue;
     seen.add(symbol);
-    return { symbol, name, asset_class: "equity", currency: "USD", exchange: "NASDAQ" };
-  }).filter(Boolean);
+    out.push({ symbol, name, asset_class: "equity", currency: "USD", exchange: "NASDAQ" });
+  }
+  return out;
 }
 
-function dedupeInstrumentsBySymbol(items) {
+function dedupeInstrumentsBySymbol(items: InstrumentRequest[]): InstrumentRequest[] {
   const seen = new Set();
-  return items.filter((item) => {
+  return items.filter((item: InstrumentRequest) => {
     const key = (item.symbol || "").toUpperCase();
     if (seen.has(key)) return false;
     seen.add(key);
@@ -69,13 +303,20 @@ function dedupeInstrumentsBySymbol(items) {
   });
 }
 
-function buildNasdaqExtraMarketData(close, i) {
+function buildNasdaqExtraMarketData(close: number | null, i: number): MarketQuote {
   const base = (close || 50) + (i % 300);
   const open = base;
   const high = base * 1.02;
   const low = base * 0.98;
   const change = (i % 5) * 0.1 - 0.2;
-  return { open, high, low, close: base * (1 + change / 100), volume: 1000000 * (1 + (i % 100)), change_pct: change };
+  return {
+    open,
+    high,
+    low,
+    close: base * (1 + change / 100),
+    volume: 1000000 * (1 + (i % 100)),
+    change_pct: change,
+  };
 }
 
 const seedPortfolio = {
@@ -294,19 +535,7 @@ const seedPortfolio = {
   })(),
 };
 
-async function get(path) {
-  const res = await fetch(api(path), {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  });
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`GET ${path} failed: ${res.status} ${text.slice(0, 300)}`);
-  }
-  return res.json();
-}
-
-async function post(path, body) {
+async function post<TReq, TRes = unknown>(path: string, body: TReq): Promise<TRes> {
   const res = await fetch(api(path), {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -316,10 +545,10 @@ async function post(path, body) {
     const text = await res.text();
     throw new Error(`POST ${path} failed: ${res.status} ${text.slice(0, 300)}`);
   }
-  return res.json();
+  return res.json() as Promise<TRes>;
 }
 
-async function postBatch(path, items) {
+async function postBatch<TReq, TRes = unknown>(path: string, items: TReq[]): Promise<TRes[]> {
   if (items.length === 0) return [];
   const res = await fetch(api(path), {
     method: "POST",
@@ -330,11 +559,17 @@ async function postBatch(path, items) {
     const text = await res.text();
     throw new Error(`POST ${path} failed: ${res.status} ${text.slice(0, 300)}`);
   }
-  return res.json();
+  return res.json() as Promise<TRes[]>;
 }
 
 async function seedLegacyPortfolio() {
-  const url = api("/api/v1/seed");
+  // Demo portfolio aggregate lives on the Python analytics service.
+  // Domain CRUD seed below still targets PORTFOLIO_API_URL (Java gateway).
+  const pythonBase =
+    process.env.PYTHON_API_URL ||
+    process.env.PYTHON_BACKEND_URL ||
+    "http://127.0.0.1:8800";
+  const url = `${pythonBase.replace(/\/$/, "")}/api/v1/seed`;
   const res = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -353,7 +588,7 @@ async function seedResources() {
     { name: "Ray Dalio", email: "rd@example.com", kyc_status: "pending" },
     { name: "Carl Icahn", email: "ci@example.com", kyc_status: "verified" },
   ]);
-  const customerIds = customers.map((c) => c.customer_id);
+  const customerIds = customers.map((c: IdRow) => c.customer_id as string);
 
   await postBatch("/api/v1/user-preferences/batch", [
     { customer_id: customerIds[0], theme: "light", language: "en", notifications_enabled: true },
@@ -368,7 +603,7 @@ async function seedResources() {
     { customer_id: customerIds[1], account_type: "ira", currency: "USD", status: "active" },
     { customer_id: customerIds[2], account_type: "brokerage", currency: "USD", status: "active" },
   ]);
-  const accountIds = accounts.map((a) => a.account_id);
+  const accountIds = accounts.map((a: IdRow) => a.account_id as string);
 
   const instruments = await postBatch(
     "/api/v1/instruments/batch",
@@ -428,7 +663,7 @@ async function seedResources() {
     { account_id: accountIds[0], name: "Dividend Growth", base_currency: "USD" },
     { account_id: accountIds[3], name: "IRA Index", base_currency: "USD" },
   ]);
-  const portfolioIds = portfolios.map((p) => p.portfolio_id);
+  const portfolioIds = portfolios.map((p: IdRow) => p.portfolio_id);
 
   const watchlists = await postBatch("/api/v1/watchlists/batch", [
     { customer_id: customerIds[0], name: "Mega Cap Tech" },
@@ -572,7 +807,7 @@ async function seedResources() {
     { instrument_id: inst6.instrument_id, timestamp: now, open: 197.0, high: 199.5, low: 196.2, close: 198.6, volume: 45000000, change_pct: 0.81 },
     { instrument_id: inst7.instrument_id, timestamp: now, open: 136.5, high: 139.2, low: 135.8, close: 138.5, volume: 38000000, change_pct: 1.47 },
     { instrument_id: inst8.instrument_id, timestamp: now, open: 518.0, high: 522.5, low: 517.0, close: 521.0, volume: 42000000, change_pct: 0.58 },
-    ...instNasdaqStocks.map((inst, i) => {
+    ...instNasdaqStocks.map((inst: IdRow, i: number) => {
       const data = i < nasdaqMarketData.length ? nasdaqMarketData[i] : buildNasdaqExtraMarketData(null, i - nasdaqMarketData.length);
       return { instrument_id: inst.instrument_id, timestamp: now, ...data };
     }),
@@ -601,11 +836,16 @@ async function seedResources() {
         beta: 1.05,
       });
     }
-  } catch (err) {
+  } catch (err: unknown) {
   }
   
+  // Proxied to Python PG; portfolios/instruments live in Java H2, so FK may fail — soft-skip.
   if (riskMetricsData.length > 0) {
-    await postBatch("/api/v1/risk-metrics/batch", riskMetricsData);
+    try {
+      await postBatch("/api/v1/risk-metrics/batch", riskMetricsData);
+    } catch (err: unknown) {
+      console.warn("[seed] risk-metrics skipped:", (err as Error).message || err);
+    }
   }
 
   const valuationItems = [
@@ -615,7 +855,11 @@ async function seedResources() {
     { instrument_id: inst5.instrument_id, method: "DCF", ev: 1.8e11, equity_value: 1.75e11, target_price: 185, discount_rate: 0.09, growth_rate: 0.12 },
     { instrument_id: inst7.instrument_id, method: "DCF", ev: 3.2e11, equity_value: 3.1e11, target_price: 145, discount_rate: 0.10, growth_rate: 0.20 },
   ];
-  await postBatch("/api/v1/valuations/batch", valuationItems);
+  try {
+    await postBatch("/api/v1/valuations/batch", valuationItems);
+  } catch (err: unknown) {
+    console.warn("[seed] valuations skipped:", (err as Error).message || err);
+  }
 
   try {
     const authRes = await fetch(authApi("/api/v1/auth/register"), {
@@ -628,20 +872,22 @@ async function seedResources() {
       }),
     });
     if (authRes.ok) {
-      console.log("[seed] Auth (Go): demo user registered (demo@finpulse.app / demo123)");
+      console.log("[seed] Auth: demo user registered (demo@finpulse.app / demo123)");
     } else if (authRes.status === 400) {
       const t = await authRes.text();
-      if (t.includes("already registered")) {
-        console.log("[seed] Auth (Go): demo user already exists (demo@finpulse.app)");
+      if (t.includes("already registered") || t.includes("already") || t.includes("exists")) {
+        console.log("[seed] Auth: demo user already exists (demo@finpulse.app)");
       } else {
         throw new Error(`Auth register failed: ${authRes.status} ${t.slice(0, 200)}`);
       }
+    } else if (authRes.status === 409) {
+      console.log("[seed] Auth: demo user already exists (demo@finpulse.app)");
     } else {
       throw new Error(`Auth register failed: ${authRes.status} ${await authRes.text()}`);
     }
-  } catch (e) {
-    if (e.message && e.message.includes("fetch")) {
-      console.warn("[seed] Auth (Go) skipped: ensure Go API is running on", authBaseUrl);
+  } catch (e: unknown) {
+    if ((e as Error).message && (e as Error).message.includes("fetch")) {
+      console.warn("[seed] Auth skipped: ensure API is running on", authBase);
     } else {
       throw e;
     }
@@ -651,7 +897,7 @@ async function seedResources() {
   console.log("[seed] Domain resources seeded via batch APIs: customers(3), user-preferences(3), accounts(5), instruments(" + instruments.length + "), portfolios(4), watchlists(3), watchlist-items(9), positions(10), bonds(2), options(1), orders(4), trades(4), cash-transactions(4), payments(4), settlements(4), auth(demo user), blockchain(all accounts seeded with SIM_COIN balance + transfers), market-data(" + marketDataItems.length + "), risk-metrics(" + riskMetricsCount + "), valuations(5).");
 }
 
-async function seedBlockchain(accountIds) {
+async function seedBlockchain(accountIds: string[]): Promise<void> {
   const currency = "SIM_COIN";
   const amounts = [10000, 15000, 12000, 8000, 20000];
 
@@ -691,10 +937,10 @@ async function main() {
     await seedLegacyPortfolio();
     await seedResources();
     console.log("Seed completed.");
-  } catch (e) {
-    console.error("[seed] Error:", e.message || e);
-    if (e.cause) console.error("[seed] Cause:", e.cause);
-    if (e.stack) console.error("[seed] Stack:", e.stack);
+  } catch (e: unknown) {
+    console.error("[seed] Error:", (e as Error).message || e);
+    if ((e as Error & { cause?: unknown }).cause) console.error("[seed] Cause:", (e as Error & { cause?: unknown }).cause);
+    if ((e as Error).stack) console.error("[seed] Stack:", (e as Error).stack);
     process.exit(1);
   }
 }

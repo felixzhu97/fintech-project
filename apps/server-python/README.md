@@ -107,7 +107,7 @@ alembic current        # Show current revision
 - `GET /api/v1/quotes/history?symbols=...&minutes=5` – returns historical price series from `quote_tick` (or `quote_ohlc_1min` fallback); powered by `QuoteHistoryService`.
 - `WebSocket /ws/quotes` – accepts `{"type":"subscribe","symbols":["AAPL","MSFT"]}` or `"update"` messages and pushes `{"type":"snapshot","quotes":{...}}` snapshots using the same quote structure as the HTTP endpoint.
 
-**Python-only endpoints**: Portfolio aggregate, quotes, risk-summary, asset-allocation, analytics. CRUD for customers, accounts, instruments, portfolios, positions, watchlists, bonds, options, orders, trades, payments, settlements, market-data, user-preferences, and blockchain is served by **Go** at port 8801 (primary API entry). The seed script (`scripts/seed/generate-seed-data.js`) calls the Go API for batch seeding.
+**Python-only endpoints**: Portfolio aggregate, quotes, risk-summary, asset-allocation, analytics. CRUD for customers, accounts, instruments, portfolios, positions, watchlists, bonds, options, orders, trades, payments, settlements, market-data, user-preferences, and blockchain is served by **Java** at port 8801 (primary API entry). The seed script (`scripts/seed/generate-seed-data.ts`) calls the Java API for batch seeding.
 
 **Python endpoints** (port 8800; also reachable via Go proxy when clients use `http://127.0.0.1:8801`):
 
