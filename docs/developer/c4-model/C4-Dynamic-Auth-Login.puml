@@ -1,0 +1,23 @@
+@startuml C4-Dynamic-Auth-Login
+!include style-zinc.puml
+
+title Dynamic — Auth login (Bearer token)
+
+actor Investor as investor
+participant "Portal / Admin" as ui
+participant "Java API\nauth module :8801" as auth
+database "PostgreSQL" as db
+
+investor -> ui: 1. Submit email + password
+ui -> auth: 2. POST /api/v1/auth/login
+auth -> db: 3. Lookup customer credentials
+db --> auth: 4. Customer row
+auth --> ui: 5. 200 { token, customer }
+ui --> investor: 6. Store Bearer token\nfor protected calls
+
+note right of auth
+  Protected APIs require
+  Authorization: Bearer <token>
+end note
+
+@enduml

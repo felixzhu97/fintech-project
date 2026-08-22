@@ -1,0 +1,27 @@
+@startuml C4-Dynamic-Quotes-Subscribe
+!include style-zinc.puml
+
+title Dynamic — Quotes subscribe (WebSocket)
+
+actor Investor as investor
+participant "Portal / Mobile" as ui
+participant "Python Analytics\nquotes :8800" as py
+participant "Redis / Kafka\n(optional)" as bus
+participant "Market Data\nProviders" as mkt
+
+investor -> ui: 1. Open markets / watchlist
+ui -> py: 2. WS connect /ws/quotes
+ui -> py: 3. { type: subscribe,\nsymbols: ["AAPL", ...] }
+py -> bus: 4. Cache / fan-out (if enabled)
+py -> mkt: 5. Fetch / refresh quotes (as configured)
+mkt --> py: 6. Quote ticks
+bus --> py: 7. Cached / event updates (optional)
+py --> ui: 8. Push quote messages
+ui --> investor: 9. Live quote UI
+
+note right of py
+  Documented in docs/developer/api.md:
+  WS /ws/quotes subscribe payload.
+end note
+
+@enduml
