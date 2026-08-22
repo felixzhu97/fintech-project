@@ -68,11 +68,8 @@ class KafkaQuoteConsumer:
             pass
 
     def start(self) -> bool:
-        try:
-            from confluent_kafka import Consumer
-            Consumer({"bootstrap.servers": KAFKA_BOOTSTRAP_SERVERS})
-        except Exception:
-            return False
+        # Do not probe Kafka on the lifespan thread: confluent_kafka can block
+        # indefinitely waiting for brokers. The daemon thread handles connect failures.
         if self._thread and self._thread.is_alive():
             return True
         self._stop.clear()
